@@ -33,3 +33,4 @@ package-lock\.json
 
 images
 geekhack-scraper/config.json
+.vscode/launch.json
