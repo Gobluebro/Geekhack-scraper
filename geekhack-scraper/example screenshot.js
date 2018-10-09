@@ -24,27 +24,34 @@ const config = require("./config.json");
   //     counter += 1;
   //   }
   // });
+  // const allPosts = page.$$(".post_wrapper");
   await page.goto(config.websiteToCrawl, { waitUntil: "networkidle0" });
   console.log("went to the site");
-  const allPosts = await page.$$(".post_wrapper");
-  await page.evaluate(allPosts => {
+  const allPostsWithThreadStarter = await page.evaluate(() => {
+    let allPosts = document.querySelectorAll(".post_wrapper");
+    let wantedPosts;
     for (var i = 0; i < allPosts.length; i++) {
-      var isThreadStarter =
-        allPosts[i].children[0].children[1].children[1].className ==
-        "threadstarter";
+      let isThreadStarter =
+        document.querySelector(
+          "allPosts[i].children[0].children[1].children[1].className"
+        ) == "threadstarter";
       if (isThreadStarter) {
         // the post of the thread starter
-        let counter = 0;
-        var images = element.children[1].getElementsByTagName("img");
-        images.forEach(function(image) {
-          const matches = /.*\.(jpg|png|gif)$/.exec(image);
-          if (matches && matches.length === 2) {
-            const extension = matches[1];
-            fs.writeFileSync(`./images/image-${counter}.${extension}`);
-            counter += 1;
-          }
-        });
+        wantedPosts = allPosts.element.children[1].getElementsByTagName("img");
       }
+    }
+    return wantedPosts;
+  });
+
+  let counter = 0;
+  // var images = element.children[1].getElementsByTagName("img");
+
+  allPostsWithThreadStarter.forEach(function(image) {
+    const matches = /.*\.(jpg|png|gif)$/.exec(image);
+    if (matches && matches.length === 2) {
+      const extension = matches[1];
+      fs.writeFileSync(`./images/image-${counter}.${extension}`);
+      counter += 1;
     }
   });
 
