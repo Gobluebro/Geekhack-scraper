@@ -7,62 +7,51 @@ const config = require("./config.json");
   // const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
   // await page.goto('https://geekhack.org');
-  page.setViewport({ width: 1920, height: 978 });
+  // page.setViewport({ width: 1920, height: 978 });
 
-  // https://intoli.com/blog/saving-images/
-  // let counter = 0;
-  // page.on("response", async response => {
-  //   const matches = /.*\.(jpg)$/.exec(response.url());
-  //   if (matches && matches.length === 2) {
-  //     const extension = matches[1];
-  //     const buffer = await response.buffer();
-  //     fs.writeFileSync(
-  //       `./images/image-${counter}.${extension}`,
-  //       buffer,
-  //       "base64"
-  //     );
-  //     counter += 1;
-  //   }
-  // });
-  // const allPosts = page.$$(".post_wrapper");
-
-  // try this https://www.aymen-loukil.com/en/blog-en/google-puppeteer-tutorial-with-examples/
   await page.goto(config.websiteToCrawl, { waitUntil: "networkidle0" });
   console.log("went to the site");
-  const allPostsWithThreadStarter = await page.evaluate(() => {
+  const allImagesWithThreadStarter = await page.evaluate(() => {
     let allPosts = document.querySelectorAll(".post_wrapper");
-    let wantedPosts;
-    let wantedImages;
+    let wantedImgLinks;
     for (var i = 0; i < allPosts.length; i++) {
       let threadStarterCheck =
         allPosts[i].children[0].children[1].children[1].className;
       if (threadStarterCheck == "threadstarter") {
         // the post of the thread starter
         console.log("threadstarter");
-        wantedPosts += allPosts[i].children[1].getElementsByTagName("img");
-        for (let b = 0; b < wantedPosts.length; b++) {
-          wantedImages += wantedPosts[b].src;
-          console.log(wantedPosts[b].src);
+        // https://www.aymen-loukil.com/en/blog-en/google-puppeteer-tutorial-with-examples/
+        let wantedPosts = Array.from(
+          allPosts[i].children[1].querySelectorAll("img.bbc_img:not(.resized)")
+        );
+        let wantedImages = wantedPosts.map(img => img.src).slice(0, 10);
+        if (typeof wantedImgLinks === "undefined") {
+          wantedImgLinks = wantedImages;
+        } else {
+          wantedImgLinks = wantedImgLinks.concat(wantedImages);
         }
       }
     }
-    return wantedImages;
+    return wantedImgLinks;
   });
-  // var images = element.children[1].getElementsByTagName("img");
 
-  for (var a = 0; a < allPostsWithThreadStarter.length; a++) {
-    let imageURL = allPostsWithThreadStarter[a];
+  for (var a = 0; a < allImagesWithThreadStarter.length; a++) {
+    let imageURL = allImagesWithThreadStarter[a];
     let matches = /.*\.(jpg|png|gif)$/.exec(imageURL);
     if (matches && matches.length === 2) {
       let extension = matches[1];
-      fs.writeFileSync(`./images/image-${a}.${extension}`);
+      var imageSource = await page.goto(imageURL);
+      console.log("went to image");
+      fs.writeFile(
+        `geekhack-scraper/images/image-${a}.${extension}`,
+        await imageSource.buffer(),
+        function(err) {
+          if (err) {
+            return console.log(err);
+          }
+        }
+      );
     }
-    // const matches = /.*\.(jpg|png|gif)$/.exec(image);
-    // if (matches && matches.length === 2) {
-    //   const extension = matches[1];
-    //   fs.writeFileSync(`./images/image-${counter}.${extension}`);
-    //   counter += 1;
-    // }
   }
 
   // await page.waitForSelector('#jpg', {timeout: 60000});
