@@ -1,15 +1,10 @@
-const puppeteer = require("puppeteer");
-const fs = require("fs");
-const config = require("./config.json");
-
-(async () => {
-  const browser = await puppeteer.launch();
-  // const browser = await puppeteer.launch({headless: false});
+module.exports = async function(browser, fs, url) {
+  // (async () => {
   const page = await browser.newPage();
   // await page.goto('https://geekhack.org');
   // page.setViewport({ width: 1920, height: 978 });
 
-  await page.goto(config.websiteToCrawl, { waitUntil: "networkidle0" });
+  await page.goto(url, { waitUntil: "networkidle0" });
   console.log("went to the site");
   const allImagesWithThreadStarter = await page.evaluate(() => {
     let allPosts = document.querySelectorAll(".post_wrapper");
@@ -41,9 +36,8 @@ const config = require("./config.json");
     if (matches && matches.length === 2) {
       let extension = matches[1];
       var imageSource = await page.goto(imageURL);
-      console.log("went to image");
       fs.writeFile(
-        `geekhack-scraper/images/image-${a}.${extension}`,
+        `./images/image-${a}.${extension}`,
         await imageSource.buffer(),
         function(err) {
           if (err) {
@@ -57,6 +51,6 @@ const config = require("./config.json");
   // await page.waitForSelector('#jpg', {timeout: 60000});
   // console.log('waited');
   // await page.screenshot({path: 'images/example.png', fullPage: true});
-  console.log("done");
-  await browser.close();
-})();
+  console.log("saved images");
+  // })();
+};
