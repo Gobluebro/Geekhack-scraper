@@ -1,4 +1,7 @@
-module.exports = async function(browser, fs, url) {
+const fs = require("fs");
+const mkdirp = require("mkdirp");
+
+module.exports = async function(browser, url) {
   // (async () => {
   const page = await browser.newPage();
   // await page.goto('https://geekhack.org');
@@ -6,13 +9,17 @@ module.exports = async function(browser, fs, url) {
 
   await page.goto(url, { waitUntil: "networkidle0" });
   console.log("went to the site");
-  const pageStartDate = await page
-    .$(
-      "#quickModForm > div:nth-child(1) > div > div.postarea > div.flow_hidden > div > div.smalltext"
-    )
-    .innerHTML.replace("« <strong> on:</strong> ", "")
-    .replace(" »", "");
-  const pageTitle = await page.$("[id^='subject_']").innerText;
+  const pageStartDate = await page.evaluate(() =>
+    document
+      .querySelector(
+        "#quickModForm > div:nth-child(1) > div > div.postarea > div.flow_hidden > div > div.smalltext"
+      )
+      .innerHTML.replace("« <strong> on:</strong> ", "")
+      .replace(" »", "")
+  );
+  const pageTitle = await page.evaluate(
+    () => document.querySelector("[id^='subject_']").innerText
+  );
   const urlTopicID = url.split("=")[1];
 
   const allImagesWithThreadStarter = await page.evaluate(() => {
@@ -39,40 +46,50 @@ module.exports = async function(browser, fs, url) {
     return wantedImgLinks;
   });
 
-  if (allImagesWithThreadStarter.length == 0) {
-  } else {
+  if (!fs.existsSync(__dirname + `/images/${urlTopicID}`)) {
+    mkdirp(__dirname + `/images/${urlTopicID}`, function(err) {
+      if (err) console.log(err);
+      else console.log("directory created");
+    });
   }
-  for (var a = 0; a < allImagesWithThreadStarter.length; a++) {
-    let imageURL = allImagesWithThreadStarter[a];
-    // gets the name and extension of the image url.
-    let imageRegex = new RegExp(`(?:[^/][\d\w\.]+)+$`);
-    ///.*\.(jpg|png|gif)$/
-    let imagePathName = imageRegex.exec(imageURL);
 
-    if (imagePathName && imagePathName.length === 2) {
-      // let extension = imagePathName[1];
-      var imageSource = await page.goto(imageURL);
-      fs.writeFile(
-        `./images/${urlTopicID}/${imagePathName}`,
-        await imageSource.buffer(),
-        function(err) {
-          if (err) {
-            return console.log(err);
+  if (allImagesWithThreadStarter.length <= 0) {
+    console.log("no images to save");
+  } else {
+    for (var a = 0; a < allImagesWithThreadStarter.length; a++) {
+      let imageURL = allImagesWithThreadStarter[a];
+      // gets the name and extension of the image url.
+      let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
+      ///.*\.(jpg|png|gif)$/
+      let imagePathName = imageRegex.exec(imageURL);
+
+      if (imagePathName && imagePathName.length === 1) {
+        // let extension = imagePathName[1];
+        var imageSource = await page.goto(imageURL);
+        fs.writeFile(
+          __dirname + `/images/${urlTopicID}/${imagePathName[0]}`,
+          await imageSource.buffer(),
+          function(err) {
+            if (err) {
+              return console.log(err);
+            }
           }
-        }
-      );
+        );
+      }
     }
     console.log("saved images");
   }
 
+  let timeUpdated = new Date().toUTCString();
   var json = {
     id: urlTopicID,
     url: url,
     title: pageTitle,
-    startdate: pageStartDate
+    startdate: pageStartDate,
+    lastupdated: timeUpdated
   };
   json = JSON.stringify(json);
-  fs.writeFile(`./images/${urlTopicID}/info.json`, json, err => {
+  fs.writeFile(__dirname + `/images/${urlTopicID}/info.json`, json, err => {
     if (err) {
       console.log(err);
     } else {
