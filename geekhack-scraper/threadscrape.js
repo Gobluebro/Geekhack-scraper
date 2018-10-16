@@ -46,8 +46,10 @@ module.exports = async function(browser, url) {
     return wantedImgLinks;
   });
 
-  if (!fs.existsSync(__dirname + `/images/${urlTopicID}`)) {
-    mkdirp(__dirname + `/images/${urlTopicID}`, function(err) {
+  let path = __dirname + `/images/${urlTopicID}`;
+
+  if (!fs.existsSync(path)) {
+    mkdirp(path, function(err) {
       if (err) console.log(err);
       else console.log("directory created");
     });
@@ -67,7 +69,7 @@ module.exports = async function(browser, url) {
         // let extension = imagePathName[1];
         var imageSource = await page.goto(imageURL);
         fs.writeFile(
-          __dirname + `/images/${urlTopicID}/${imagePathName[0]}`,
+          path + `/${imagePathName[0]}`,
           await imageSource.buffer(),
           function(err) {
             if (err) {
@@ -89,7 +91,7 @@ module.exports = async function(browser, url) {
     lastupdated: timeUpdated
   };
   json = JSON.stringify(json);
-  fs.writeFile(__dirname + `/images/${urlTopicID}/info.json`, json, err => {
+  fs.writeFile(path + `/info.json`, json, err => {
     if (err) {
       console.log(err);
     } else {
