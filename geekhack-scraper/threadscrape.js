@@ -1,9 +1,9 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 
-module.exports = async function(browser, url) {
+module.exports = async function(page, url) {
   // (async () => {
-  const page = await browser.newPage();
+  //const page = await browser.newPage();
   // await page.goto('https://geekhack.org');
   // page.setViewport({ width: 1920, height: 978 });
 
@@ -20,7 +20,7 @@ module.exports = async function(browser, url) {
   const pageTitle = await page.evaluate(
     () => document.querySelector("[id^='subject_']").innerText
   );
-  const urlTopicID = url.split("=")[1];
+  const urlTopicID = url.split("=")[1].split(".")[0];
 
   const allImagesWithThreadStarter = await page.evaluate(() => {
     let allPosts = document.querySelectorAll(".post_wrapper");
