@@ -1,9 +1,9 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 
-module.exports = async function(page, url) {
+module.exports = async function(browser, url) {
   // (async () => {
-  //const page = await browser.newPage();
+  const page = await browser.newPage();
   // await page.goto('https://geekhack.org');
   // page.setViewport({ width: 1920, height: 978 });
 
@@ -21,13 +21,24 @@ module.exports = async function(page, url) {
     () => document.querySelector("[id^='subject_']").innerText
   );
   const urlTopicID = url.split("=")[1].split(".")[0];
+  console.log("ID = " + urlTopicID);
 
   const allImagesWithThreadStarter = await page.evaluate(() => {
     let allPosts = document.querySelectorAll(".post_wrapper");
-    let wantedImgLinks;
+    let wantedImgLinks = [];
     for (var i = 0; i < allPosts.length; i++) {
-      let threadStarterCheck =
-        allPosts[i].children[0].children[1].children[1].className;
+      let threadStarterCheck;
+      if (
+        allPosts[i].children[0].children[1].children[1].className ==
+        "membergroup"
+      ) {
+        threadStarterCheck =
+          allPosts[i].children[0].children[1].children[2].className;
+      } else {
+        threadStarterCheck =
+          allPosts[i].children[0].children[1].children[1].className;
+      }
+
       if (threadStarterCheck == "threadstarter") {
         // the post of the thread starter
         console.log("threadstarter");
@@ -36,11 +47,7 @@ module.exports = async function(page, url) {
           allPosts[i].children[1].querySelectorAll("img.bbc_img:not(.resized)")
         );
         let wantedImages = wantedPosts.map(img => img.src).slice(0, 10);
-        if (typeof wantedImgLinks === "undefined") {
-          wantedImgLinks = wantedImages;
-        } else {
-          wantedImgLinks = wantedImgLinks.concat(wantedImages);
-        }
+        wantedImgLinks = wantedImgLinks.concat(wantedImages);
       }
     }
     return wantedImgLinks;
@@ -55,33 +62,60 @@ module.exports = async function(page, url) {
     });
   }
 
+  await page._client.send("Network.enable", {
+    maxResourceBufferSize: 1024 * 1204 * 100,
+    maxTotalBufferSize: 1024 * 1204 * 200
+  });
+
   if (allImagesWithThreadStarter.length <= 0) {
     console.log("no images to save");
   } else {
     for (var a = 0; a < allImagesWithThreadStarter.length; a++) {
       let imageURL = allImagesWithThreadStarter[a];
+      if (imageURL.includes("photobucket.com")) {
+        continue;
+      }
       // gets the name and extension of the image url.
       let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
       ///.*\.(jpg|png|gif)$/
       let imagePathName = imageRegex.exec(imageURL);
 
+      if (imagePathName[0].includes("?")) {
+        imagePathName[0] = imagePathName[0].split("?")[0];
+      }
+
       if (imagePathName && imagePathName.length === 1) {
         // let extension = imagePathName[1];
-        var imageSource = await page.goto(imageURL);
-        fs.writeFile(
-          path + `/${imagePathName[0]}`,
-          await imageSource.buffer(),
-          function(err) {
-            if (err) {
-              return console.log(err);
+        try {
+          var imageSource = await page.goto(imageURL);
+        } catch (err) {
+          continue;
+        }
+        fs.open(path + `/${imagePathName[0]}`, "wx", function(err) {
+          if (err) {
+            if (err.code === "EEXIST") {
+              console.log("image already saved. skipping");
+              return;
             }
+            throw err;
           }
-        );
+
+          fs.writeFile(
+            path + `/${imagePathName[0]}`,
+            imageSource.buffer(),
+            "wx",
+            function(err) {
+              if (err) {
+                return console.log(err);
+              }
+              console.log("saved image");
+            }
+          );
+        });
       }
     }
-    console.log("saved images");
   }
-
+  await page.close();
   let timeUpdated = new Date().toUTCString();
   var json = {
     id: urlTopicID,
@@ -98,7 +132,7 @@ module.exports = async function(page, url) {
       console.log("wrote json");
     }
   });
-
+  console.log("-------done-------");
   // await page.waitForSelector('#jpg', {timeout: 60000});
   // console.log('waited');
   // await page.screenshot({path: 'images/example.png', fullPage: true});
