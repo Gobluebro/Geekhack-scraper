@@ -53,6 +53,17 @@ module.exports = async function(browser, url) {
     return wantedImgLinks;
   });
 
+  // if it's a google link
+  // page.on("response", async resp => {
+  //   headers = resp.headers();
+  //   filename = headers["content-disposition"]
+  //   if (!typeof filename == "undefined"){
+  //    filename.split("=")[1].replace(/\"/g, "");
+  //    const buffer = await resp.buffer();
+  //    fs.writeFileSync(__dirname + "\\" + filename, buffer);
+  //   }
+  // });
+
   let path = __dirname + `/images/${urlTopicID}`;
 
   if (!fs.existsSync(path)) {
