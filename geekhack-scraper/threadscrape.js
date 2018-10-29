@@ -3,6 +3,7 @@ const mkdirp = require("mkdirp");
 
 module.exports = async function(browser, url) {
   // (async () => {
+
   const page = await browser.newPage();
   // await page.goto('https://geekhack.org');
   // page.setViewport({ width: 1920, height: 978 });
@@ -53,17 +54,6 @@ module.exports = async function(browser, url) {
     return wantedImgLinks;
   });
 
-  // if it's a google link
-  // page.on("response", async resp => {
-  //   headers = resp.headers();
-  //   filename = headers["content-disposition"]
-  //   if (!typeof filename == "undefined"){
-  //    filename.split("=")[1].replace(/\"/g, "");
-  //    const buffer = await resp.buffer();
-  //    fs.writeFileSync(__dirname + "\\" + filename, buffer);
-  //   }
-  // });
-
   let path = __dirname + `/images/${urlTopicID}`;
 
   if (!fs.existsSync(path)) {
@@ -86,46 +76,44 @@ module.exports = async function(browser, url) {
       if (imageURL.includes("photobucket.com")) {
         continue;
       }
-      // gets the name and extension of the image url.
-      let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
-      ///.*\.(jpg|png|gif)$/
-      let imagePathName = imageRegex.exec(imageURL);
-
-      if (imagePathName[0].includes("?")) {
-        imagePathName[0] = imagePathName[0].split("?")[0];
-      }
-
-      if (imagePathName && imagePathName.length === 1) {
-        // let extension = imagePathName[1];
-        try {
-          var imageSource = await page.goto(imageURL);
-        } catch (err) {
+      var isGoogleLink = false;
+      if (
+        !imageURL.includes(".jpg") &&
+        !imageURL.includes(".png") &&
+        !imageURL.includes(".jpeg") &&
+        !imageURL.includes(".gif")
+      ) {
+        if (imageURL.includes("googleusercontent")) {
+          isGoogleLink = true;
+        } else {
           continue;
         }
-        fs.open(path + `/${imagePathName[0]}`, "wx", function(err) {
-          if (err) {
-            if (err.code === "EEXIST") {
-              console.log("image already saved. skipping");
-              return;
-            }
-            throw err;
-          }
+      }
 
-          fs.writeFile(
-            path + `/${imagePathName[0]}`,
-            imageSource.buffer(),
-            "wx",
-            function(err) {
-              if (err) {
-                return console.log(err);
-              }
-              console.log("saved image");
-            }
-          );
-        });
+      if (isGoogleLink) {
+        console.log("it's a google images link");
+        const googlePhotoSave = require("./responseHeaderSaveImage.js");
+        googlePhotoSave(page, imageURL, path);
+      } else {
+        // gets the name and extension of the image url.
+        let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
+        ///.*\.(jpg|png|gif)$/
+        let imagePathName = imageRegex.exec(imageURL);
+
+        if (imagePathName[0].includes("?")) {
+          imagePathName[0] = imagePathName[0].split("?")[0];
+        }
+
+        if (imagePathName && imagePathName.length === 1) {
+          // let extension = imagePathName[1];
+          newPath = path + `/${imagePathName[0]}`;
+          const standardSaveImage = require("./responseBufferSaveImage");
+          standardSaveImage(page, imageURL, newPath);
+        }
       }
     }
   }
+
   await page.close();
   let timeUpdated = new Date().toUTCString();
   var json = {
