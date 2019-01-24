@@ -1,7 +1,7 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 
-module.exports = async function(browser, url) {
+module.exports = async function(browser, url, db, topic) {
   // (async () => {
 
   const page = await browser.newPage();
@@ -116,12 +116,14 @@ module.exports = async function(browser, url) {
 
   await page.close();
   let timeUpdated = new Date().toUTCString();
+  // db stuff here instead
   var json = {
     id: urlTopicID,
     url: url,
     title: pageTitle,
     startdate: pageStartDate,
-    lastupdated: timeUpdated
+    lastupdated: timeUpdated,
+    topic: topic
   };
   json = JSON.stringify(json);
   fs.writeFile(path + `/info.json`, json, err => {

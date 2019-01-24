@@ -1,58 +1,22 @@
 const puppeteer = require("puppeteer");
 const config = require("./config.json");
-const Sequelize = require("sequelize");
-const dev = config.development;
-const db = new Sequelize(dev.database, dev.username, dev.password, {
-  host: dev.host,
-  dialect: dev.dialect,
-  operatorsAliases: false,
-
-  pool: {
-    max: 1,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  }
-});
-
-db.authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch(err => {
-    console.error("Unable to connect to the database: ", err);
-  });
+const utils = require("./utilies.js");
+const dbInit = require("./database.js");
+const db = dbInit.run(config);
 
 (async () => {
   //const browser = await puppeteer.launch();
   const browser = await puppeteer.launch({ headless: false });
-  const page = await browser.newPage();
-  // group buy page
-  await page.goto("https://geekhack.org/index.php?board=70.0");
-  const threadLinks = await page.evaluate(() => {
-    let linkTable = document.querySelector("table.table_grid");
-    let linkTableRows = linkTable.querySelectorAll(
-      "tr:not(.windowbg2):not(.catbg)"
-    );
-    let hyperlinks = [];
-    for (let i = 0; i < linkTableRows.length; i++) {
-      if (!linkTableRows[i].children[0].className.includes("stickybg")) {
-        let tempLink =
-          linkTableRows[i].children[2].children[0].children[0].children[0].href;
-        tempLink =
-          "https://geekhack.org/index.php?" +
-          tempLink.split("?")[1].split("&")[1];
 
-        hyperlinks.push(tempLink);
-      }
-    }
-    return hyperlinks;
-  });
-  await page.close();
+  // geekhack group buy
+  const gbLinksGH = require("./grabGHGroupBuyLinks.js");
+  let ghGBThreadLinks = gbLinksGH.Run(browser);
+
   const threadscrape = require("./threadscrape.js");
+  const topicEnum = utils.topicEnum;
   //the async/await friendly looping through every url
-  for (const item of threadLinks) {
-    await threadscrape(browser, item);
+  for (const item of ghGBThreadLinks) {
+    await threadscrape(browser, item, db, topicEnum.GB);
   }
   console.log("all links visited");
   // await threadscrape(browser, config.websiteToCrawl);
