@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const config = require("./config.json");
 const utils = require("./utilies.js");
 const dbInit = require("./database.js");
-const db = dbInit.run(config);
+const db = dbInit(config);
 
 (async () => {
   //const browser = await puppeteer.launch();
@@ -10,7 +10,7 @@ const db = dbInit.run(config);
 
   // geekhack group buy
   const gbLinksGH = require("./grabGHGroupBuyLinks.js");
-  let ghGBThreadLinks = gbLinksGH.Run(browser);
+  let ghGBThreadLinks = await gbLinksGH(browser);
 
   const threadscrape = require("./threadscrape.js");
   const topicEnum = utils.topicEnum;

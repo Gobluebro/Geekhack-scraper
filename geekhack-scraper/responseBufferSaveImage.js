@@ -1,25 +1,10 @@
-const fs = require("fs");
+module.exports = async function(fs, page, path, imageURL) {
+  var imageSource = await page.goto(imageURL);
 
-modules.export = async function(page, imageURL, path) {
-  try {
-    var imageSource = await page.goto(imageURL);
-  } catch (err) {
-    return;
-  }
-  fs.open(path, "wx", function(err) {
+  fs.writeFile(path, await imageSource.buffer(), err => {
     if (err) {
-      if (err.code === "EEXIST") {
-        console.log("image already saved. skipping");
-        return;
-      }
-      throw err;
+      return console.log(err);
     }
-
-    fs.writeFile(path, imageSource.buffer(), "wx", function(err) {
-      if (err) {
-        return console.log(err);
-      }
-      console.log("saved image");
-    });
+    console.log("saved image");
   });
 };

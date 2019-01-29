@@ -76,24 +76,27 @@ module.exports = async function(browser, url, db, topic) {
       if (imageURL.includes("photobucket.com")) {
         continue;
       }
-      var isGoogleLink = false;
+      var isHeaderRequiredLink = false;
       if (
         !imageURL.includes(".jpg") &&
         !imageURL.includes(".png") &&
         !imageURL.includes(".jpeg") &&
         !imageURL.includes(".gif")
       ) {
-        if (imageURL.includes("googleusercontent")) {
-          isGoogleLink = true;
+        if (
+          imageURL.includes("googleusercontent") ||
+          imageURL.includes("topic=" + urlTopicID + ".0;attach=")
+        ) {
+          isHeaderRequiredLink = true;
         } else {
           continue;
         }
       }
 
-      if (isGoogleLink) {
-        console.log("it's a google images link");
-        const googlePhotoSave = require("./responseHeaderSaveImage.js");
-        googlePhotoSave(page, imageURL, path);
+      if (isHeaderRequiredLink) {
+        console.log("it's an images link that requires header info to save");
+        const responseHeaderSave = require("./responseHeaderSaveImage.js");
+        await responseHeaderSave(page, imageURL, path);
       } else {
         // gets the name and extension of the image url.
         let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
@@ -106,9 +109,11 @@ module.exports = async function(browser, url, db, topic) {
 
         if (imagePathName && imagePathName.length === 1) {
           // let extension = imagePathName[1];
-          newPath = path + `/${imagePathName[0]}`;
-          const standardSaveImage = require("./responseBufferSaveImage");
-          standardSaveImage(page, imageURL, newPath);
+          let newPath = path + `/${imagePathName[0]}`;
+          if (!fs.existsSync(newPath)) {
+            const standardSaveImage = require("./responseBufferSaveImage.js");
+            await standardSaveImage(fs, page, newPath, imageURL);
+          }
         }
       }
     }
