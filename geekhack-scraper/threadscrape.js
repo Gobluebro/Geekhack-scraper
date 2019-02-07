@@ -1,5 +1,6 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
+const download = require("download");
 
 module.exports = async function(browser, url, db, topic) {
   // (async () => {
@@ -102,17 +103,33 @@ module.exports = async function(browser, url, db, topic) {
         let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
         ///.*\.(jpg|png|gif)$/
         let imagePathName = imageRegex.exec(imageURL);
+        // possibly due to bad url eg:http:/[Imgur](https:/i.imgur.com/something.jpg)
+        if (imagePathName != null) {
+          if (imagePathName[0].includes("?")) {
+            imagePathName[0] = imagePathName[0].split("?")[0];
+          }
 
-        if (imagePathName[0].includes("?")) {
-          imagePathName[0] = imagePathName[0].split("?")[0];
-        }
-
-        if (imagePathName && imagePathName.length === 1) {
-          // let extension = imagePathName[1];
-          let newPath = path + `/${imagePathName[0]}`;
-          if (!fs.existsSync(newPath)) {
-            const standardSaveImage = require("./responseBufferSaveImage.js");
-            await standardSaveImage(fs, page, newPath, imageURL);
+          if (imagePathName && imagePathName.length === 1) {
+            // let extension = imagePathName[1];
+            let newPath = path + `/${imagePathName[0]}`;
+            if (!fs.existsSync(newPath)) {
+              download(imageURL)
+                .then(data => {
+                  fs.writeFileSync(newPath, data);
+                })
+                .catch(err => {
+                  console.log(
+                    "failed to download at " +
+                      imageURL +
+                      " on thread number " +
+                      urlTopicID
+                  );
+                  console.error(err);
+                });
+              console.log(imagePathName + " saved");
+              //const standardSaveImage = require("./responseBufferSaveImage.js");
+              //await standardSaveImage(fs, page, newPath, imageURL);
+            }
           }
         }
       }
