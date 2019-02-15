@@ -1,8 +1,12 @@
 const puppeteer = require("puppeteer");
 const config = require("./config.json");
 const utils = require("./utilies.js");
-const dbInit = require("./database.js");
+const dbInit = require("./database/initdb.js");
 const db = dbInit(config);
+
+db.authenticate()
+  .then(() => console.log("Database connected..."))
+  .catch(err => console.log("Error: " + err));
 
 (async () => {
   //const browser = await puppeteer.launch();

@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-module.exports = async function(config) {
+module.exports = config => {
   const dev = config.development;
   const db = new Sequelize(dev.database, dev.username, dev.password, {
     host: dev.host,
@@ -14,14 +14,5 @@ module.exports = async function(config) {
       idle: 10000
     }
   });
-
-  db.authenticate()
-    .then(() => {
-      console.log("Connection has been established successfully.");
-      return db;
-    })
-    .catch(err => {
-      console.error("Unable to connect to the database: ", err);
-      return null;
-    });
+  return db;
 };

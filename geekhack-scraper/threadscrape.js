@@ -95,27 +95,35 @@ module.exports = async function(browser, url, db, topic) {
       }
 
       if (isHeaderRequiredLink) {
-        console.log("it's an images link that requires header info to save");
+        console.log(
+          "it's an images link that requires header info to determine the name"
+        );
         const responseHeaderSave = require("./responseHeaderSaveImage.js");
         await responseHeaderSave(page, imageURL, path);
       } else {
         // gets the name and extension of the image url.
         let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
         ///.*\.(jpg|png|gif)$/
-        let imagePathName = imageRegex.exec(imageURL);
+        let imageName = imageRegex.exec(imageURL);
         // possibly due to bad url eg:http:/[Imgur](https:/i.imgur.com/something.jpg)
-        if (imagePathName != null) {
-          if (imagePathName[0].includes("?")) {
-            imagePathName[0] = imagePathName[0].split("?")[0];
+        if (imageName != null) {
+          if (imageName[0].includes("?")) {
+            imageName[0] = imageName[0].split("?")[0];
           }
 
-          if (imagePathName && imagePathName.length === 1) {
+          if (imageName && imageName.length === 1) {
             // let extension = imagePathName[1];
-            let newPath = path + `/${imagePathName[0]}`;
+            let newPath = path + `/${imageName[0]}`;
             if (!fs.existsSync(newPath)) {
               download(imageURL)
                 .then(data => {
                   fs.writeFileSync(newPath, data);
+                  console.log(imageName + " saved");
+                  const image = Images.build({
+                    imagename: imageName,
+                    ishidden: false
+                  });
+                  db.images.Upsert;
                 })
                 .catch(err => {
                   console.log(
@@ -126,7 +134,6 @@ module.exports = async function(browser, url, db, topic) {
                   );
                   console.error(err);
                 });
-              console.log(imagePathName + " saved");
               //const standardSaveImage = require("./responseBufferSaveImage.js");
               //await standardSaveImage(fs, page, newPath, imageURL);
             }
@@ -139,6 +146,8 @@ module.exports = async function(browser, url, db, topic) {
   await page.close();
   let timeUpdated = new Date().toUTCString();
   // db stuff here instead
+  // upsert http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-upsert
+
   var json = {
     id: urlTopicID,
     url: url,
