@@ -119,11 +119,11 @@ module.exports = async function(browser, url, db, topic) {
                 .then(data => {
                   fs.writeFileSync(newPath, data);
                   console.log(imageName + " saved");
-                  const image = Images.build({
-                    imagename: imageName,
-                    ishidden: false
-                  });
-                  db.images.Upsert;
+                  // const image = Images.build({
+                  //   imagename: imageName,
+                  //   ishidden: false
+                  // });
+                  // db.images.Upsert;
                 })
                 .catch(err => {
                   console.log(
