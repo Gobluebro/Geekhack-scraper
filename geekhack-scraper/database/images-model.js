@@ -2,10 +2,10 @@ const Sequelize = require("sequelize");
 const db = require("./initdb.js/index.js");
 
 const Images = db.define("images", {
-  imagename: {
+  image_name: {
     type: Sequelize.STRING
   },
-  ishidden: {
+  is_hidden: {
     type: Sequelize.BOOLEAN
   }
 });
