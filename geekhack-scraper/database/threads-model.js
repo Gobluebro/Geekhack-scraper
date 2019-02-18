@@ -6,22 +6,22 @@ const Threads = db.define("threads", {
     type: Sequelize.INTEGER
   },
   website: {
-    type: Sequelize.ENUM
+    type: Sequelize.INTEGER
   },
   title: {
     type: Sequelize.STRING
   },
-  threadstart: {
+  start: {
     type: Sequelize.DATE
   },
-  threadscraped: {
+  scraped: {
     type: Sequelize.DATE
   },
-  threadupdate: {
+  update: {
     type: Sequelize.DATE
   },
   topic: {
-    type: Sequelize.ENUM
+    type: Sequelize.INTEGER
   }
 });
 
