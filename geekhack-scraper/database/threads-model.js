@@ -22,6 +22,9 @@ const Threads = db.define("threads", {
   },
   topic: {
     type: Sequelize.INTEGER
+  },
+  author: {
+    type: Sequelize.STRING
   }
 });
 
