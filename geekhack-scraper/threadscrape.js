@@ -1,6 +1,7 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 const download = require("download");
+const threads = require("./database/threads-model");
 
 module.exports = async function(browser, url, db, topic) {
   // (async () => {
@@ -144,18 +145,29 @@ module.exports = async function(browser, url, db, topic) {
   }
 
   await page.close();
-  let timeUpdated = new Date().toUTCString();
+  let timeLastScraped = new Date().toUTCString();
   // db stuff here instead
   // upsert http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-upsert
+  threads.upsert({
+    urlTopicID, //id
+    url, //website
+    pageTitle, //title
+    pageStartDate, //start date
+    timeLastScraped, //scraped date
+    "fill updated date here", //updated date
+    topic, //topic name GB or IC
+    "fill in author here" //author
+  })
+    .catch(err => console.log(err));
 
-  var json = {
-    id: urlTopicID,
-    url: url,
-    title: pageTitle,
-    startdate: pageStartDate,
-    lastupdated: timeUpdated,
-    topic: topic
-  };
+  // var json = {
+  //   id: urlTopicID,
+  //   url: url,
+  //   title: pageTitle,
+  //   startdate: pageStartDate,
+  //   lastupdated: timeUpdated,
+  //   topic: topic
+  // };
   json = JSON.stringify(json);
   fs.writeFile(path + `/info.json`, json, err => {
     if (err) {
