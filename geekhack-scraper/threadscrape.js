@@ -29,6 +29,10 @@ module.exports = async function(browser, url, db, topic) {
   const allImagesWithThreadStarter = await page.evaluate(() => {
     let allPosts = document.querySelectorAll(".post_wrapper");
     let wantedImgLinks = [];
+    let author = allPosts[0].children[0].children[0].children[1].text;
+    // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
+    let moddate = allPosts[0].children[2].querySelector("[id^='modified_']").children[0].innertext
+
     for (var i = 0; i < allPosts.length; i++) {
       let threadStarterCheck;
       if (
@@ -44,7 +48,6 @@ module.exports = async function(browser, url, db, topic) {
 
       if (threadStarterCheck == "threadstarter") {
         // the post of the thread starter
-        console.log("threadstarter");
         // https://www.aymen-loukil.com/en/blog-en/google-puppeteer-tutorial-with-examples/
         let wantedPosts = Array.from(
           allPosts[i].children[1].querySelectorAll("img.bbc_img:not(.resized)")
