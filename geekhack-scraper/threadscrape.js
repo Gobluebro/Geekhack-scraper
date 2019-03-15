@@ -52,7 +52,7 @@ module.exports = async function(browser, url, db, topic) {
         let wantedPosts = Array.from(
           allPosts[i].children[1].querySelectorAll("img.bbc_img:not(.resized)")
         );
-        let wantedImages = wantedPosts.map(img => img.src).slice(0, 10);
+        let wantedImages = wantedPosts.map(img => img.src)
         wantedImgLinks = wantedImgLinks.concat(wantedImages);
       }
     }
