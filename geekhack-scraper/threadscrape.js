@@ -12,26 +12,32 @@ module.exports = async function(browser, url, db, topic) {
 
   await page.goto(url, { waitUntil: "networkidle0" });
   console.log("went to the site");
-  const pageStartDate = await page.evaluate(() =>
-    document
+  // const pageStartDate = await page.evaluate(() =>
+  //   document
+  //     .querySelector(
+  //       "#quickModForm > div:nth-child(1) > div > div.postarea > div.flow_hidden > div > div.smalltext"
+  //     )
+  //     .innerHTML.replace("« <strong> on:</strong> ", "")
+  //     .replace(" »", "")
+  // );
+  // const pageTitle = await page.evaluate(
+  //   () => document.querySelector("[id^='subject_']").innerText
+  // );
+
+  const threadScrappedInfo = await page.evaluate(() => {
+    let pageStartDate = document
       .querySelector(
         "#quickModForm > div:nth-child(1) > div > div.postarea > div.flow_hidden > div > div.smalltext"
       )
       .innerHTML.replace("« <strong> on:</strong> ", "")
-      .replace(" »", "")
-  );
-  const pageTitle = await page.evaluate(
-    () => document.querySelector("[id^='subject_']").innerText
-  );
-  const urlTopicID = url.split("=")[1].split(".")[0];
-  console.log("ID = " + urlTopicID);
-
-  const allImagesWithThreadStarter = await page.evaluate(() => {
+      .replace(" »", "");
+    let title = document.querySelector("[id^='subject_']").innerText;
     let allPosts = document.querySelectorAll(".post_wrapper");
     let wantedImgLinks = [];
     let author = allPosts[0].children[0].children[0].children[1].text;
     // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
-    let moddate = allPosts[0].children[2].querySelector("[id^='modified_']").children[0].innertext
+    let moddate = allPosts[0].children[2].querySelector("[id^='modified_']")
+      .children[0].innertext;
 
     for (var i = 0; i < allPosts.length; i++) {
       let threadStarterCheck;
@@ -52,11 +58,18 @@ module.exports = async function(browser, url, db, topic) {
         let wantedPosts = Array.from(
           allPosts[i].children[1].querySelectorAll("img.bbc_img:not(.resized)")
         );
-        let wantedImages = wantedPosts.map(img => img.src)
+        let wantedImages = wantedPosts.map(img => img.src);
         wantedImgLinks = wantedImgLinks.concat(wantedImages);
       }
+      const threadInfo = {
+        author,
+        moddate,
+        pageStartDate,
+        title,
+        wantedImgLinks
+      };
     }
-    return wantedImgLinks;
+    return threadInfo;
   });
 
   let path = __dirname + `/images/${urlTopicID}`;
@@ -149,19 +162,26 @@ module.exports = async function(browser, url, db, topic) {
 
   await page.close();
   let timeLastScraped = new Date().toUTCString();
+  let pageStartDate = threadScrappedInfo.pageStartDate;
+  let urlTopicID = url.split("=")[1].split(".")[0];
+  let updateDate = threadScrappedInfo.moddate;
+  let author = threadScrappedInfo.author;
+  console.log("ID = " + urlTopicID);
   // db stuff here instead
   // upsert http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-upsert
-  threads.upsert({
-    urlTopicID, //id
-    url, //website
-    pageTitle, //title
-    pageStartDate, //start date
-    timeLastScraped, //scraped date
-    "fill updated date here", //updated date
-    topic, //topic name GB or IC
-    "fill in author here" //author
-  })
+  threads
+    .upsert({
+      urlTopicID, //id
+      url, //website
+      pageTitle, //title
+      pageStartDate, //start date
+      timeLastScraped, //scraped date
+      updateDate, //updated date
+      topic, //topic name GB or IC
+      author //author
+    })
     .catch(err => console.log(err));
+  console.log("-------done-------");
 
   // var json = {
   //   id: urlTopicID,
@@ -171,17 +191,12 @@ module.exports = async function(browser, url, db, topic) {
   //   lastupdated: timeUpdated,
   //   topic: topic
   // };
-  json = JSON.stringify(json);
-  fs.writeFile(path + `/info.json`, json, err => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("wrote json");
-    }
-  });
-  console.log("-------done-------");
-  // await page.waitForSelector('#jpg', {timeout: 60000});
-  // console.log('waited');
-  // await page.screenshot({path: 'images/example.png', fullPage: true});
-  // })();
+  // json = JSON.stringify(json);
+  // fs.writeFile(path + `/info.json`, json, err => {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     console.log("wrote json");
+  //   }
+  // });
 };
