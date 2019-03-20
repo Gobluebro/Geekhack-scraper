@@ -1,7 +1,7 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 const download = require("download");
-const threads = require("./database/threads-model");
+const threads = require("./database/threads-model.js");
 
 module.exports = async function(browser, url, db, topic) {
   // (async () => {
@@ -61,14 +61,14 @@ module.exports = async function(browser, url, db, topic) {
         let wantedImages = wantedPosts.map(img => img.src);
         wantedImgLinks = wantedImgLinks.concat(wantedImages);
       }
-      const threadInfo = {
-        author,
-        moddate,
-        pageStartDate,
-        title,
-        wantedImgLinks
-      };
     }
+    let threadInfo = {
+      author,
+      moddate,
+      pageStartDate,
+      title,
+      wantedImgLinks
+    };
     return threadInfo;
   });
 
@@ -169,16 +169,28 @@ module.exports = async function(browser, url, db, topic) {
   console.log("ID = " + urlTopicID);
   // db stuff here instead
   // upsert http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-upsert
+  // threads.create({
+  //   id: urlTopicID,
+  //   website: url,
+  //   title: pageTitle,
+  //   start_date: pageStartDate,
+  //   scraped_date: timeLastScraped,
+  //   update_date: updateDate,
+  //   topic: topic,
+  //   author: author
+  // });
+
+  //I think this works
   threads
     .upsert({
-      urlTopicID, //id
-      url, //website
-      pageTitle, //title
-      pageStartDate, //start date
-      timeLastScraped, //scraped date
-      updateDate, //updated date
-      topic, //topic name GB or IC
-      author //author
+      id: urlTopicID,
+      website: url,
+      title: pageTitle,
+      start_date: pageStartDate,
+      scraped_date: timeLastScraped,
+      update_date: updateDate,
+      topic: topic,
+      author: author
     })
     .catch(err => console.log(err));
   console.log("-------done-------");

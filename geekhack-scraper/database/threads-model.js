@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const db = require("../config/database");
+const db = require("../database/initdb.js");
 
 const Threads = db.define("threads", {
   id: {
