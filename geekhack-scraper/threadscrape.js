@@ -81,10 +81,10 @@ module.exports = async function(browser, url, db, topic) {
     });
   }
 
-  await page._client.send("Network.enable", {
-    maxResourceBufferSize: 1024 * 1204 * 100,
-    maxTotalBufferSize: 1024 * 1204 * 200
-  });
+  // await page._client.send("Network.enable", {
+  //   maxResourceBufferSize: 1024 * 1204 * 100,
+  //   maxTotalBufferSize: 1024 * 1204 * 200
+  // });
 
   if (allImagesWithThreadStarter.length <= 0) {
     console.log("no images to save");

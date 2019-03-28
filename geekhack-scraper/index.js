@@ -1,8 +1,6 @@
 const puppeteer = require("puppeteer");
-const config = require("./config.json");
 const utils = require("./utilies.js");
-const dbInit = require("./database/initdb.js");
-const db = dbInit(config);
+const db = require("./database/initdb.js");
 
 db.authenticate()
   .then(() => console.log("Database connected..."))

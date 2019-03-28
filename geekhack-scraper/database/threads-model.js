@@ -3,7 +3,8 @@ const db = require("../database/initdb.js");
 
 const Threads = db.define("threads", {
   id: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
+    primaryKey: true
   },
   website: {
     type: Sequelize.INTEGER
