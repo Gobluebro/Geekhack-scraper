@@ -71,7 +71,7 @@ module.exports = async function(browser, url, db, topic) {
     };
     return threadInfo;
   });
-
+  let urlTopicID = url.split("=")[1].split(".")[0];
   let path = __dirname + `/images/${urlTopicID}`;
 
   if (!fs.existsSync(path)) {
@@ -86,11 +86,11 @@ module.exports = async function(browser, url, db, topic) {
   //   maxTotalBufferSize: 1024 * 1204 * 200
   // });
 
-  if (allImagesWithThreadStarter.length <= 0) {
+  if (threadScrappedInfo.wantedImgLinks.length <= 0) {
     console.log("no images to save");
   } else {
-    for (var a = 0; a < allImagesWithThreadStarter.length; a++) {
-      let imageURL = allImagesWithThreadStarter[a];
+    for (var a = 0; a < threadScrappedInfo.wantedImgLinks.length; a++) {
+      let imageURL = threadScrappedInfo.wantedImgLinks[a];
       if (imageURL.includes("photobucket.com")) {
         continue;
       }
@@ -163,7 +163,7 @@ module.exports = async function(browser, url, db, topic) {
   await page.close();
   let timeLastScraped = new Date().toUTCString();
   let pageStartDate = threadScrappedInfo.pageStartDate;
-  let urlTopicID = url.split("=")[1].split(".")[0];
+
   let updateDate = threadScrappedInfo.moddate;
   let author = threadScrappedInfo.author;
   console.log("ID = " + urlTopicID);
@@ -185,7 +185,7 @@ module.exports = async function(browser, url, db, topic) {
     .upsert({
       id: urlTopicID,
       website: url,
-      title: pageTitle,
+      title: threadScrappedInfo.title,
       start_date: pageStartDate,
       scraped_date: timeLastScraped,
       update_date: updateDate,
