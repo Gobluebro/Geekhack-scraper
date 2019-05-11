@@ -15,3 +15,7 @@ I'm also trying to alivate these community upholded lists with automation. The m
 **Community Made and Curated Lists:**
 
 - [LIST OF CURRENTLY RUNNING COMUNITY AND VENDOR GROUP BUYS](https://geekhack.org/index.php?topic=57761.0)
+
+## License
+
+MIT
