@@ -1,9 +1,10 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 const download = require("download");
+const utils = require("./utilies.js");
 const threads = require("./database/threads-model.js");
 
-module.exports = async function(browser, url, db, topic) {
+module.exports = async function(browser, url, db) {
   // (async () => {
 
   const page = await browser.newPage();
@@ -32,12 +33,17 @@ module.exports = async function(browser, url, db, topic) {
       .innerHTML.replace("« <strong> on:</strong> ", "")
       .replace(" »", "");
     let title = document.querySelector("[id^='subject_']").innerText;
+    if (title.includes("[GB]")) {
+      title = title.replace("[GB]", "");
+    }
     let allPosts = document.querySelectorAll(".post_wrapper");
     let wantedImgLinks = [];
     let author = allPosts[0].children[0].children[0].children[1].text;
     // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
-    let moddate = allPosts[0].children[2].querySelector("[id^='modified_']")
-      .children[0].innertext;
+    let modDatePost = allPosts[0].querySelector("[id^='modified_']").innerText;
+    let replaced = modDatePost.replace("Last Edit: ", "");
+    var res = replaced.split(" by");
+    let moddate = Date.parse(res[0]);
 
     for (var i = 0; i < allPosts.length; i++) {
       let threadStarterCheck;
@@ -172,7 +178,7 @@ module.exports = async function(browser, url, db, topic) {
   // threads.create({
   //   id: urlTopicID,
   //   website: url,
-  //   title: pageTitle,
+  //   title: threadScrappedInfo.title,
   //   start_date: pageStartDate,
   //   scraped_date: timeLastScraped,
   //   update_date: updateDate,
@@ -184,12 +190,12 @@ module.exports = async function(browser, url, db, topic) {
   threads
     .upsert({
       id: urlTopicID,
-      website: url,
+      website: utils.websiteEnum.geekhack,
       title: threadScrappedInfo.title,
-      start_date: pageStartDate,
-      scraped_date: timeLastScraped,
-      update_date: updateDate,
-      topic: topic,
+      start: pageStartDate,
+      topic: utils.topicEnum.GB,
+      scraped: timeLastScraped,
+      updated: updateDate,
       author: author
     })
     .catch(err => console.log(err));
