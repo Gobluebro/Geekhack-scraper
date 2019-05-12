@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-const utils = require("./utilies.js");
 const db = require("./database/initdb.js");
 
 db.authenticate()
@@ -15,10 +14,9 @@ db.authenticate()
   let ghGBThreadLinks = await gbLinksGH(browser);
 
   const threadscrape = require("./threadscrape.js");
-  const topicEnum = utils.topicEnum;
   //the async/await friendly looping through every url
   for (const item of ghGBThreadLinks) {
-    await threadscrape(browser, item, db, topicEnum.GB);
+    await threadscrape(browser, item, db);
   }
   console.log("all links visited");
   // await threadscrape(browser, config.websiteToCrawl);
