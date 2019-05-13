@@ -16,7 +16,7 @@ db.authenticate()
   const threadscrape = require("./threadscrape.js");
   //the async/await friendly looping through every url
   for (const item of ghGBThreadLinks) {
-    await threadscrape(browser, item, db);
+    await threadscrape(browser, item);
   }
   console.log("all links visited");
   // await threadscrape(browser, config.websiteToCrawl);

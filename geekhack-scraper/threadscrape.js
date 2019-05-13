@@ -3,27 +3,16 @@ const mkdirp = require("mkdirp");
 const download = require("download");
 const utils = require("./utilies.js");
 const threads = require("./database/threads-model.js");
+const images = require("./database/images-model.js");
 
-module.exports = async function(browser, url, db) {
+module.exports = async function(browser, url) {
   // (async () => {
 
   const page = await browser.newPage();
-  // await page.goto('https://geekhack.org');
   // page.setViewport({ width: 1920, height: 978 });
 
   await page.goto(url, { waitUntil: "networkidle0" });
   console.log("went to the site");
-  // const pageStartDate = await page.evaluate(() =>
-  //   document
-  //     .querySelector(
-  //       "#quickModForm > div:nth-child(1) > div > div.postarea > div.flow_hidden > div > div.smalltext"
-  //     )
-  //     .innerHTML.replace("« <strong> on:</strong> ", "")
-  //     .replace(" »", "")
-  // );
-  // const pageTitle = await page.evaluate(
-  //   () => document.querySelector("[id^='subject_']").innerText
-  // );
 
   const threadScrappedInfo = await page.evaluate(() => {
     let pageStartDate = document
@@ -34,7 +23,7 @@ module.exports = async function(browser, url, db) {
       .replace(" »", "");
     let title = document.querySelector("[id^='subject_']").innerText;
     if (title.includes("[GB]")) {
-      title = title.replace("[GB]", "");
+      title = title.replace("[GB]", "").trim();
     }
     let allPosts = document.querySelectorAll(".post_wrapper");
     let wantedImgLinks = [];
@@ -142,11 +131,6 @@ module.exports = async function(browser, url, db) {
                 .then(data => {
                   fs.writeFileSync(newPath, data);
                   console.log(imageName + " saved");
-                  // const image = Images.build({
-                  //   imagename: imageName,
-                  //   ishidden: false
-                  // });
-                  // db.images.Upsert;
                 })
                 .catch(err => {
                   console.log(
@@ -186,7 +170,6 @@ module.exports = async function(browser, url, db) {
   //   author: author
   // });
 
-  //I think this works
   threads
     .upsert({
       id: urlTopicID,
@@ -200,21 +183,4 @@ module.exports = async function(browser, url, db) {
     })
     .catch(err => console.log(err));
   console.log("-------done-------");
-
-  // var json = {
-  //   id: urlTopicID,
-  //   url: url,
-  //   title: pageTitle,
-  //   startdate: pageStartDate,
-  //   lastupdated: timeUpdated,
-  //   topic: topic
-  // };
-  // json = JSON.stringify(json);
-  // fs.writeFile(path + `/info.json`, json, err => {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     console.log("wrote json");
-  //   }
-  // });
 };
