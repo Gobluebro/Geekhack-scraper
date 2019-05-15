@@ -22,7 +22,7 @@ module.exports = async function(browser, url) {
       .innerHTML.replace("« <strong> on:</strong> ", "")
       .replace(" »", "");
     let title = document.querySelector("[id^='subject_']").innerText;
-    if (title.includes("[GB] || [IC]")) {
+    if (title.includes("[GB]" || "[IC]")) {
       title = title
         .replace("[GB]", "")
         .replace("[IC]", "")
