@@ -16,6 +16,13 @@ I'm also trying to alivate these community upholded lists with automation. The m
 
 - [LIST OF CURRENTLY RUNNING COMUNITY AND VENDOR GROUP BUYS](https://geekhack.org/index.php?topic=57761.0)
 
+Just wanted to mention that this web scraping shouldn't be a replacement for things like:
+
+- [Top Clack](https://www.youtube.com/c/topclack)
+- [Man Of Interests](https://youtube.com/manofinterests)
+
+It should be used just to spark interest enough for a user to click a link to go to the geekhack thread.
+
 ## License
 
 MIT
