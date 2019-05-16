@@ -11,9 +11,11 @@ module.exports = async function(browser, url) {
   const page = await browser.newPage();
   // page.setViewport({ width: 1920, height: 978 });
 
-  await page.goto(url, { waitUntil: "networkidle0" });
-  console.log("went to the site");
+  await page
+    .goto(url, { waitUntil: "networkidle0" })
+    .then(console.log("went to the site"));
 
+  // this is an object of all the values we are looking to get back from the page through javascript
   const threadScrappedInfo = await page.evaluate(() => {
     let pageStartDate = document
       .querySelector(
@@ -69,6 +71,7 @@ module.exports = async function(browser, url) {
     };
     return threadInfo;
   });
+
   let urlTopicID = url.split("=")[1].split(".")[0];
   let path = __dirname + `/images/${urlTopicID}`;
 
@@ -144,8 +147,8 @@ module.exports = async function(browser, url) {
                   );
                   console.error(err);
                 });
-              //const standardSaveImage = require("./responseBufferSaveImage.js");
-              //await standardSaveImage(fs, page, newPath, imageURL);
+            } else {
+              console.log(imageName[0] + " image already saved");
             }
           }
         }
