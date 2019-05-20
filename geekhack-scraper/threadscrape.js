@@ -70,8 +70,6 @@ module.exports = async function(browser, url) {
     return threadInfo;
   });
 
-  let timeLastScraped = new Date().toUTCString();
-  let urlTopicID = url.split("=")[1].split(".")[0];
   let path = __dirname + `/images/${urlTopicID}`;
 
   if (!fs.existsSync(path)) {
@@ -85,6 +83,29 @@ module.exports = async function(browser, url) {
   //   maxResourceBufferSize: 1024 * 1204 * 100,
   //   maxTotalBufferSize: 1024 * 1204 * 200
   // });
+
+  let timeLastScraped = new Date().toUTCString();
+  let urlTopicID = url.split("=")[1].split(".")[0];
+
+  let pageStartDate = threadScrappedInfo.pageStartDate;
+
+  let updateDate = threadScrappedInfo.moddate;
+  let author = threadScrappedInfo.author;
+  console.log("ID = " + urlTopicID);
+  // need to set the thread first since images uses the ID as a FK
+  // upsert http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-upsert
+  threads
+    .upsert({
+      id: urlTopicID,
+      website: utils.websiteEnum.geekhack,
+      title: threadScrappedInfo.title,
+      start: pageStartDate,
+      topic: utils.topicEnum.GB,
+      scraped: timeLastScraped,
+      updated: updateDate,
+      author: author
+    })
+    .catch(err => console.log(err));
 
   if (threadScrappedInfo.wantedImgLinks.length <= 0) {
     console.log("no images to save");
@@ -125,24 +146,5 @@ module.exports = async function(browser, url) {
   }
 
   await page.close();
-  let pageStartDate = threadScrappedInfo.pageStartDate;
-
-  let updateDate = threadScrappedInfo.moddate;
-  let author = threadScrappedInfo.author;
-  console.log("ID = " + urlTopicID);
-  // db stuff here instead
-  // upsert http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-upsert
-  threads
-    .upsert({
-      id: urlTopicID,
-      website: utils.websiteEnum.geekhack,
-      title: threadScrappedInfo.title,
-      start: pageStartDate,
-      topic: utils.topicEnum.GB,
-      scraped: timeLastScraped,
-      updated: updateDate,
-      author: author
-    })
-    .catch(err => console.log(err));
   console.log("-------done-------");
 };
