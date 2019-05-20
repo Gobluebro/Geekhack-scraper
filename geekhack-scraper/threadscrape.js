@@ -1,9 +1,7 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp");
-const download = require("download");
 const utils = require("./utilies.js");
 const threads = require("./database/threads-model.js");
-const images = require("./database/images-model.js");
 
 module.exports = async function(browser, url) {
   // (async () => {
@@ -72,6 +70,7 @@ module.exports = async function(browser, url) {
     return threadInfo;
   });
 
+  let timeLastScraped = new Date().toUTCString();
   let urlTopicID = url.split("=")[1].split(".")[0];
   let path = __dirname + `/images/${urlTopicID}`;
 
@@ -119,45 +118,13 @@ module.exports = async function(browser, url) {
         const responseHeaderSave = require("./responseHeaderSaveImage.js");
         await responseHeaderSave(page, imageURL, path);
       } else {
-        // gets the name and extension of the image url.
-        let imageRegex = new RegExp("(?:[^/][\\d\\w\\.]+)+$", "g");
-        ///.*\.(jpg|png|gif)$/
-        let imageName = imageRegex.exec(imageURL);
-        // possibly due to bad url eg:http:/[Imgur](https:/i.imgur.com/something.jpg)
-        if (imageName != null) {
-          if (imageName[0].includes("?")) {
-            imageName[0] = imageName[0].split("?")[0];
-          }
-
-          if (imageName && imageName.length === 1) {
-            // let extension = imagePathName[1];
-            let newPath = path + `/${imageName[0]}`;
-            if (!fs.existsSync(newPath)) {
-              download(imageURL)
-                .then(data => {
-                  fs.writeFileSync(newPath, data);
-                  console.log(imageName + " saved");
-                })
-                .catch(err => {
-                  console.log(
-                    "failed to download at " +
-                      imageURL +
-                      " on thread number " +
-                      urlTopicID
-                  );
-                  console.error(err);
-                });
-            } else {
-              console.log(imageName[0] + " image already saved");
-            }
-          }
-        }
+        const regularImageSave = require("./regularSaveImage.js");
+        await regularImageSave(imageURL, path, urlTopicID);
       }
     }
   }
 
   await page.close();
-  let timeLastScraped = new Date().toUTCString();
   let pageStartDate = threadScrappedInfo.pageStartDate;
 
   let updateDate = threadScrappedInfo.moddate;
