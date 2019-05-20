@@ -1,22 +1,33 @@
 const Sequelize = require("sequelize");
-const db = require("./initdb.js/index.js");
+const db = require("../database/initdb.js");
 
-const Images = db.define("images", {
-  id: {
-    type: Sequelize.INTEGER
+const Images = db.define(
+  "images",
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    thread_id: {
+      type: Sequelize.INTEGER,
+      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+    },
+    name: {
+      type: Sequelize.STRING
+    },
+    url: {
+      type: Sequelize.STRING
+    },
+    is_hidden: {
+      type: Sequelize.BOOLEAN
+    }
   },
-  thread_id: {
-    type: Sequelize.INTEGER
-  },
-  name: {
-    type: Sequelize.STRING
-  },
-  is_hidden: {
-    type: Sequelize.BOOLEAN
-  },
-  scraped: {
-    type: Sequelize.DATE
+  {
+    timestamps: true,
+    createdAt: "scraped",
+    updatedAt: false
   }
-});
+);
 
 module.exports = Images;
