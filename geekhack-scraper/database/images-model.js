@@ -10,8 +10,7 @@ const Images = db.define(
       autoIncrement: true
     },
     thread_id: {
-      type: Sequelize.INTEGER,
-      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+      type: Sequelize.INTEGER
     },
     name: {
       type: Sequelize.STRING
