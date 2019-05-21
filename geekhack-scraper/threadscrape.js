@@ -49,14 +49,18 @@ module.exports = async function(browser, url) {
         threadStarterCheck =
           allPosts[i].children[0].children[1].children[1].className;
       }
-
+      // is the post made by the threadstarter? get all images links then
       if (threadStarterCheck == "threadstarter") {
-        // the post of the thread starter
-        // https://www.aymen-loukil.com/en/blog-en/google-puppeteer-tutorial-with-examples/
-        let wantedPosts = Array.from(
-          allPosts[i].children[1].querySelectorAll("img.bbc_img:not(.resized)")
+        let wantedPosts1 = Array.from(
+          allPosts[i].querySelectorAll("div.post img.bbc_img:not(.resized)")
         );
-        let wantedImages = wantedPosts.map(img => img.src);
+        let wantedPosts2 = Array.from(
+          allPosts[i].querySelectorAll("div.post a > img")
+        );
+        let imagesArray = Array.from(
+          new Set(wantedPosts1.concat(wantedPosts2))
+        );
+        let wantedImages = imagesArray.map(img => img.src);
         wantedImgLinks = wantedImgLinks.concat(wantedImages);
       }
     }
@@ -70,6 +74,7 @@ module.exports = async function(browser, url) {
     return threadInfo;
   });
 
+  let urlTopicID = url.split("=")[1].split(".")[0];
   let path = __dirname + `/images/${urlTopicID}`;
 
   if (!fs.existsSync(path)) {
@@ -85,7 +90,6 @@ module.exports = async function(browser, url) {
   // });
 
   let timeLastScraped = new Date().toUTCString();
-  let urlTopicID = url.split("=")[1].split(".")[0];
 
   let pageStartDate = threadScrappedInfo.pageStartDate;
 
@@ -105,45 +109,46 @@ module.exports = async function(browser, url) {
       updated: updateDate,
       author: author
     })
-    .catch(err => console.log(err));
+    .then(async function() {
+      if (threadScrappedInfo.wantedImgLinks.length <= 0) {
+        console.log("no images to save");
+      } else {
+        for (var a = 0; a < threadScrappedInfo.wantedImgLinks.length; a++) {
+          let imageURL = threadScrappedInfo.wantedImgLinks[a];
+          if (imageURL.includes("photobucket.com")) {
+            continue;
+          }
+          var isHeaderRequiredLink = false;
+          if (
+            !imageURL.includes(".jpg") &&
+            !imageURL.includes(".png") &&
+            !imageURL.includes(".jpeg") &&
+            !imageURL.includes(".gif")
+          ) {
+            if (
+              imageURL.includes("googleusercontent") ||
+              imageURL.includes("topic=" + urlTopicID + ".0;attach=")
+            ) {
+              isHeaderRequiredLink = true;
+            } else {
+              continue;
+            }
+          }
 
-  if (threadScrappedInfo.wantedImgLinks.length <= 0) {
-    console.log("no images to save");
-  } else {
-    for (var a = 0; a < threadScrappedInfo.wantedImgLinks.length; a++) {
-      let imageURL = threadScrappedInfo.wantedImgLinks[a];
-      if (imageURL.includes("photobucket.com")) {
-        continue;
-      }
-      var isHeaderRequiredLink = false;
-      if (
-        !imageURL.includes(".jpg") &&
-        !imageURL.includes(".png") &&
-        !imageURL.includes(".jpeg") &&
-        !imageURL.includes(".gif")
-      ) {
-        if (
-          imageURL.includes("googleusercontent") ||
-          imageURL.includes("topic=" + urlTopicID + ".0;attach=")
-        ) {
-          isHeaderRequiredLink = true;
-        } else {
-          continue;
+          if (isHeaderRequiredLink) {
+            console.log(
+              "it's an images link that requires header info to determine the name"
+            );
+            const responseHeaderSave = require("./responseHeaderSaveImage.js");
+            await responseHeaderSave(page, imageURL, path);
+          } else {
+            const regularImageSave = require("./regularSaveImage.js");
+            await regularImageSave(imageURL, path, urlTopicID);
+          }
         }
       }
-
-      if (isHeaderRequiredLink) {
-        console.log(
-          "it's an images link that requires header info to determine the name"
-        );
-        const responseHeaderSave = require("./responseHeaderSaveImage.js");
-        await responseHeaderSave(page, imageURL, path);
-      } else {
-        const regularImageSave = require("./regularSaveImage.js");
-        await regularImageSave(imageURL, path, urlTopicID);
-      }
-    }
-  }
+    })
+    .catch(err => console.log(err));
 
   await page.close();
   console.log("-------done-------");
