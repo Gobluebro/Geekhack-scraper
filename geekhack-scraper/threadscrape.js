@@ -1,5 +1,3 @@
-const fs = require("fs");
-const mkdirp = require("mkdirp");
 const utils = require("./utilies.js");
 const threads = require("./database/threads-model.js");
 
@@ -77,13 +75,6 @@ module.exports = async function(browser, url) {
   let urlTopicID = url.split("=")[1].split(".")[0];
   let path = __dirname + `/images/${urlTopicID}`;
 
-  if (!fs.existsSync(path)) {
-    mkdirp(path, function(err) {
-      if (err) console.log(err);
-      else console.log("directory created");
-    });
-  }
-
   // await page._client.send("Network.enable", {
   //   maxResourceBufferSize: 1024 * 1204 * 100,
   //   maxTotalBufferSize: 1024 * 1204 * 200
@@ -109,47 +100,18 @@ module.exports = async function(browser, url) {
       updated: updateDate,
       author: author
     })
-    .then(async function() {
+    .then(async () => {
       if (threadScrappedInfo.wantedImgLinks.length <= 0) {
         console.log("no images to save");
       } else {
         for (var a = 0; a < threadScrappedInfo.wantedImgLinks.length; a++) {
           let imageURL = threadScrappedInfo.wantedImgLinks[a];
-          if (imageURL.includes("photobucket.com")) {
-            continue;
-          }
-          var isHeaderRequiredLink = false;
-          if (
-            !imageURL.includes(".jpg") &&
-            !imageURL.includes(".png") &&
-            !imageURL.includes(".jpeg") &&
-            !imageURL.includes(".gif")
-          ) {
-            if (
-              imageURL.includes("googleusercontent") ||
-              imageURL.includes("topic=" + urlTopicID + ".0;attach=")
-            ) {
-              isHeaderRequiredLink = true;
-            } else {
-              continue;
-            }
-          }
-
-          if (isHeaderRequiredLink) {
-            console.log(
-              "it's an images link that requires header info to determine the name"
-            );
-            const responseHeaderSave = require("./responseHeaderSaveImage.js");
-            await responseHeaderSave(page, imageURL, path);
-          } else {
-            const regularImageSave = require("./regularSaveImage.js");
-            await regularImageSave(imageURL, path, urlTopicID);
-          }
+          const regularImageSave = require("./saveImage.js");
+          await regularImageSave(imageURL, path, urlTopicID);
         }
+        console.log("-------done-------");
       }
     })
     .catch(err => console.log(err));
-
   await page.close();
-  console.log("-------done-------");
 };
