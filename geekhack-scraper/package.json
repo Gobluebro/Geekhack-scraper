@@ -30,6 +30,6 @@
     "pg": "^7.11.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "sequelize": "^4.44.0"
+    "sequelize": "^5.8.7"
   }
 }
