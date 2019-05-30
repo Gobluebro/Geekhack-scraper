@@ -1,18 +1,21 @@
 const db = require("./database/initdb.js");
+const gbLinksGH = require("./grabGHGroupBuyLinks.js");
+const threadscrape = require("./threadscrape.js");
 
 db.authenticate()
   .then(() => console.log("Database connected..."))
   .catch(err => console.log("Error: " + err));
 
 (async () => {
-  // geekhack group buy
-  const gbLinksGH = require("./grabGHGroupBuyLinks.js");
   let ghGBThreadLinks = await gbLinksGH();
 
-  const threadscrape = require("./threadscrape.js");
-
-  Promise.all(ghGBThreadLinks.map(threadscrape)).then(function() {
-    console.log("all links visited");
-    process.exit();
-  });
+  var isLast = false;
+  for (let i = 0; i < ghGBThreadLinks.length; i++) {
+    console.log("going to " + ghGBThreadLinks[i]);
+    if (i === ghGBThreadLinks.length - 1) {
+      isLast = true;
+    }
+    await threadscrape(ghGBThreadLinks[i], isLast);
+  }
+  console.log("all links visited");
 })();
