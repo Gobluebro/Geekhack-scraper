@@ -28,7 +28,6 @@ build/Release
 node_modules
 
 images
-config.json
 .vscode/launch.json
 geekhack-scraper/test.js
 Website/design ideas/*

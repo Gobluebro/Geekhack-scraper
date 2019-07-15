@@ -1,4 +1,4 @@
-const db = require("./database/initdb.js");
+const db = require("../database/initdb.js");
 const gbLinksGH = require("./grabGHGroupBuyLinks.js");
 const threadscrape = require("./threadscrape.js");
 
