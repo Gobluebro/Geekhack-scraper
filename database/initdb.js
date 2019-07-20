@@ -5,7 +5,6 @@ const dev = config.development;
 module.exports = new Sequelize(dev.database, dev.username, dev.password, {
   host: dev.host,
   dialect: dev.dialect,
-  operatorsAliases: false,
 
   pool: {
     max: 1,
