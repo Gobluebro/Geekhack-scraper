@@ -65,7 +65,7 @@ module.exports = async (url, isLast) => {
     }
   }
   let urlTopicID = url.split("=")[1].split(".")[0];
-  let path = `../website/images/${urlTopicID}`;
+  let path = `../website/src/assets/images/${urlTopicID}`;
 
   let timeLastScraped = new Date().toUTCString();
 

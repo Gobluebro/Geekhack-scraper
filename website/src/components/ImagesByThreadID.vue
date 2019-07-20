@@ -11,7 +11,7 @@ export default {
   props: ["images"],
   methods: {
     GetPathFromImageFolder: function(threadID, imgName) {
-      return `/images/${threadID}/${imgName}`;
+      return `../assets/images/${threadID}/${imgName}`;
     }
   }
 };
