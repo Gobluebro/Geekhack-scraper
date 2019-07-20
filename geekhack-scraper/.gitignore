@@ -27,7 +27,6 @@ build/Release
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
 
-images
 .vscode/launch.json
 geekhack-scraper/test.js
 Website/design ideas/*

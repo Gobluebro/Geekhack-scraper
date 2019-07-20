@@ -2,4 +2,5 @@ const authenticationController = require("../controllers/authentication-controll
 
 module.exports = app => {
   app.get("/GetThreads", authenticationController.getthreads);
+  app.get("/GetImages", authenticationController.getimages);
 };
