@@ -5,7 +5,11 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
 module.exports = async (url, isLast) => {
-  var response = await request(url);
+  let options = {
+    uri: url,
+    encoding: "latin1"
+  };
+  var response = await request(options);
   const dom = new JSDOM(response);
   let pageStartDate = dom.window.document
     .querySelector(
