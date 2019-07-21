@@ -68,6 +68,12 @@ module.exports = async (url, isLast) => {
         let replaceString = element.replace(subString, "");
         postArray[index] = replaceString;
       });
+
+      //ES2015, removing any url that is an imgur album
+      //TODO: use imgur api to get images and download them
+      wantedPosts2 = wantedPosts2.filter(
+        item => !item.includes(`imgur.com/a/`)
+      );
       let imagesArray = Array.from(new Set(wantedPosts1.concat(wantedPosts2)));
 
       wantedImgLinks = wantedImgLinks.concat(imagesArray);
