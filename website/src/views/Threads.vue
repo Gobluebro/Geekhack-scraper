@@ -4,7 +4,9 @@
     <div class="threads">
       <div class="thread" v-for="thread in threads" v-bind:key="thread.id">
         <div>
-          <h2>{{ thread.title }}</h2>
+          <a v-bind:href="`https://geekhack.org/index.php?topic=` + thread.id">
+            <h2>{{ thread.title }}</h2>
+          </a>
           <div>By: {{ thread.author }}</div>
           <ImagesByThreadID
             v-if="CheckIfImagesExist(images, thread.id)"
@@ -35,7 +37,6 @@ export default {
       let fourImages = this.images
         .filter(x => x.thread_id == threadID && x.is_hidden == false)
         .slice(0, 4);
-      console.log(fourImages);
       return fourImages;
     },
     CheckIfImagesExist: function(images, threadID) {
