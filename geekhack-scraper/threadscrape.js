@@ -1,4 +1,4 @@
-const utils = require("./utilies.js");
+const utils = require("./utilies");
 const threads = require("../database/threads-model");
 const request = require("request-promise");
 const jsdom = require("jsdom");
@@ -57,15 +57,24 @@ module.exports = async (url, isLast) => {
         allPosts[i].querySelectorAll("div.post img.bbc_img:not(.resized)")
       );
       let wantedPosts2 = Array.from(
-        allPosts[i].querySelectorAll("div.post a > img")
+        allPosts[i].querySelectorAll("[href*='action=dlattach;topic=']")
       );
+      wantedPosts1 = wantedPosts1.map(img => img.src);
+      wantedPosts2 = wantedPosts2.map(url => url.href);
+      wantedPosts2.forEach(function(element, index, postArray) {
+        let firstIndex = element.indexOf("PHPSESSID");
+        let secondIndex = element.indexOf("&");
+        let subString = element.substring(firstIndex, secondIndex + 1);
+        let replaceString = element.replace(subString, "");
+        postArray[index] = replaceString;
+      });
       let imagesArray = Array.from(new Set(wantedPosts1.concat(wantedPosts2)));
-      let wantedImages = imagesArray.map(img => img.src);
-      wantedImgLinks = wantedImgLinks.concat(wantedImages);
+
+      wantedImgLinks = wantedImgLinks.concat(imagesArray);
     }
   }
   let urlTopicID = url.split("=")[1].split(".")[0];
-  let path = `../website/src/assets/images/${urlTopicID}`;
+  let path = __dirname + `/../website/src/assets/images/${urlTopicID}`;
 
   let timeLastScraped = new Date().toUTCString();
 
@@ -99,7 +108,7 @@ module.exports = async (url, isLast) => {
       if (isLast && a === wantedImgLinks.length - 1) {
         isTrueLast = true;
       }
-      const regularImageSave = require("./saveImage.js");
+      const regularImageSave = require("./saveImage");
       await regularImageSave(imageURL, path, urlTopicID, isTrueLast);
     }
     console.log("-------done-------");

@@ -1,5 +1,5 @@
 const download = require("@jinphen/download2");
-const images = require("../database/images-model.js");
+const images = require("../database/images-model");
 const fs = require("fs");
 
 module.exports = async (imageURL, path, threadID, isTrueLast) => {
@@ -11,7 +11,7 @@ module.exports = async (imageURL, path, threadID, isTrueLast) => {
       } else {
         fs.writeFileSync(path + `/${filename}`, data);
         console.log(
-          "thread: " + threadID + " filename: " + filename + " saved"
+          "thread: " + threadID + " filename: " + filename + " saved to " + path
         );
       }
       images

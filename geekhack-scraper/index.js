@@ -1,6 +1,6 @@
-const db = require("../database/initdb.js");
-const gbLinksGH = require("./grabGHGroupBuyLinks.js");
-const threadscrape = require("./threadscrape.js");
+const db = require("../database/initdb");
+const gbLinksGH = require("./grabGHGroupBuyLinks");
+const threadscrape = require("./threadscrape");
 
 db.authenticate()
   .then(() => console.log("Database connected..."))
