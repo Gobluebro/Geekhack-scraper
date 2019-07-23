@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const morgan = require("morgan");
 const sequelize = require(__dirname + "/../../database/initdb.js");
 const config = require("../../config.json");
@@ -8,7 +7,6 @@ const config = require("../../config.json");
 const app = express();
 app.use(morgan("combined"));
 app.use(bodyParser.json());
-app.use(cors());
 
 require("./routes")(app);
 
