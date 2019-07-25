@@ -5,9 +5,9 @@
       <div class="thread" v-for="thread in threads" v-bind:key="thread.id">
         <div>
           <a v-bind:href="`https://geekhack.org/index.php?topic=` + thread.id">
-            <h2>{{ thread.title }}</h2>
+            <h1 class="title">{{ thread.title }}</h1>
           </a>
-          <div>By: {{ thread.author }}</div>
+          <h2 class="subtitle">By: {{ thread.author }}</h2>
           <ImagesByThreadID
             v-if="CheckIfImagesExist(images, thread.id)"
             v-bind:images="GetImagesByThreadID(images, thread.id)"
