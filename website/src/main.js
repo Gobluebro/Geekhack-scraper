@@ -1,7 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import "../node_modules/bulma/bulma.sass";
+import "@/assets/css/tailwind.css";
 
 Vue.config.productionTip = false;
 

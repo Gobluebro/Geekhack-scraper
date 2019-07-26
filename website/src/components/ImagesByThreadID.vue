@@ -1,8 +1,11 @@
 <template>
-  <div>
-    <div v-for="image in images" v-bind:key="image.id">
-      <img v-bind:src="GetPathFromImageFolder(image.thread_id, image.name)" />
-    </div>
+  <div class="flex flex-wrap">
+    <img
+      v-for="image in images"
+      v-bind:key="image.id"
+      class="w-1/2 p-1"
+      v-bind:src="GetPathFromImageFolder(image.thread_id, image.name)"
+    />
   </div>
 </template>
 
@@ -16,3 +19,6 @@ export default {
   }
 };
 </script>
+
+<style>
+</style>

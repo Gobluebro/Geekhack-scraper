@@ -1,17 +1,20 @@
 <template>
-  <div>
-    <h1>Threads</h1>
-    <div class="threads">
-      <div class="thread" v-for="thread in threads" v-bind:key="thread.id">
+  <div class>
+    <div class="flex flex-wrap">
+      <div
+        class="flex-none self-end w-1/3 rounded shadow-lg p-2"
+        v-for="thread in threads"
+        v-bind:key="thread.id"
+      >
         <div>
-          <a v-bind:href="`https://geekhack.org/index.php?topic=` + thread.id">
-            <h1 class="title">{{ thread.title }}</h1>
-          </a>
-          <h2 class="subtitle">By: {{ thread.author }}</h2>
           <ImagesByThreadID
             v-if="CheckIfImagesExist(images, thread.id)"
             v-bind:images="GetImagesByThreadID(images, thread.id)"
           ></ImagesByThreadID>
+          <a v-bind:href="`https://geekhack.org/index.php?topic=` + thread.id">
+            <p class="text-xl leading-relaxed">{{ thread.title }}</p>
+          </a>
+          <p class="text-sm leading-relaxed">By: {{ thread.author }}</p>
         </div>
       </div>
     </div>
@@ -58,15 +61,9 @@ export default {
 </script>
 
 <style>
-.threads {
-  display: flex;
-  flex-wrap: wrap;
-}
 .thread {
   flex: 1 1 25%;
   margin: 10px;
-  border: 1px solid #ccc;
-  box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.3);
 }
 .thread img {
   max-width: 100%;
