@@ -49,6 +49,14 @@ export default {
       } else {
         return false;
       }
+    },
+    SortThreadsByHighestID: function() {
+      this.threads.sort((a, b) => {
+        // flip the > symbol if you wish to go from lowest to highest.
+        // currently using highest to lowest so newer threads are shown
+        var x = a.id > b.id ? -1 : 1;
+        return x;
+      });
     }
   },
   async created() {
@@ -56,19 +64,10 @@ export default {
     this.threads = threadsResponse.data;
     const imagesResponse = await axios.get("http://localhost:8081/GetImages");
     this.images = imagesResponse.data;
+    this.SortThreadsByHighestID();
   }
 };
 </script>
 
 <style>
-.thread {
-  flex: 1 1 25%;
-  margin: 10px;
-}
-.thread img {
-  max-width: 100%;
-}
-.thread .text {
-  padding: 0 20px 20px;
-}
 </style>
