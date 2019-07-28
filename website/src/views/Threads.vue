@@ -2,7 +2,7 @@
   <div class>
     <div class="flex flex-wrap">
       <div
-        class="flex-none self-end w-1/3 rounded shadow-lg p-2"
+        class="flex-auto self-end w-1/4 rounded border border-white p-2 m-1"
         v-for="thread in threads"
         v-bind:key="thread.id"
       >
@@ -12,9 +12,9 @@
             v-bind:images="GetImagesByThreadID(images, thread.id)"
           ></ImagesByThreadID>
           <a v-bind:href="`https://geekhack.org/index.php?topic=` + thread.id">
-            <p class="text-xl leading-relaxed">{{ thread.title }}</p>
+            <p class="text-xl text-white leading-relaxed pl-1 h-16">{{ thread.title }}</p>
           </a>
-          <p class="text-sm leading-relaxed">By: {{ thread.author }}</p>
+          <p class="text-sm text-white leading-relaxed pl-1">By: {{ thread.author }}</p>
         </div>
       </div>
     </div>
