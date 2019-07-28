@@ -3,7 +3,7 @@
     <img
       v-for="image in images"
       v-bind:key="image.id"
-      class="w-1/2 p-1"
+      class="w-1/2 h-200 p-1"
       v-bind:src="GetPathFromImageFolder(image.thread_id, image.name)"
     />
   </div>
