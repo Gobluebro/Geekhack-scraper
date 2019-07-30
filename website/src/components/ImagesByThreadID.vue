@@ -1,9 +1,10 @@
 <template>
-  <div class="flex flex-wrap">
+  <div class>
     <img
       v-for="image in images"
       v-bind:key="image.id"
-      class="w-1/2 h-200 p-1"
+      class="p-1 flex-grow"
+      :class="GetClassByAmountOfImages()"
       v-bind:src="GetPathFromImageFolder(image.thread_id, image.name)"
     />
   </div>
@@ -15,6 +16,18 @@ export default {
   methods: {
     GetPathFromImageFolder: function(threadID, imgName) {
       return require(`@/assets/images/${threadID}/${imgName}`);
+    },
+    GetClassByAmountOfImages: function() {
+      switch (this.images.length) {
+        case 4:
+          return "w-1/2 h-200";
+        case 2:
+          return "h-200";
+        case 1:
+          return "h-400";
+        default:
+          return "w-1/2 h-200";
+      }
     }
   }
 };

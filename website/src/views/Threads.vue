@@ -1,20 +1,22 @@
 <template>
-  <div class>
+  <div>
     <div class="flex flex-wrap">
+      <!-- rounded border border-white  -->
       <div
-        class="flex-auto self-end w-1/4 rounded border border-white p-2 m-1"
+        class="flex-auto w-1/4 rounded bg-gray-700 p-2 m-3"
         v-for="thread in threads"
         v-bind:key="thread.id"
       >
-        <div>
+        <div class="flex flex-col justify-end h-full">
           <ImagesByThreadID
+            class="flex flex-wrap flex-grow"
             v-if="CheckIfImagesExist(images, thread.id)"
-            v-bind:images="GetImagesByThreadID(images, thread.id)"
+            :images="GetImagesByThreadID(images, thread.id)"
           ></ImagesByThreadID>
-          <a v-bind:href="`https://geekhack.org/index.php?topic=` + thread.id">
-            <p class="text-xl text-white leading-relaxed pl-1 h-16">{{ thread.title }}</p>
+          <a class :href="`https://geekhack.org/index.php?topic=` + thread.id">
+            <p class="text-xl text-gray-400 leading-relaxed pl-1 h-16">{{ thread.title }}</p>
           </a>
-          <p class="text-sm text-white leading-relaxed pl-1">By: {{ thread.author }}</p>
+          <p class="text-sm text-gray-400 leading-relaxed pl-1">By: {{ thread.author }}</p>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ module.exports = {
       sm: "640px",
       md: "768px",
       lg: "1024px",
-      xl: "1280px"
+      xl: "1480px"
     },
     colors: {
       transparent: "transparent",
@@ -211,7 +211,8 @@ module.exports = {
     },
     extend: {
       height: {
-        "200": "200px"
+        "200": "200px",
+        "400": "400px"
       }
     },
     fill: {
