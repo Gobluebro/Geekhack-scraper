@@ -59,6 +59,14 @@ export default {
         var x = a.id > b.id ? -1 : 1;
         return x;
       });
+    },
+    SortImagesByOrderNumber: function() {
+      this.images.sort((a, b) => {
+        // flip the < symbol if you wish to go from highest to lowest.
+        // currently using lowest to highest
+        var x = a.order_number < b.order_number ? -1 : 1;
+        return x;
+      });
     }
   },
   async created() {
@@ -67,6 +75,7 @@ export default {
     const imagesResponse = await axios.get("http://localhost:8081/GetImages");
     this.images = imagesResponse.data;
     this.SortThreadsByHighestID();
+    this.SortImagesByOrderNumber();
   }
 };
 </script>

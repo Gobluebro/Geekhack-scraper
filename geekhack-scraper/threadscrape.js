@@ -27,6 +27,8 @@ module.exports = async (url, isLast) => {
       .trim();
   }
   let allPosts = dom.window.document.querySelectorAll(".post_wrapper");
+  // limit the amount of posts to just 3 possible posts a threader starter could make (trying to catch anything in "reserved" posts)
+  allPosts.splice(3, allPosts.length - 1);
   let wantedImgLinks = [];
   let author = allPosts[0].children[0].children[0].children[1].text;
   // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
@@ -109,13 +111,13 @@ module.exports = async (url, isLast) => {
     console.log("no images to save");
   } else {
     var isTrueLast = false;
-    for (var a = 0; a < wantedImgLinks.length; a++) {
+    for (let a = 0; a < wantedImgLinks.length; a++) {
       let imageURL = wantedImgLinks[a];
       if (isLast && a === wantedImgLinks.length - 1) {
         isTrueLast = true;
       }
       const regularImageSave = require("./saveImage");
-      await regularImageSave(imageURL, path, urlTopicID, isTrueLast);
+      await regularImageSave(imageURL, path, urlTopicID, isTrueLast, a);
     }
     console.log("-------done-------");
   }

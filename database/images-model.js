@@ -20,6 +20,9 @@ const Images = db.define(
     },
     is_hidden: {
       type: Sequelize.BOOLEAN
+    },
+    order_number: {
+      type: Sequelize.INTEGER
     }
   },
   {

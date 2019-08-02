@@ -2,7 +2,7 @@ const download = require("@jinphen/download2");
 const images = require("../database/images-model");
 const fs = require("fs");
 
-module.exports = async (imageURL, path, threadID, isTrueLast) => {
+module.exports = async (imageURL, path, threadID, isTrueLast, imageNumber) => {
   // I love this download module. It does all the work for me and allows me to save images I had trouble with in the past.
   download(imageURL, path)
     .then(({ data, filename }) => {
@@ -21,7 +21,8 @@ module.exports = async (imageURL, path, threadID, isTrueLast) => {
             threadID: threadID,
             name: filename,
             url: imageURL,
-            is_hidden: false
+            is_hidden: false,
+            order_number: imageNumber
           }
         })
         .then(([image, created]) => {
@@ -35,8 +36,8 @@ module.exports = async (imageURL, path, threadID, isTrueLast) => {
             );
           }
           if (isTrueLast) {
+            console.log("the last one " + threadID + " " + filename);
             setTimeout(function() {
-              console.log("the last one " + threadID + " " + filename);
               return process.exit();
             }, 10000);
           }
