@@ -62,13 +62,36 @@ module.exports = async (url, isLast) => {
         allPosts[i].querySelectorAll("[href*='action=dlattach;topic=']")
       );
       wantedPosts1 = wantedPosts1.map(img => img.src);
+      wantedPosts1.forEach(function(element, index, postArray) {
+        if (
+          element.toLowerCase().includes(".jpg") ||
+          element.toLowerCase().includes(".png") ||
+          element.toLowerCase().includes(".jepg") ||
+          element.toLowerCase().includes(".gif")
+        ) {
+          let regPat = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|jpeg|png)/g;
+          let validatedURL = element.match(regPat).join("");
+          postArray[index] = validatedURL;
+        }
+      });
       wantedPosts2 = wantedPosts2.map(url => url.href);
       wantedPosts2.forEach(function(element, index, postArray) {
         let firstIndex = element.indexOf("PHPSESSID");
         let secondIndex = element.indexOf("&");
         let subString = element.substring(firstIndex, secondIndex + 1);
         let replaceString = element.replace(subString, "");
-        postArray[index] = replaceString;
+        let validatedURL = replaceString;
+        if (
+          replaceString.toLowerCase().includes(".jpg") ||
+          replaceString.toLowerCase().includes(".png") ||
+          replaceString.toLowerCase().includes(".jpeg") ||
+          replaceString.toLowerCase().includes(".gif")
+        ) {
+          let regPat = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|jpeg|png)/g;
+          validatedURL = replaceString.match(regPat).join("");
+        }
+
+        postArray[index] = validatedURL;
       });
 
       //ES2015, removing any url that is an imgur album
