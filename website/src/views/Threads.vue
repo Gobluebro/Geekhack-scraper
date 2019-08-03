@@ -42,22 +42,6 @@ export default {
         .filter(x => x.thread_id == threadID && x.is_hidden == false)
         .slice(0, 4);
       return fourImages;
-    },
-    SortThreadsByHighestID: function() {
-      this.threads.sort((a, b) => {
-        // flip the > symbol if you wish to go from lowest to highest.
-        // currently using highest to lowest so newer threads are shown
-        var x = a.id > b.id ? -1 : 1;
-        return x;
-      });
-    },
-    SortImagesByOrderNumber: function() {
-      this.images.sort((a, b) => {
-        // flip the < symbol if you wish to go from highest to lowest.
-        // currently using lowest to highest
-        var x = a.order_number < b.order_number ? -1 : 1;
-        return x;
-      });
     }
   },
   async created() {
@@ -65,8 +49,6 @@ export default {
     this.threads = threadsResponse.data;
     const imagesResponse = await axios.get("http://localhost:8081/GetImages");
     this.images = imagesResponse.data;
-    this.SortThreadsByHighestID();
-    this.SortImagesByOrderNumber();
   }
 };
 </script>
