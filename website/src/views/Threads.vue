@@ -10,7 +10,6 @@
         <div class="flex flex-col justify-end h-full">
           <ImagesByThreadID
             class="flex flex-wrap flex-grow"
-            v-if="CheckIfImagesExist(images, thread.id)"
             :images="GetImagesByThreadID(images, thread.id)"
           ></ImagesByThreadID>
           <a class :href="`https://geekhack.org/index.php?topic=` + thread.id">
@@ -43,14 +42,6 @@ export default {
         .filter(x => x.thread_id == threadID && x.is_hidden == false)
         .slice(0, 4);
       return fourImages;
-    },
-    CheckIfImagesExist: function(images, threadID) {
-      let newImages = this.GetImagesByThreadID(images, threadID);
-      if (newImages.length > 0 && newImages !== undefined) {
-        return true;
-      } else {
-        return false;
-      }
     },
     SortThreadsByHighestID: function() {
       this.threads.sort((a, b) => {
