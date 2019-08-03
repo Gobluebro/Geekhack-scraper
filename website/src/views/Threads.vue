@@ -12,7 +12,7 @@
             class="flex flex-wrap flex-grow"
             :images="GetImagesByThreadID(images, thread.id)"
           ></ImagesByThreadID>
-          <a class :href="`https://geekhack.org/index.php?topic=` + thread.id">
+          <a target="_blank" :href="`https://geekhack.org/index.php?topic=` + thread.id">
             <p class="text-xl text-gray-400 leading-relaxed pl-1 h-16">{{ thread.title }}</p>
           </a>
           <p class="text-sm text-gray-400 leading-relaxed pl-1">By: {{ thread.author }}</p>
