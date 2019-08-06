@@ -19,6 +19,12 @@ module.exports = async (url, isLast) => {
     .replace(" »", "");
   pageStartDate = Date.parse(pageStartDate);
   let title = dom.window.document.querySelector("[id^='subject_']").textContent;
+  if (title.includes("\t")) {
+    title = title.replace("\t", "");
+  }
+  if (title.includes("\n")) {
+    title = title.replace("\n", "");
+  }
   if (title.includes("[GB]" || "[IC]")) {
     title = title
       .replace("[GB]", "")
@@ -27,8 +33,6 @@ module.exports = async (url, isLast) => {
       .trim();
   }
   let allPosts = dom.window.document.querySelectorAll(".post_wrapper");
-  // limit the amount of posts to just 3 possible posts a threader starter could make (trying to catch anything in "reserved" posts)
-  allPosts.splice(3, allPosts.length - 1);
   let wantedImgLinks = [];
   let author = allPosts[0].children[0].children[0].children[1].text;
   // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
@@ -42,7 +46,8 @@ module.exports = async (url, isLast) => {
     updateDate = null;
   }
 
-  for (var i = 0; i < allPosts.length; i++) {
+  // limit the amount of posts to just 3 possible posts a threader starter could make (trying to catch anything in "reserved" posts)
+  for (var i = 0; i < 3; i++) {
     let threadStarterCheck;
     if (
       allPosts[i].children[0].children[1].children[1].className == "membergroup"
