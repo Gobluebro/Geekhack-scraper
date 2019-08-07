@@ -8,10 +8,12 @@
         v-bind:key="thread.id"
       >
         <div class="flex flex-col justify-end h-full">
-          <ImagesByThreadID
-            class="flex flex-wrap flex-grow"
-            :images="GetImagesByThreadID(images, thread.id)"
-          ></ImagesByThreadID>
+          <router-link :to="{ path: '/thread/' + thread.id }">
+            <ImagesByThreadID
+              class="flex flex-wrap flex-grow"
+              :images="GetImagesByThreadID(images, thread.id)"
+            ></ImagesByThreadID>
+          </router-link>
           <a target="_blank" :href="`https://geekhack.org/index.php?topic=` + thread.id">
             <p class="text-xl text-gray-400 leading-relaxed pl-1 h-16">{{ thread.title }}</p>
           </a>
