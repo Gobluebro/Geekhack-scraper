@@ -8,12 +8,16 @@
         v-bind:key="thread.id"
       >
         <div class="flex flex-col justify-end h-full">
-          <router-link :to="{ path: '/thread/' + thread.id }">
+          <router-link
+            v-if="GetImagesByThreadID(images, thread.id).length != 0"
+            :to="{ path: '/thread/' + thread.id }"
+          >
             <ImagesByThreadID
               class="flex flex-wrap flex-grow"
               :images="GetImagesByThreadID(images, thread.id)"
             ></ImagesByThreadID>
           </router-link>
+          <NoImagesFound v-else class="flex flex-wrap flex-grow"></NoImagesFound>
           <a target="_blank" :href="`https://geekhack.org/index.php?topic=` + thread.id">
             <p class="text-xl text-gray-400 leading-relaxed pl-1 h-16">{{ thread.title }}</p>
           </a>
@@ -27,6 +31,7 @@
 <script>
 import axios from "axios";
 import ImagesByThreadID from "@/components/ImagesByThreadID.vue";
+import NoImagesFound from "@/components/NoImagesFound.vue";
 
 export default {
   data: function() {
@@ -36,7 +41,8 @@ export default {
     };
   },
   components: {
-    ImagesByThreadID
+    ImagesByThreadID,
+    NoImagesFound
   },
   methods: {
     GetImagesByThreadID: function(images, threadID) {
