@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-wrap">
+    <div v-if="!loading" class="flex flex-wrap">
       <!-- rounded border border-white  -->
       <div
         class="flex-auto w-1/4 rounded bg-gray-700 p-2 m-3"
@@ -19,7 +19,9 @@
           </router-link>
           <NoImagesFound v-else class="flex flex-wrap flex-grow"></NoImagesFound>
           <a target="_blank" :href="`https://geekhack.org/index.php?topic=` + thread.id">
-            <p class="text-xl text-gray-400 leading-relaxed pl-1 h-16">{{ thread.title }}</p>
+            <p
+              class="hover:underline text-xl text-gray-400 leading-relaxed pl-1 h-16"
+            >{{ thread.title }}</p>
           </a>
           <p class="text-sm text-gray-400 leading-relaxed pl-1">By: {{ thread.author }}</p>
         </div>
@@ -37,7 +39,8 @@ export default {
   data: function() {
     return {
       threads: [],
-      images: []
+      images: [],
+      loading: true
     };
   },
   components: {
@@ -52,11 +55,12 @@ export default {
       return fourImages;
     }
   },
-  async created() {
+  async mounted() {
     const threadsResponse = await axios.get("http://localhost:8081/GetThreads");
     this.threads = threadsResponse.data;
     const imagesResponse = await axios.get("http://localhost:8081/GetImages");
     this.images = imagesResponse.data;
+    this.loading = false;
   }
 };
 </script>
