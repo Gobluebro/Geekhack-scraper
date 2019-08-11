@@ -74,9 +74,14 @@ module.exports = async (url, isLast) => {
           element.toLowerCase().includes(".jepg") ||
           element.toLowerCase().includes(".gif")
         ) {
-          let regPat = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|jpeg|png)/g;
-          let validatedURL = element.match(regPat).join("");
-          postArray[index] = validatedURL;
+          let regPat = new RegExp(
+            /(http(s?):)([/|.|\w|\s|\%|-])*\.(?:jpg|gif|jpeg|png)/g
+          );
+          let validatedURL = element.match(regPat);
+          if (validatedURL != null) {
+            validatedURL = validatedURL.join("");
+            postArray[index] = validatedURL;
+          }
         }
       });
       wantedPosts2 = wantedPosts2.map(url => url.href);
