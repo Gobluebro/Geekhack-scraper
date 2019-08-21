@@ -45,9 +45,13 @@ Cons:
 ## Installation
 
 How to:
+
 Install database
+
 [Install Geekhack-scraper](https://github.com/Gobluebro/Geekhack-scraper/tree/master/geekhack-scraper)
+
 Install server
+
 Install website
 
 ## License
