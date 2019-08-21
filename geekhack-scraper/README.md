@@ -2,8 +2,9 @@
 
 ## Installation
 
-```
 Make sure you install the database first
+
+```
 npm install
 ```
 
