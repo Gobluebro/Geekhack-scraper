@@ -13,7 +13,7 @@
 import axios from "axios";
 
 export default {
-  data: function() {
+  data() {
     return {
       images: [],
       requiredImages: []
@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     GetPathFromImageFolder: function(threadID, imgName) {
-      return require(`@/assets/images/${threadID}/${imgName}`);
+      return `/assets/images/${threadID}/${imgName}`;
     },
     GetImagesByPathID: async function(threadID) {
       if (this.images.length == 0 || this.images == undefined) {
@@ -33,9 +33,6 @@ export default {
       this.requiredImages = this.images.filter(
         x => x.thread_id == threadID && x.is_hidden == false
       );
-      //   console.log(threadID);
-      //   console.log(this.images);
-      //   console.log(this.requiredImages);
     }
   },
   props: ["threadID"],
@@ -43,13 +40,5 @@ export default {
     this.GetImagesByPathID(this.$route.params.id);
     console.log("created " + this.$route.params.id);
   }
-  //   beforeRouteUpdate(to, from, next) {
-  //     this.GetImagesByPathID(to.params.id);
-  //     console.log("before " + to.params.id);
-  //     next();
-  //   }
 };
 </script>
-
-<style>
-</style>
