@@ -1,3 +1,10 @@
 config.json
 node_modules
 website/public/assets/images/*
+
+.vscode/launch.json
+geekhack-scraper/testing.js
+
+website/node_modules
+website/dist
+website/public/assets/images
