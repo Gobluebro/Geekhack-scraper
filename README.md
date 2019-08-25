@@ -42,17 +42,13 @@ Cons:
 - Looks busy
 - Goes against the standard of only one photo per card
 
-## Installation
+## Installation and Start the project
 
-How to:
-
-Install database
-
-[Install Geekhack-scraper](https://github.com/Gobluebro/Geekhack-scraper/tree/master/geekhack-scraper)
-
-Install server
-
-Install website
+```
+npm install
+npm run server
+npm run serve
+```
 
 ## License
 
