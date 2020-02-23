@@ -17,8 +17,6 @@ const Threads = db.define(
     start: {
       type: Sequelize.DATE
     },
-    // createdAt: false,
-    // updatedAt: false,
     scraped: {
       type: Sequelize.DATE
     },
