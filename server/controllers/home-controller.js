@@ -1,12 +1,9 @@
-const Threads = require("../../database/threads-model");
-const Images = require("../../database/images-model");
+const model = require("../models/home-model");
 
 module.exports = {
   async getthreads(req, res) {
     try {
-      const threads = await Threads.findAll({
-        order: [["id", "DESC"]]
-      });
+      const threads = model.getOrRefreshCache("threads");
       res.send(JSON.stringify(threads));
     } catch (err) {
       res.status(400).send({
@@ -16,9 +13,7 @@ module.exports = {
   },
   async getimages(req, res) {
     try {
-      const images = await Images.findAll({
-        order: [["order_number"]]
-      });
+      const images = model.getOrRefreshCache("images");
       res.send(JSON.stringify(images));
     } catch (err) {
       res.status(400).send({
