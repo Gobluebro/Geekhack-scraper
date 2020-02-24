@@ -15,6 +15,7 @@ I'm also trying to alleviate these community upheld lists with automation.
 **Community Made and Curated Lists:**
 
 - [LIST OF CURRENTLY RUNNING COMUNITY AND VENDOR GROUP BUYS](https://geekhack.org/index.php?topic=57761.0)
+- [Keycap Calendar](http://keycaplendar.com/)
 
 Just wanted to mention that this web scraping shouldn't be a replacement for things like:
 
