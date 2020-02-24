@@ -16,7 +16,7 @@ module.exports = {
     });
     myCache.set("images", images);
   },
-  async getOrRefreshCache(key) {
+  async getCache(key) {
     const cache = myCache.get(key);
     if (cache === undefined) {
       if (key === "threads") {
