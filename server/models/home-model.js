@@ -1,7 +1,7 @@
 const Threads = require("../../database/threads-model");
 const Images = require("../../database/images-model");
 const NodeCache = require("node-cache");
-const myCache = new NodeCache({ stdTTL: 6000 });
+const myCache = new NodeCache({ stdTTL: 30000, useClones: false });
 
 module.exports = {
   async getThreads() {
@@ -11,18 +11,18 @@ module.exports = {
     myCache.set("threads", threads);
   },
   async getImages() {
-    const images = await Images.findAll({
+    let images = await Images.findAll({
       order: [["order_number"]]
     });
     myCache.set("images", images);
   },
   async getCache(key) {
-    const cache = myCache.get(key);
+    let cache = myCache.get(key);
     if (cache === undefined) {
       if (key === "threads") {
-        await getThreads();
+        await this.getThreads();
       } else if (key === "images") {
-        await getImages();
+        await this.getImages();
       }
       cache = myCache.get(key);
     }
