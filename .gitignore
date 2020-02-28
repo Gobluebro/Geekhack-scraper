@@ -8,3 +8,4 @@ geekhack-scraper/testing.js
 website/node_modules
 website/dist
 website/public/assets/images
+website/src/assets/images/*
