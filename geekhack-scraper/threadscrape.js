@@ -1,15 +1,14 @@
 const utils = require("./utilies");
-const threads = require("../database/threads-model");
 const request = require("request-promise");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
-module.exports = async (url, isLast) => {
+module.exports = async url => {
   let options = {
     uri: url,
     encoding: "latin1"
   };
-  var response = await request(options);
+  let response = await request(options);
   const dom = new JSDOM(response);
   let pageStartDate = dom.window.document
     .querySelector(
@@ -115,43 +114,26 @@ module.exports = async (url, isLast) => {
     }
   }
   let urlTopicID = url.split("=")[1].split(".")[0];
-  let path = __dirname + `/../website/src/assets/images/${urlTopicID}`;
 
   let timeLastScraped = new Date().toUTCString();
 
   console.log("ID = " + urlTopicID);
-
-  // need to set the thread first since images uses the ID as a FK
-  // upsert http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-upsert
-  await threads.upsert({
+  let thread = {
     id: urlTopicID,
     website: utils.websiteEnum.geekhack,
     title: title,
     start: pageStartDate,
-    topic: utils.topicEnum.GB,
     scraped: timeLastScraped,
     updated: updateDate,
+    topic: utils.topicEnum.GB,
     author: author
-  });
-  // .then(async () => {
+  };
 
-  // })
-  // .catch(err => {
-  //   console.log("error upserting thread " + urlTopicID);
-  //   console.error(err);
-  // });
-  if (wantedImgLinks.length <= 0) {
-    console.log("no images to save");
-  } else {
-    var isTrueLast = false;
-    for (let a = 0; a < wantedImgLinks.length; a++) {
-      let imageURL = wantedImgLinks[a];
-      if (isLast && a === wantedImgLinks.length - 1) {
-        isTrueLast = true;
-      }
-      const regularImageSave = require("./saveImage");
-      await regularImageSave(imageURL, path, urlTopicID, isTrueLast, a);
-    }
-    console.log("-------done-------");
-  }
+  let images = {
+    thread_id: urlTopicID,
+    urls: wantedImgLinks
+  };
+  let pageInfo = { thread, images };
+  console.log("-------done-------");
+  return pageInfo;
 };
