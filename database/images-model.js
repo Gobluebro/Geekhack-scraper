@@ -19,7 +19,8 @@ const Images = db.define(
       type: Sequelize.STRING
     },
     is_hidden: {
-      type: Sequelize.BOOLEAN
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
     },
     order_number: {
       type: Sequelize.INTEGER

@@ -46,7 +46,7 @@ module.exports = async url => {
   }
 
   // limit the amount of posts to just 3 possible posts a threader starter could make (trying to catch anything in "reserved" posts)
-  for (var i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {
     let threadStarterCheck;
     if (
       allPosts[i].children[0].children[1].children[1].className == "membergroup"
@@ -129,10 +129,15 @@ module.exports = async url => {
     author: author
   };
 
-  let images = {
-    thread_id: urlTopicID,
-    urls: wantedImgLinks
-  };
+  let images = [];
+  for (let i = 0; i < wantedImgLinks.length; i++) {
+    let image = {
+      thread_id: urlTopicID,
+      url: wantedImgLinks[i],
+      orderNumber: i
+    };
+    images.push(image);
+  }
   let pageInfo = { thread, images };
   console.log("-------done-------");
   return pageInfo;

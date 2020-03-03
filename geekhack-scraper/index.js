@@ -2,7 +2,8 @@ const db = require("../database/initdb");
 const gbLinksGH = require("./grabGHGroupBuyLinks");
 const threadscrape = require("./threadscrape");
 const thread = require("./saveThread");
-const images = require("./saveImage");
+const downloadImages = require("./getImagesForDatabase");
+const saveImagesToDatabase = require("./saveImage");
 
 db.authenticate()
   .then(() => console.log("Database connected..."))
@@ -19,17 +20,6 @@ db.authenticate()
     allPagesImagesInfo.push(pageInfo.images);
   }
   const saveThread = await thread(allPagesThreadInfo);
-  let promises = [];
-  for (let x = 0; x < allPagesImagesInfo.length; x++) {
-    for (let y = 0; y < allPagesImagesInfo[x].urls.length; y++) {
-      promises.push(
-        images(
-          allPagesImagesInfo[x].urls[y],
-          allPagesImagesInfo[x].thread_id,
-          y
-        )
-      );
-    }
-  }
-  Promise.all(promises).then(console.log("all links visited"));
+  const imagesToSaveInDatabase = await downloadImages(allPagesImagesInfo);
+  const blah = await saveImagesToDatabase(imagesToSaveInDatabase);
 })();
