@@ -4,6 +4,7 @@
   "description": "scraps geekhack group buys",
   "main": "index.js",
   "scripts": {
+    "scrape": "cd geekhack-scraper && node index.js",
     "serve": "cd website && vue-cli-service serve",
     "build": "cd website && vue-cli-service build",
     "vue-lint": "cd website && vue-cli-service lint",
