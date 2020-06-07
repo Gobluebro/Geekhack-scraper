@@ -1,14 +1,14 @@
-const Request = require("request");
+const axios = require("axios");
 
 module.exports = function() {
-  Request.post(
+  axios.post(
     {
       headers: { "content-type": "application/json" },
       url: "http://httpbin.org/post",
       body: JSON.stringify({
         firstname: "Nic",
-        lastname: "Raboy"
-      })
+        lastname: "Raboy",
+      }),
     },
     (error, response, body) => {
       if (error) {
