@@ -1,14 +1,14 @@
 {
   "name": "geekhack-scraper",
   "version": "1.0.0",
-  "description": "scraps geekhack group buys",
+  "description": "scraps geekhack and displays content all together making it easier to keep up with keyboard related products",
   "main": "index.js",
   "scripts": {
     "scrape": "cd geekhack-scraper && node index.js",
-    "serve": "cd website && vue-cli-service serve",
-    "build": "cd website && vue-cli-service build",
+    "start-debug": "cd website && vue-cli-service serve",
+    "start-build": "cd website && vue-cli-service build",
     "vue-lint": "cd website && vue-cli-service lint",
-    "server": "cd server && node src/app.js",
+    "start-server": "cd server && node src/app.js",
     "server-lint": "cd server && eslint **/*.js"
   },
   "keywords": [
@@ -58,7 +58,8 @@
     "@vue/cli-service": "^4.4.1",
     "@vue/eslint-config-prettier": "^5.1.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.8.0",
+    "eslint": "^5.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-vue": "^5.2.3",
     "tailwindcss": "^1.4.6",
     "vue-template-compiler": "^2.6.11"

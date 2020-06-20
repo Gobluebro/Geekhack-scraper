@@ -47,8 +47,9 @@ Cons:
 
 ```
 npm install
-npm run server
-npm run serve
+npm run scrape
+npm run start-server
+npm run start-debug
 ```
 
 ## License
