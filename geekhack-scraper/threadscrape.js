@@ -1,36 +1,26 @@
 const utils = require("./utilies");
-const request = require("request-promise");
+const axios = require("axios");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
-module.exports = async url => {
-  let options = {
-    uri: url,
-    encoding: "latin1"
-  };
-  let response = await request(options);
-  const dom = new JSDOM(response);
+module.exports = async (url) => {
+  const response = await axios.get(url);
+  const dom = new JSDOM(response.data);
   let pageStartDate = dom.window.document
     .querySelector(
       "#quickModForm > div:nth-child(1) > div > div.postarea > div.flow_hidden > div > div.smalltext"
     )
     .innerHTML.replace("« <strong> on:</strong> ", "")
     .replace(" »", "");
-  pageStartDate = Date.parse(pageStartDate);
+  const cleanedPageStartDate = Date.parse(pageStartDate);
   let title = dom.window.document.querySelector("[id^='subject_']").textContent;
-  if (title.includes("\t")) {
-    title = title.replace("\t", "");
-  }
-  if (title.includes("\n")) {
-    title = title.replace("\n", "");
-  }
-  if (title.includes("[GB]" || "[IC]")) {
-    title = title
-      .replace("[GB]", "")
-      .replace("[IC]", "")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
+  const cleanedTitle = title
+    .replace("\n", "")
+    .replace("\t", "")
+    .replace("[GB]", "")
+    .replace("[IC]", "")
+    .replace(/\s+/g, " ")
+    .trim();
   let allPosts = dom.window.document.querySelectorAll(".post_wrapper");
   let wantedImgLinks = [];
   let author = allPosts[0].children[0].children[0].children[1].text;
@@ -65,7 +55,7 @@ module.exports = async url => {
       let wantedPosts2 = Array.from(
         allPosts[i].querySelectorAll("[href*='action=dlattach;topic=']")
       );
-      wantedPosts1 = wantedPosts1.map(img => img.src);
+      wantedPosts1 = wantedPosts1.map((img) => img.src);
       wantedPosts1.forEach(function(element, index, postArray) {
         if (
           element.toLowerCase().includes(".jpg") ||
@@ -83,7 +73,7 @@ module.exports = async url => {
           }
         }
       });
-      wantedPosts2 = wantedPosts2.map(url => url.href);
+      wantedPosts2 = wantedPosts2.map((url) => url.href);
       wantedPosts2.forEach(function(element, index, postArray) {
         let firstIndex = element.indexOf("PHPSESSID");
         let secondIndex = element.indexOf("&");
@@ -106,7 +96,7 @@ module.exports = async url => {
       //ES2015, removing any url that is an imgur album
       //TODO: use imgur api to get images and download them
       wantedPosts2 = wantedPosts2.filter(
-        item => !item.includes(`imgur.com/a/`)
+        (item) => !item.includes(`imgur.com/a/`)
       );
       let imagesArray = Array.from(new Set(wantedPosts1.concat(wantedPosts2)));
 
@@ -121,12 +111,12 @@ module.exports = async url => {
   let thread = {
     id: urlTopicID,
     website: utils.websiteEnum.geekhack,
-    title: title,
-    start: pageStartDate,
+    title: cleanedTitle,
+    start: cleanedPageStartDate,
     scraped: timeLastScraped,
     updated: updateDate,
     topic: utils.topicEnum.GB,
-    author: author
+    author: author,
   };
 
   let images = [];
@@ -134,7 +124,7 @@ module.exports = async url => {
     let image = {
       thread_id: urlTopicID,
       url: wantedImgLinks[i],
-      orderNumber: i
+      orderNumber: i,
     };
     images.push(image);
   }
