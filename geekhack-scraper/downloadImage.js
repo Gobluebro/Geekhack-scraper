@@ -1,12 +1,13 @@
 const download = require("@jinphen/download2");
 const fs = require("fs");
+const config = require("../config.json");
 
-module.exports = async imageToDowload => {
+module.exports = async (imageToDowload) => {
   let orderNumber = imageToDowload.orderNumber;
   let url = imageToDowload.url;
   let thread_id = imageToDowload.thread_id;
 
-  let path = __dirname + `/../website/src/assets/images/${thread_id}`;
+  let path = config.imagesPath + `/${thread_id}`;
   // I love this download module. It does all the work for me and allows me to save images I had trouble with in the past.
   let image = download(url, path)
     .then(({ data, filename }) => {
@@ -26,12 +27,12 @@ module.exports = async imageToDowload => {
           thread_id: thread_id,
           name: filename,
           url: url,
-          order_number: orderNumber
+          order_number: orderNumber,
         };
         return downloadedImage;
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(
         "failed to download at " + url + " on thread number " + thread_id
       );
