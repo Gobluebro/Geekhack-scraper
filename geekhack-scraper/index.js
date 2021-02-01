@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("../database/initdb");
 const grabGHLinks = require("./grabGHGroupBuyLinks");
 const threadscrape = require("./threadscrape");
