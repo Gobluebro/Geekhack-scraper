@@ -35,20 +35,14 @@ module.exports = async (url) => {
     updateDate = null;
   }
 
-  // limit the amount of posts to just 3 possible posts a threader starter could make (trying to catch anything in "reserved" posts)
-  for (let i = 0; i < 3; i++) {
-    let threadStarterCheck;
-    if (
-      allPosts[i].children[0].children[1].children[1].className == "membergroup"
-    ) {
-      threadStarterCheck =
-        allPosts[i].children[0].children[1].children[2].className;
-    } else {
-      threadStarterCheck =
-        allPosts[i].children[0].children[1].children[1].className;
-    }
+  // limit the amount of posts to just 3 posts max that a threader starter could make
+  // trying to catch anything in "reserved" posts
+  let limitedPostLength = allPosts.length >= 3 ? 3 : allPosts.length;
+
+  for (let i = 0; i < limitedPostLength; i++) {
+    let threadStarterCheck = allPosts[i].querySelector(".threadstarter");
     // is the post made by the threadstarter? get all images links then
-    if (threadStarterCheck === "threadstarter") {
+    if (threadStarterCheck !== null) {
       let wantedPosts1 = Array.from(
         allPosts[i].querySelectorAll("div.post img.bbc_img:not(.resized)")
       );
@@ -56,7 +50,7 @@ module.exports = async (url) => {
         allPosts[i].querySelectorAll("[href*='action=dlattach;topic=']")
       );
       wantedPosts1 = wantedPosts1.map((img) => img.src);
-      wantedPosts1.forEach(function(element, index, postArray) {
+      wantedPosts1.forEach(function (element, index, postArray) {
         if (
           element.toLowerCase().includes(".jpg") ||
           element.toLowerCase().includes(".png") ||
@@ -74,7 +68,7 @@ module.exports = async (url) => {
         }
       });
       wantedPosts2 = wantedPosts2.map((url) => url.href);
-      wantedPosts2.forEach(function(element, index, postArray) {
+      wantedPosts2.forEach(function (element, index, postArray) {
         let firstIndex = element.indexOf("PHPSESSID");
         let secondIndex = element.indexOf("&");
         let subString = element.substring(firstIndex, secondIndex + 1);
@@ -107,7 +101,6 @@ module.exports = async (url) => {
 
   let timeLastScraped = new Date().toUTCString();
 
-  console.log("ID = " + urlTopicID);
   let thread = {
     id: urlTopicID,
     website: utils.websiteEnum.geekhack,
@@ -129,6 +122,5 @@ module.exports = async (url) => {
     images.push(image);
   }
   let pageInfo = { thread, images };
-  console.log("-------done-------");
   return pageInfo;
 };
