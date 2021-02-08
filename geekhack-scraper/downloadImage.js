@@ -6,7 +6,7 @@ module.exports = async (imageToDowload) => {
   let url = imageToDowload.url;
   let thread_id = imageToDowload.thread_id;
 
-  let path = process.env.IMAGE_PATH + `/${thread_id}`;
+  let path = process.env.IMAGES_PATH + `/${thread_id}`;
   // I love this download module. It does all the work for me and allows me to save images I had trouble with in the past.
   let image = download(url, path)
     .then(({ data, filename }) => {
