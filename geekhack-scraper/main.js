@@ -1,4 +1,3 @@
-require("dotenv").config({ path: __dirname + "/../.env" });
 const db = require("../database/initdb");
 const grabGHLinks = require("./grabGHGroupBuyLinks");
 const threadscrape = require("./threadscrape");
