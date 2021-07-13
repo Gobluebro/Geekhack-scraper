@@ -1,6 +1,6 @@
 const download = require("./downloadImage");
 
-module.exports = async imagesToTryToDownload => {
+module.exports = async (imagesToTryToDownload) => {
   let downloadedImages = [];
   for (let i = 0; i < imagesToTryToDownload.length; i++) {
     for (let a = 0; a < imagesToTryToDownload[i].length; a++) {

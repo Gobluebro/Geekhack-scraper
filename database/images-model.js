@@ -7,29 +7,29 @@ const Images = db.define(
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     thread_id: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
     },
     name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     url: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     is_hidden: {
       type: Sequelize.BOOLEAN,
-      defaultValue: false
+      defaultValue: false,
     },
     order_number: {
-      type: Sequelize.INTEGER
-    }
+      type: Sequelize.INTEGER,
+    },
   },
   {
     timestamps: true,
     createdAt: "scraped",
-    updatedAt: false
+    updatedAt: false,
   }
 );
 

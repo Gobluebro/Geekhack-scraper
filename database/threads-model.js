@@ -6,32 +6,32 @@ const Threads = db.define(
   {
     id: {
       type: Sequelize.INTEGER,
-      primaryKey: true
+      primaryKey: true,
     },
     website: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
     },
     title: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     start: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
     },
     scraped: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
     },
     updated: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
     },
     topic: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
     },
     author: {
-      type: Sequelize.STRING
-    }
+      type: Sequelize.STRING,
+    },
   },
   {
-    timestamps: false
+    timestamps: false,
   }
 );
 
