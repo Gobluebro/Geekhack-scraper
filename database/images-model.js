@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const db = require("../database/initdb.js");
+const db = require("./initdb");
 
 const Images = db.define(
   "images",
