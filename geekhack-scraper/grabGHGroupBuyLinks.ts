@@ -2,7 +2,7 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 
 export const GrabGHGroupBuyLinks = async (url: string): Promise<string[]> => {
-  let hyperlinks: string[] = [];
+  let cleanLinks: string[] = [];
   try {
     const response = await axios.get(url);
     const dom = new JSDOM(response.data);
@@ -12,23 +12,16 @@ export const GrabGHGroupBuyLinks = async (url: string): Promise<string[]> => {
     // Not looking for a stickied post since they don't contain group buys, so filter them out.
     // Each cell contains an empty div, followed by a span marked with an id starting with "msg_"
     // The span contains only a remaining anchor which includes the link to the post.
-    const anchorNodeListNoStickPosts = dom.window.document.querySelectorAll("td.subject:not(.stickybg) > div > [id^='msg_'] > a");
-    const urlArray = Array.from(anchorNodeListNoStickPosts, a => a.getAttribute("href"));
+    const anchorListWithNoStickiedPosts: NodeListOf<HTMLAnchorElement> = dom.window.document.querySelectorAll("td.subject:not(.stickybg) > div > [id^='msg_'] > a");
+    
+    const urlArray = Array.from(anchorListWithNoStickiedPosts, a => a.href);
 
-    // for (let i = 0; i < linkTableRows.length; i++) {
-    //   if (!linkTableRows[i].children[0].className.includes("stickybg")) {
-    //     let tempLink =
-    //       linkTableRows[i].children[2].children[0].children[0].children[0].href;
-    //     tempLink =
-    //       "https://geekhack.org/index.php?" +
-    //       tempLink.split("?")[1].split("&")[1];
-
-    //     hyperlinks.push(tempLink);
-    //   }
-    // }
+    // I don't know what PHPSESSID but I don't like the look of it so remove it.
+    const baseLink = "https://geekhack.org/index.php?topic=";
+    cleanLinks = urlArray.map(link => baseLink + link?.split('=')[2]);
   } catch (err) {
     console.error(err);
   } finally {
-    return hyperlinks;
+    return cleanLinks;
   }
 };
