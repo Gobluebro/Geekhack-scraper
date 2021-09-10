@@ -1,14 +1,18 @@
-module.exports.topicEnum = Object.freeze({
-  IC: 0,
-  GB: 1,
-});
-
-module.exports.websiteEnum = Object.freeze({
-  geekhack: 0,
-  massdrop: 1,
-  keebtalk: 2,
-});
-
-module.exports.GroupBuyURL = "https://geekhack.org/index.php?board=70.0";
-module.exports.InterestCheckURL = "https://geekhack.org/index.php?board=132.0";
-// https://www.sitepoint.com/understanding-module-exports-exports-node-js/
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.InterestCheckURL = exports.GroupBuyURL = exports.websiteEnum = exports.topicEnum = void 0;
+var topicEnum;
+(function (topicEnum) {
+    topicEnum[topicEnum["IC"] = 0] = "IC";
+    topicEnum[topicEnum["GB"] = 1] = "GB";
+})(topicEnum = exports.topicEnum || (exports.topicEnum = {}));
+;
+var websiteEnum;
+(function (websiteEnum) {
+    websiteEnum[websiteEnum["geekhack"] = 0] = "geekhack";
+    // scrape others in the future
+})(websiteEnum = exports.websiteEnum || (exports.websiteEnum = {}));
+;
+var basicGeekhackURL = "https://geekhack.org/index.php?board=";
+exports.GroupBuyURL = basicGeekhackURL + "70.0";
+exports.InterestCheckURL = basicGeekhackURL + "132.0";
