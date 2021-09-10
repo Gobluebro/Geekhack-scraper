@@ -1,10 +1,10 @@
 import { config } from "dotenv";
 import express from "express";
 const app = express();
-import scan from "../geekhack-scraper/main.js";
+import scan from "../geekhack-scraper/main";
 config({ path: __dirname + "/../.env" });
 
-app.post("/scan", async (req, res) => {
+app.post("/scan", async () => {
   try {
     await scan();
   } catch (error) {
