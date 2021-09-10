@@ -4,6 +4,7 @@
   "description": "scraps geekhack for informations and images",
   "main": "server.js",
   "scripts": {
+    "startTypeScript": "ts-node ./geekhack-scraper/index.ts",
     "start": "cd server && node server.js",
     "scrape": "cd geekhack-scraper && node index.js"
   },
@@ -43,6 +44,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "prettier": "2.3.2",
+    "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
   }
 }
