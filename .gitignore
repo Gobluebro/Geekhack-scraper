@@ -4,3 +4,4 @@ images
 .env
 *.http
 .vscode/launch.json
+/dist
