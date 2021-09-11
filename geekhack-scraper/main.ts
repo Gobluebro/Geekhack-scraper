@@ -10,7 +10,7 @@ import { GroupBuyURL } from "./utilities";
 //   .then(() => console.log("Database connected..."))
 //   .catch((err) => console.log(`Database Error: ${err}`));
 
-export default async () => {
+export default async (): Promise<void> => {
   const ghGBThreadLinks = await GrabGHGroupBuyLinks(GroupBuyURL);
   // const ghICThreadLinks = await grabGHLinks(InterestCheckURL);
   const allPagesThreadInfo = [];
