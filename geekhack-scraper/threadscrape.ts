@@ -2,16 +2,57 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 import { websiteEnum, topicEnum } from "./utilities";
 
-export default async (url: string) => {
+type thread = {
+  id: number;
+  website: websiteEnum;
+  title: string;
+  start: Date;
+  scraped: Date;
+  updated: Date;
+  topic: topicEnum;
+  author: string;
+};
+
+type image = {
+  thread_id: number;
+  url: string;
+  orderNumber: number;
+};
+
+function formatStartDate(divText: HTMLDivElement | null): number | null {
+  let formattedDate = null;
+
+  if (divText) {
+    const temp = divText.innerHTML
+      .replace("« <strong> on:</strong> ", "")
+      .replace(" »", "");
+
+    try {
+      formattedDate = Date.parse(temp);
+      if (isNaN(formattedDate)) {
+        formattedDate = null;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  return formattedDate;
+}
+
+export default async (
+  url: string
+): Promise<{ thread: thread; images: image[] }> => {
   const response = await axios.get(url);
   const dom = new JSDOM(response.data);
-  const pageStartDate = dom.window.document
-    .querySelector(
-      "#quickModForm > div:nth-child(1) > div > div.postarea > div.flow_hidden > div > div.smalltext"
-    )
-    .innerHTML.replace("« <strong> on:</strong> ", "")
-    .replace(" »", "");
-  const cleanedPageStartDate = Date.parse(pageStartDate);
+
+  // query selctor means this gets the first post
+  const firstPostStartDate = dom.window.document.querySelector<HTMLDivElement>(
+    ".keyinfo > .smalltext"
+  );
+
+  const cleanedStartDate = formatStartDate(firstPostStartDate);
+
   const title =
     dom.window.document.querySelector("[id^='subject_']").textContent;
   const cleanedTitle = title
@@ -107,19 +148,19 @@ export default async (url: string) => {
     id: urlTopicID,
     website: websiteEnum.geekhack,
     title: cleanedTitle,
-    start: cleanedPageStartDate,
+    start: cleanedStartDate,
     scraped: timeLastScraped,
     updated: updateDate,
     topic: topicEnum.GB,
     author,
   };
 
-  const images = wantedImgLinks.map((image, index) => ({
+  const images = wantedImgLinks.map((image: string, index: number) => ({
     thread_id: urlTopicID,
     url: image,
     orderNumber: index,
   }));
 
-  const pageInfo = { thread, images };
+  const pageInfo = { thread: thread, images };
   return pageInfo;
 };
