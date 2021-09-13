@@ -19,11 +19,15 @@ type image = {
   orderNumber: number;
 };
 
-function formatStartDate(divText: HTMLDivElement | null): number | null {
+function getFormattedStartDate(dom: JSDOM): number | null {
+  // query selctor means this gets the first post
+  const firstPostStartDate = dom.window.document.querySelector<HTMLDivElement>(
+    ".keyinfo > .smalltext"
+  );
   let formattedDate = null;
 
-  if (divText) {
-    const temp = divText.innerHTML
+  if (firstPostStartDate) {
+    const temp = firstPostStartDate.innerHTML
       .replace("« <strong> on:</strong> ", "")
       .replace(" »", "");
 
@@ -40,28 +44,32 @@ function formatStartDate(divText: HTMLDivElement | null): number | null {
   return formattedDate;
 }
 
+function getFormattedTitle(dom: JSDOM): string | undefined {
+  // even though HTML Heading Element extends HTMLElement which contains .innerText I am unable to get anything back from it.
+  // so I need to use textContent and rip out all tabs and new lines added.
+  const title =
+    dom.window.document.querySelector<HTMLHeadingElement>("[id^='subject_']");
+  const cleanedTitle = title?.textContent
+    ?.replace("\n", "")
+    .replace("\t", "")
+    .replace("[GB]", "")
+    .replace("[IC]", "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return cleanedTitle;
+}
+
 export default async (
   url: string
 ): Promise<{ thread: thread; images: image[] }> => {
   const response = await axios.get(url);
   const dom = new JSDOM(response.data);
 
-  // query selctor means this gets the first post
-  const firstPostStartDate = dom.window.document.querySelector<HTMLDivElement>(
-    ".keyinfo > .smalltext"
-  );
+  const cleanedStartDate = getFormattedStartDate(dom);
 
-  const cleanedStartDate = formatStartDate(firstPostStartDate);
+  const cleanedTitle = getFormattedTitle(dom);
 
-  const title =
-    dom.window.document.querySelector("[id^='subject_']").textContent;
-  const cleanedTitle = title
-    .replace("\n", "")
-    .replace("\t", "")
-    .replace("[GB]", "")
-    .replace("[IC]", "")
-    .replace(/\s+/g, " ")
-    .trim();
   const allPosts = dom.window.document.querySelectorAll(".post_wrapper");
   let wantedImgLinks = [];
   const author = allPosts[0].children[0].children[0].children[1].text;
