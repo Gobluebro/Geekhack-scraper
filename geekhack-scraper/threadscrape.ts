@@ -96,16 +96,9 @@ export default async (
   const response = await axios.get(url);
   const dom = new JSDOM(response.data);
 
-  const cleanedStartDate = getFormattedStartDate(dom);
-
-  const cleanedTitle = getFormattedTitle(dom);
-
-  const author = getAuthor(dom);
-
-  const cleanedModDate = getFormattedModDate(dom);
-
-  const allPosts = dom.window.document.querySelectorAll(".post_wrapper");
-  let wantedImgLinks = [];
+  const allPosts =
+    dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper");
+  let wantedImgLinks: string[] = [];
 
   // limit the amount of posts to just 3 posts max that a threader starter could make
   // trying to catch anything in "reserved" posts
@@ -173,17 +166,15 @@ export default async (
   }
   const urlTopicID = url.split("=")[1].split(".")[0];
 
-  const timeLastScraped = new Date().toUTCString();
-
   const thread = {
     id: urlTopicID,
     website: websiteEnum.geekhack,
-    title: cleanedTitle,
-    start: cleanedStartDate,
-    scraped: timeLastScraped,
-    updated: cleanedModDate,
+    title: getFormattedTitle(dom),
+    start: getFormattedStartDate(dom),
+    scraped: new Date().toUTCString(),
+    updated: getFormattedModDate(dom),
     topic: topicEnum.GB,
-    author,
+    author: getAuthor(dom),
   };
 
   const images = wantedImgLinks.map((image: string, index: number) => ({
