@@ -60,6 +60,36 @@ function getFormattedTitle(dom: JSDOM): string | undefined {
   return cleanedTitle;
 }
 
+function getAuthor(dom: JSDOM): string | undefined {
+  const authorLink =
+    dom.window.document.querySelector<HTMLAnchorElement>(".poster > h4 > a");
+
+  return authorLink?.text;
+}
+
+function getFormattedModDate(dom: JSDOM): number | null {
+  // There is always a div for the last edit, even if there is no edit.
+  // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
+  const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
+
+  let formattedDate = null;
+  if (modDate) {
+    const temp = modDate.textContent?.split("Edit:")[1].split("by")[0];
+    if (temp) {
+      try {
+        formattedDate = Date.parse(temp);
+        if (isNaN(formattedDate)) {
+          formattedDate = null;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  return formattedDate;
+}
+
 export default async (
   url: string
 ): Promise<{ thread: thread; images: image[] }> => {
@@ -70,19 +100,12 @@ export default async (
 
   const cleanedTitle = getFormattedTitle(dom);
 
+  const author = getAuthor(dom);
+
+  const cleanedModDate = getFormattedModDate(dom);
+
   const allPosts = dom.window.document.querySelectorAll(".post_wrapper");
   let wantedImgLinks = [];
-  const author = allPosts[0].children[0].children[0].children[1].text;
-  // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
-  const modDatePost = allPosts[0]
-    .querySelector("[id^='modified_']")
-    .textContent.trim();
-  const replaced = modDatePost.replace("Last Edit: ", "");
-  const res = replaced.split(" by")[0].replace("« ", "");
-  let updateDate = Date.parse(res);
-  if (Number.isNaN(updateDate)) {
-    updateDate = null;
-  }
 
   // limit the amount of posts to just 3 posts max that a threader starter could make
   // trying to catch anything in "reserved" posts
@@ -158,7 +181,7 @@ export default async (
     title: cleanedTitle,
     start: cleanedStartDate,
     scraped: timeLastScraped,
-    updated: updateDate,
+    updated: cleanedModDate,
     topic: topicEnum.GB,
     author,
   };
