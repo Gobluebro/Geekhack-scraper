@@ -2,22 +2,57 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 import { websiteEnum, topicEnum } from "./utilities";
 
-type thread = {
-  id: number;
-  website: websiteEnum;
-  title: string;
-  start: Date;
-  scraped: Date;
-  updated: Date;
-  topic: topicEnum;
-  author: string;
+type PageInfo = {
+  thread: Thread;
+  image: Image[];
 };
 
-type image = {
+type Thread = {
+  id: number;
+  website: websiteEnum;
+  title: string | undefined;
+  start: number | null;
+  scraped: Date;
+  updated: number | null;
+  topic: topicEnum;
+  author: string | undefined;
+};
+
+type Image = {
   thread_id: number;
-  url: string;
+  url: string | undefined;
   orderNumber: number;
 };
+
+function getAuthor(dom: JSDOM): string | undefined {
+  const authorLink =
+    dom.window.document.querySelector<HTMLAnchorElement>(".poster > h4 > a");
+
+  return authorLink?.text;
+}
+
+function getFormattedModDate(dom: JSDOM): number | null {
+  // There is always a div for the last edit, even if there is no edit.
+  // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
+  const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
+
+  let formattedDate = null;
+  if (modDate) {
+    const temp = modDate.textContent?.split("Edit:")[1].split("by")[0];
+    if (temp) {
+      try {
+        formattedDate = Date.parse(temp);
+        if (isNaN(formattedDate)) {
+          formattedDate = null;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  return formattedDate;
+}
 
 function getFormattedStartDate(dom: JSDOM): number | null {
   // query selctor means this gets the first post
@@ -60,129 +95,63 @@ function getFormattedTitle(dom: JSDOM): string | undefined {
   return cleanedTitle;
 }
 
-function getAuthor(dom: JSDOM): string | undefined {
-  const authorLink =
-    dom.window.document.querySelector<HTMLAnchorElement>(".poster > h4 > a");
-
-  return authorLink?.text;
-}
-
-function getFormattedModDate(dom: JSDOM): number | null {
-  // There is always a div for the last edit, even if there is no edit.
-  // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
-  const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
-
-  let formattedDate = null;
-  if (modDate) {
-    const temp = modDate.textContent?.split("Edit:")[1].split("by")[0];
-    if (temp) {
-      try {
-        formattedDate = Date.parse(temp);
-        if (isNaN(formattedDate)) {
-          formattedDate = null;
-        }
-      } catch (e) {
-        console.error(e);
+function getImageLinks(dom: JSDOM): (string | undefined)[] {
+  const allPosts = Array.from(
+    dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper")
+  );
+  const limitedPostLength = allPosts.length >= 3 ? 3 : allPosts.length;
+  const firstThreePosts = allPosts.slice(0, limitedPostLength);
+  //slice this into 3 instead and then map
+  const imgLinks = firstThreePosts.map(
+    (post: HTMLDivElement): string[] | undefined => {
+      let imageLinks: string[] | undefined;
+      const threadStarterCheck = post.querySelector(".threadstarter");
+      // is the post made by the threadstarter? get all images links then
+      if (threadStarterCheck !== null) {
+        // TODO: collect some URLs for testing this to make sure all wanted images come back.
+        const allImgElements = Array.from(
+          post.querySelectorAll<HTMLImageElement>(
+            ".post img.bbc_img:not(.resized)"
+          )
+        );
+        imageLinks = allImgElements.map((img: HTMLImageElement) => img.src);
       }
+      return imageLinks;
     }
-  }
-
-  return formattedDate;
+  );
+  // remove array of arrays, and remove empty strings
+  const flattenedImgLinkArray = imgLinks.flat(1).filter((link) => {
+    return link;
+  });
+  return flattenedImgLinkArray;
 }
 
-export default async (
-  url: string
-): Promise<{ thread: thread; images: image[] }> => {
+export default async (url: string): Promise<PageInfo> => {
   const response = await axios.get(url);
   const dom = new JSDOM(response.data);
 
-  const allPosts =
-    dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper");
-  let wantedImgLinks: string[] = [];
-
-  // limit the amount of posts to just 3 posts max that a threader starter could make
-  // trying to catch anything in "reserved" posts
-  const limitedPostLength = allPosts.length >= 3 ? 3 : allPosts.length;
-
-  for (let i = 0; i < limitedPostLength; i++) {
-    const threadStarterCheck = allPosts[i].querySelector(".threadstarter");
-    // is the post made by the threadstarter? get all images links then
-    if (threadStarterCheck !== null) {
-      let wantedPosts1 = Array.from(
-        allPosts[i].querySelectorAll("div.post img.bbc_img:not(.resized)")
-      );
-      let wantedPosts2 = Array.from(
-        allPosts[i].querySelectorAll("[href*='action=dlattach;topic=']")
-      );
-      wantedPosts1 = wantedPosts1.map((img) => img.src);
-      wantedPosts1.forEach((element, index, postArray) => {
-        if (
-          element.toLowerCase().includes(".jpg") ||
-          element.toLowerCase().includes(".png") ||
-          element.toLowerCase().includes(".jepg") ||
-          element.toLowerCase().includes(".gif")
-        ) {
-          const regPat = new RegExp(
-            /(http(s?):)([/|.|\w|\s|\%|-])*\.(?:jpg|gif|jpeg|png)/g
-          );
-          let validatedURL = element.match(regPat);
-          if (validatedURL != null) {
-            validatedURL = validatedURL.join("");
-            postArray[index] = validatedURL;
-          }
-        }
-      });
-      wantedPosts2 = wantedPosts2.map((url) => url.href);
-      wantedPosts2.forEach((element, index, postArray) => {
-        const firstIndex = element.indexOf("PHPSESSID");
-        const secondIndex = element.indexOf("&");
-        const subString = element.substring(firstIndex, secondIndex + 1);
-        const replaceString = element.replace(subString, "");
-        let validatedURL = replaceString;
-        if (
-          replaceString.toLowerCase().includes(".jpg") ||
-          replaceString.toLowerCase().includes(".png") ||
-          replaceString.toLowerCase().includes(".jpeg") ||
-          replaceString.toLowerCase().includes(".gif")
-        ) {
-          const regPat = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|jpeg|png)/g;
-          validatedURL = replaceString.match(regPat).join("");
-        }
-
-        postArray[index] = validatedURL;
-      });
-
-      // ES2015, removing any url that is an imgur album
-      // TODO: use imgur api to get images and download them
-      wantedPosts2 = wantedPosts2.filter(
-        (item) => !item.includes(`imgur.com/a/`)
-      );
-      const imagesArray = Array.from(
-        new Set(wantedPosts1.concat(wantedPosts2))
-      );
-
-      wantedImgLinks = wantedImgLinks.concat(imagesArray);
-    }
-  }
-  const urlTopicID = url.split("=")[1].split(".")[0];
+  const imageLinks = getImageLinks(dom);
+  const urlTopicID = parseInt(url.split("=")[1].split(".")[0], 10);
 
   const thread = {
     id: urlTopicID,
     website: websiteEnum.geekhack,
     title: getFormattedTitle(dom),
     start: getFormattedStartDate(dom),
-    scraped: new Date().toUTCString(),
+    scraped: new Date(),
     updated: getFormattedModDate(dom),
     topic: topicEnum.GB,
     author: getAuthor(dom),
   };
 
-  const images = wantedImgLinks.map((image: string, index: number) => ({
-    thread_id: urlTopicID,
-    url: image,
-    orderNumber: index,
-  }));
+  const images = imageLinks.map(
+    (image: string | undefined, index: number): Image => ({
+      thread_id: urlTopicID,
+      url: image,
+      orderNumber: index,
+    })
+  );
 
-  const pageInfo = { thread: thread, images };
+  const pageInfo: PageInfo = { thread: thread, image: images };
   return pageInfo;
 };
