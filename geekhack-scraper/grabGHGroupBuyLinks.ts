@@ -9,13 +9,13 @@ export const GrabGHGroupBuyLinks = async (url: string): Promise<string[]> => {
     const dom = new JSDOM(response.data);
 
     // There are 50 posts on one page.
-    // Looking for subject cell, which is marked by a subject class.
-    // Not looking for a stickied post since they don't contain group buys, so filter them out.
-    // Each cell contains an empty div, followed by a span marked with an id starting with "msg_"
-    // The span contains only a remaining anchor which includes the link to the post.
+    // We are looking for the link to the group buy.
+    // So we get the td that includes the link. It is marked by a subject class.
+    // Stickied posts have separate classes, so we want the windowbg2 class.
+    // Each td contains an empty div, followed by a span, then by a url for the group buy.
     const anchorListWithNoStickiedPosts: NodeListOf<HTMLAnchorElement> =
       dom.window.document.querySelectorAll(
-        "td.subject:not(.stickybg) > div > [id^='msg_'] > a"
+        ".subject.windowbg2 > div > span > a"
       );
 
     const urlArray = Array.from(anchorListWithNoStickiedPosts, (a) => a.href);
