@@ -1,11 +1,20 @@
 import axios from "axios";
 import { JSDOM } from "jsdom";
 
-export const GrabGHGroupBuyLinks = async (url: string): Promise<string[]> => {
+export interface GroupBuyPage {
+  PageLink: string;
+  BodyDom: JSDOM;
+}
+
+export const GrabGHGroupBuyLinks = async (
+  gbUrl: string
+): Promise<GroupBuyPage[]> => {
+  let threadDoms: JSDOM[] = [];
   let cleanLinks: string[] = [];
+  let pages: GroupBuyPage[] = [];
 
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(gbUrl);
     const dom = new JSDOM(response.data);
 
     // There are 50 posts on one page.
@@ -23,9 +32,21 @@ export const GrabGHGroupBuyLinks = async (url: string): Promise<string[]> => {
     // I don't know what PHPSESSID but I don't like the look of it so remove it.
     const baseLink = "https://geekhack.org/index.php?topic=";
     cleanLinks = urlArray.map((link) => baseLink + link?.split("=")[2]);
+
+    threadDoms = await Promise.all(
+      cleanLinks.map(async (link) => {
+        const response = await axios.get(link);
+        const dom = new JSDOM(response.data);
+        return dom;
+      })
+    );
+
+    pages = cleanLinks.map((link, index) => {
+      return { PageLink: link, BodyDom: threadDoms[index] };
+    });
   } catch (err) {
     console.error(err);
   }
 
-  return cleanLinks;
+  return pages;
 };

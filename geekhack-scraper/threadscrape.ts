@@ -1,13 +1,13 @@
-import axios from "axios";
 import { JSDOM } from "jsdom";
 import { websiteEnum, topicEnum } from "./utilities";
+import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 
-type PageInfo = {
+export type PageInfo = {
   thread: Thread;
   image: Image[];
 };
 
-type Thread = {
+export type Thread = {
   id: number;
   website: websiteEnum;
   title: string | undefined;
@@ -18,7 +18,7 @@ type Thread = {
   author: string | undefined;
 };
 
-type Image = {
+export type Image = {
   thread_id: number;
   url: string | undefined;
   orderNumber: number;
@@ -126,22 +126,19 @@ function getImageLinks(dom: JSDOM): (string | undefined)[] {
   return flattenedImgLinkArray;
 }
 
-export default async (url: string): Promise<PageInfo> => {
-  const response = await axios.get(url);
-  const dom = new JSDOM(response.data);
-
-  const imageLinks = getImageLinks(dom);
-  const urlTopicID = parseInt(url.split("=")[1].split(".")[0], 10);
+export default (page: GroupBuyPage): PageInfo => {
+  const imageLinks = getImageLinks(page.BodyDom);
+  const urlTopicID = parseInt(page.PageLink.split("=")[1].split(".")[0], 10);
 
   const thread = {
     id: urlTopicID,
     website: websiteEnum.geekhack,
-    title: getFormattedTitle(dom),
-    start: getFormattedStartDate(dom),
+    title: getFormattedTitle(page.BodyDom),
+    start: getFormattedStartDate(page.BodyDom),
     scraped: new Date(),
-    updated: getFormattedModDate(dom),
+    updated: getFormattedModDate(page.BodyDom),
     topic: topicEnum.GB,
-    author: getAuthor(dom),
+    author: getAuthor(page.BodyDom),
   };
 
   const images = imageLinks.map(
