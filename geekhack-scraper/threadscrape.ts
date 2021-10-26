@@ -120,7 +120,7 @@ function getImageLinks(dom: JSDOM): (string | undefined)[] {
     }
   );
   // remove array of arrays, and remove empty strings
-  const flattenedImgLinkArray = imgLinks.flat(1).filter((link) => {
+  const flattenedImgLinkArray = imgLinks.flat().filter((link) => {
     return link;
   });
   return flattenedImgLinkArray;
