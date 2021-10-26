@@ -2,7 +2,7 @@ import images from "../database/images-model";
 import threads from "../database/threads-model";
 import { Thread, Image, PageInfo } from "./threadscrape";
 
-export const SaveToDataBase = async (pages: PageInfo[]): Promise<void> => {
+export const SaveToDatabase = async (pages: PageInfo[]): Promise<void> => {
   const threadsToSaveToDatabase: Thread[] = pages.map(
     (page: PageInfo) => page.thread
   );
