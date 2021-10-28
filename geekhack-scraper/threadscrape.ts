@@ -22,6 +22,7 @@ export type Image = {
   thread_id: number;
   url: string | undefined;
   orderNumber: number;
+  name?: string;
 };
 
 function getAuthor(dom: JSDOM): string | undefined {
