@@ -1,5 +1,5 @@
 import { JSDOM } from "jsdom";
-import { websiteEnum, topicEnum } from "./utilities";
+import { WebsiteEnum, TopicEnum } from "../utils/constants";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 
 export type PageInfo = {
@@ -9,12 +9,12 @@ export type PageInfo = {
 
 export type Thread = {
   id: number;
-  website: websiteEnum;
+  website: WebsiteEnum;
   title: string | undefined;
   start: number | null;
   scraped: Date;
   updated: number | null;
-  topic: topicEnum;
+  topic: TopicEnum;
   author: string | undefined;
 };
 
@@ -132,12 +132,12 @@ export default (page: GroupBuyPage): PageInfo => {
 
   const thread = {
     id: urlTopicID,
-    website: websiteEnum.geekhack,
+    website: WebsiteEnum.geekhack,
     title: getFormattedTitle(page.BodyDom),
     start: getFormattedStartDate(page.BodyDom),
     scraped: new Date(),
     updated: getFormattedModDate(page.BodyDom),
-    topic: topicEnum.GB,
+    topic: TopicEnum.GB,
     author: getAuthor(page.BodyDom),
   };
 
