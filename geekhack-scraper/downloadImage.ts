@@ -4,11 +4,17 @@ import {
   DownloadInfoStats,
 } from "node-downloader-helper";
 import { Image } from "./threadscrape";
+import fs from "fs";
+import { Environment } from "../utils/constants";
 
 export default async (imageToDowload: Image): Promise<Image | null> => {
   const { orderNumber, url, thread_id } = imageToDowload;
 
-  const path = `${process.env.IMAGES_PATH}/${thread_id}`;
+  const path = `${Environment.imagePath}/${thread_id}`;
+  if (!fs.existsSync(path)) {
+    fs.mkdirSync(path);
+  }
+
   if (url) {
     const download = new DownloaderHelper(url, path);
     download
