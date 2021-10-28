@@ -1,33 +1,42 @@
-// replace with https://github.com/hgouveia/node-downloader-helper
-const download = require("@jinphen/download2");
-const fs = require("fs");
+import {
+  DownloadEndedStats,
+  DownloaderHelper,
+  DownloadInfoStats,
+} from "node-downloader-helper";
+import { Image } from "./threadscrape";
 
-module.exports = async (imageToDowload) => {
+export default async (imageToDowload: Image): Promise<Image | null> => {
   const { orderNumber, url, thread_id } = imageToDowload;
 
   const path = `${process.env.IMAGES_PATH}/${thread_id}`;
-  // I love this download module. It does all the work for me and allows me to save images I had trouble with in the past.
-  const image = download(url, path)
-    .then(({ data, filename }) => {
-      if (!fs.existsSync(`${path}/${filename}`)) {
-        console.log(`${filename} image already saved`);
-      } else {
-        fs.writeFileSync(`${path}/${filename}`, data);
-        console.log(
-          `thread: ${thread_id} filename: ${filename} saved to ${path}`
-        );
+  if (url) {
+    const download = new DownloaderHelper(url, path);
+    download
+      .on("skip", (skipInfo) =>
+        console.log("Download skipped. File already exists: ", skipInfo)
+      )
+      .on("download", (downloadInfo: DownloadInfoStats) =>
+        console.log("Download Begins: ", {
+          name: downloadInfo.fileName,
+          total: downloadInfo.totalSize,
+        })
+      )
+      .on("end", (downloadInfo: DownloadEndedStats) => {
+        console.log("Download Info: ", downloadInfo);
         const downloadedImage = {
           thread_id,
-          name: filename,
+          name: downloadInfo.fileName,
           url,
           order_number: orderNumber,
         };
         return downloadedImage;
-      }
-    })
-    .catch((err) => {
-      console.log(`failed to download at ${url} on thread number ${thread_id}`);
-      console.error(err);
-    });
-  return image;
+      })
+      .on("error", (err: Error) =>
+        console.error(
+          `failed to download at ${url} on thread number ${thread_id}`,
+          err
+        )
+      );
+  }
+  return null;
 };
