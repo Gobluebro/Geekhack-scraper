@@ -1,7 +1,8 @@
 import express from "express";
-const app = express();
-import scan from "../geekhack-scraper/main";
+import scan from "../geekhack-scraper";
 import { Environment } from "../utils/constants";
+
+const app = express();
 
 app.post("/scan", async () => {
   try {
