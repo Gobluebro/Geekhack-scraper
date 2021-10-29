@@ -1,29 +1,29 @@
-const Sequelize = require("sequelize");
-const db = require("./initdb");
+import { DataTypes } from "sequelize/types";
+import db from "./initdb";
 
 const Images = db.define(
   "images",
   {
     id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       primaryKey: true,
       autoIncrement: true,
     },
     thread_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
     },
     name: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
     },
     url: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
     },
     is_hidden: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
     order_number: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
     },
   },
   {
@@ -33,4 +33,4 @@ const Images = db.define(
   }
 );
 
-module.exports = Images;
+export default Images;
