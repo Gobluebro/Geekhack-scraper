@@ -1,13 +1,10 @@
+/* eslint-disable no-undef */
 module.exports = {
-  env: {
-    browser: true,
-    commonjs: true,
-    es2021: true,
-    node: true,
+  root: true,
+  parser: "@typescript-eslint/parser",
+  plugins: ["@typescript-eslint"],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  rules: {
+    "no-console": "off",
   },
-  extends: ["airbnb-base", "prettier"],
-  parserOptions: {
-    ecmaVersion: 12,
-  },
-  rules: {},
 };
