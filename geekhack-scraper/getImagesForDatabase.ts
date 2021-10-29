@@ -4,7 +4,7 @@ import { Image } from "./threadscrape";
 export default async (imagesToTryToDownload: Image[]): Promise<Image[]> => {
   const downloadedImages = await Promise.all(
     imagesToTryToDownload.map(async (image: Image) => {
-      const imageToSave = await download(image);
+      const imageToSave = download(image);
       if (imageToSave) {
         return imageToSave;
       }

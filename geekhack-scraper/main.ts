@@ -2,7 +2,7 @@
 import { GrabGHGroupBuyLinks, GroupBuyPage } from "./grabGHGroupBuyLinks";
 import threadscrape, { PageInfo } from "./threadscrape";
 import { SaveToDatabase } from "./saveToDatabase";
-import { GroupBuyURL } from "../utils/constants";
+import { GroupBuyURL } from "./utilities";
 
 // db.authenticate()
 //   .then(() => console.log("Database connected..."))
@@ -10,10 +10,10 @@ import { GroupBuyURL } from "../utils/constants";
 
 export default async (): Promise<void> => {
   const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(GroupBuyURL);
-  // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(InterestCheckURL);
+  // const ghICThreadLinks = await grabGHLinks(InterestCheckURL);
 
   // returns object of threads and object of images in an array
   const ghGbPagesInfo: PageInfo[] = ghGBPages.map((page) => threadscrape(page));
-  
+
   const saveInfo = await SaveToDatabase(ghGbPagesInfo);
 };
