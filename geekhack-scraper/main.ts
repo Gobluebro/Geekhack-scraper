@@ -1,12 +1,12 @@
-// import db from "../database/initdb";
+import db from "../database/initdb";
 import { GrabGHGroupBuyLinks, GroupBuyPage } from "./grabGHGroupBuyLinks";
 import threadscrape, { PageInfo } from "./threadscrape";
 import { SaveToDatabase } from "./saveToDatabase";
 import { GroupBuyURL } from "../utils/constants";
 
-// db.authenticate()
-//   .then(() => console.log("Database connected..."))
-//   .catch((err) => console.log(`Database Error: ${err}`));
+db.authenticate()
+  .then(() => console.log("Database connected..."))
+  .catch((err) => console.log(`Database Error: ${err}`));
 
 export default async (): Promise<void> => {
   const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(GroupBuyURL);
