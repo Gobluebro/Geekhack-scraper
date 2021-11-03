@@ -1,14 +1,15 @@
 declare global {
     namespace NodeJS {
         interface ProcessEnv {
-        PORT: number;
-        SERVER_PORT: number;
-        DB_TYPE: string;
-        DB_HOST: string;
-        DB_USER: string;
-        DB_PASS: string;
-        DB_DIALECT: Dialect | undefined;
-        IMAGES_PATH: string;
+            SERVER_PORT: number;
+            DB_TYPE: string;
+            DB_NAME: string;
+            DB_HOST: string;
+            DB_PORT: number;
+            DB_USER: string;
+            DB_PASS: string;
+            DB_DIALECT: "mysql" | "postgres" | "sqlite" | "mariadb" | "mssql";
+            IMAGES_PATH: string;
         }
     }
 }

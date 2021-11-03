@@ -8,7 +8,7 @@ db.authenticate()
   .then(() => console.log("Database connected..."))
   .catch((err) => console.log(`Database Error: ${err}`));
 
-export default async (): Promise<void> => {
+(async (): Promise<void> => {
   const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(GroupBuyURL);
   // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(InterestCheckURL);
 
@@ -16,4 +16,4 @@ export default async (): Promise<void> => {
   const ghGbPagesInfo: PageInfo[] = ghGBPages.map((page) => threadscrape(page));
   
   const saveInfo = await SaveToDatabase(ghGbPagesInfo);
-};
+})();
