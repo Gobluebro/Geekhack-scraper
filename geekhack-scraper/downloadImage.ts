@@ -38,6 +38,10 @@ const downloadImageAndReturnFilename = (url: string, path: string): Promise<stri
         total: downloadInfo.totalSize,
       })
     )
+    .on("timeout", () => {
+      console.log("timed out");
+      reject(null);
+    })
     .on("retry", (attempt: number, opts: RetryOptions, err: Error) => {
       console.log({
         RetryAttempt: `${attempt}/${opts.maxRetries}`,
