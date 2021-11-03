@@ -1,7 +1,18 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import db from "./initdb";
 //https://sequelize.org/master/manual/typescript.html#usage
-const Threads = db.define(
+
+interface ThreadsInstance extends Model {
+  id: number;
+  website: string;
+  title: string;
+  start: Date;
+  scraped: Date;
+  updated: Date;
+  topic: number;
+  author: string;
+}
+const ThreadsModel = db.define<ThreadsInstance>(
   "threads",
   {
     id: {
@@ -35,4 +46,4 @@ const Threads = db.define(
   }
 );
 
-export default Threads;
+export default ThreadsModel;

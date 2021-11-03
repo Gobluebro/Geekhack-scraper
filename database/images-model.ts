@@ -1,7 +1,16 @@
-import { DataTypes } from "sequelize/types";
+import { DataTypes, Model } from "sequelize/types";
 import db from "./initdb";
 
-const Images = db.define(
+interface ImagesInstance extends Model {
+  id: number;
+  thread_id: number;
+  name: string;
+  url: string;
+  is_hidden: boolean;
+  order_number: number;
+}
+
+const ImagesModel = db.define<ImagesInstance>(
   "images",
   {
     id: {
@@ -33,4 +42,4 @@ const Images = db.define(
   }
 );
 
-export default Images;
+export default ImagesModel;
