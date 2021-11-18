@@ -20,5 +20,5 @@ jobs:
         uses: githubocto/flat@v3
         with:
           http_url: https://geekhack.org/index.php?topic=113697.0
-          downloaded_filename: group-buy-test-page.html
+          downloaded_filename: ./tests/group-buy-test-page.html
           postprocess: ./tests/postProcess.ts
