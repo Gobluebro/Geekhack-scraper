@@ -6,6 +6,20 @@ export interface GroupBuyPage {
   BodyDom: JSDOM;
 }
 
+export function getCleanedGroupBuyLinks(dom: JSDOM) {
+  const anchorListWithNoStickiedPosts: NodeListOf<HTMLAnchorElement> = dom.window.document.querySelectorAll(
+    ".subject.windowbg2 > div > span > a"
+  );
+
+  const urlArray = Array.from(anchorListWithNoStickiedPosts, (a) => a.href);
+
+  // I don't know what PHPSESSID but I don't like the look of it so remove it.
+  const baseLink = "https://geekhack.org/index.php?topic=";
+  const cleanLinks: string[] = urlArray.map((link) => baseLink + link?.split("=")[2]);
+  return cleanLinks;
+}
+
+
 export const GrabGHGroupBuyLinks = async (
   gbUrl: string
 ): Promise<GroupBuyPage[]> => {
@@ -20,16 +34,7 @@ export const GrabGHGroupBuyLinks = async (
     // So we get the td that includes the link. It is marked by a subject class.
     // Stickied posts have separate classes, so we want the windowbg2 class.
     // Each td contains an empty div, followed by a span, then by a url for the group buy.
-    const anchorListWithNoStickiedPosts: NodeListOf<HTMLAnchorElement> =
-      dom.window.document.querySelectorAll(
-        ".subject.windowbg2 > div > span > a"
-      );
-
-    const urlArray = Array.from(anchorListWithNoStickiedPosts, (a) => a.href);
-
-    // I don't know what PHPSESSID but I don't like the look of it so remove it.
-    const baseLink = "https://geekhack.org/index.php?topic=";
-    const cleanLinks: string[] = urlArray.map((link) => baseLink + link?.split("=")[2]);
+    const cleanLinks: string[] = getCleanedGroupBuyLinks(dom);
 
     const threadDoms: JSDOM[] = await Promise.all(
       cleanLinks.map(async (link) => {
