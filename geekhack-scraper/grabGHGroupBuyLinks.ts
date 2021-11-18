@@ -9,8 +9,6 @@ export interface GroupBuyPage {
 export const GrabGHGroupBuyLinks = async (
   gbUrl: string
 ): Promise<GroupBuyPage[]> => {
-  let threadDoms: JSDOM[] = [];
-  let cleanLinks: string[] = [];
   let pages: GroupBuyPage[] = [];
 
   try {
@@ -31,9 +29,9 @@ export const GrabGHGroupBuyLinks = async (
 
     // I don't know what PHPSESSID but I don't like the look of it so remove it.
     const baseLink = "https://geekhack.org/index.php?topic=";
-    cleanLinks = urlArray.map((link) => baseLink + link?.split("=")[2]);
+    const cleanLinks: string[] = urlArray.map((link) => baseLink + link?.split("=")[2]);
 
-    threadDoms = await Promise.all(
+    const threadDoms: JSDOM[] = await Promise.all(
       cleanLinks.map(async (link) => {
         const response = await axios.get(link);
         const dom = new JSDOM(response.data);
