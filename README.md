@@ -2,7 +2,7 @@
 
 ## Motivation
 
-I believe that for the average user, keeping up with keyboard group buys can be somewhat tedious. I believe there are people are interested in getting something custom but they do not have the time to keep up with everything and they eventually feel that they really missed out.
+I believe that for the average user, keeping up with keyboard group buys can be somewhat tedious. I believe there are people that are interested in getting something custom but they do not have the time to keep up with everything and they eventually feel that they really missed out.
 
 I think Drop (formly known as Massdrop) is a good example of grabbing enough attention for average users. I think being able to see a photo of the group buy along with a title is a lot better than clicking through every single group buy on a forum like Geekhack just to see what it looks like. So I made this project to hopefully bring more attention to group buys.
 
