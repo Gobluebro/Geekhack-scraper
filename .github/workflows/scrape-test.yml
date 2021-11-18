@@ -1,4 +1,8 @@
 on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - .github/workflows/scrape-test.yml
   schedule:
     - cron: 0 0 1 * * # Once a month. Ref https://crontab.guru/examples.html
 name: Scrape Test
