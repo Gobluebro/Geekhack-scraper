@@ -5,7 +5,7 @@
   "scripts": {
     "scrape": "ts-node ./geekhack-scraper/index.ts",
     "server": "ts-node ./server/server.ts",
-    "test": "ts-node ./tests/runTests.ts"
+    "test": "jest"
   },
   "keywords": [
     "geek",
@@ -36,14 +36,21 @@
     "sequelize": "^6.8.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
     "@tsconfig/recommended": "^1.0.1",
     "@types/express": "^4.17.13",
+    "@types/jest": "^27.0.2",
     "@types/jsdom": "^16.2.13",
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
+    "babel-jest": "^27.3.1",
     "eslint": "^8.1.0",
     "eslint-plugin-import": "^2.25.2",
+    "jest": "^27.3.1",
+    "nock": "^13.2.1",
     "prettier": "2.4.1",
     "prettier-eslint": "^13.0.0",
     "ts-node": "^10.4.0",
