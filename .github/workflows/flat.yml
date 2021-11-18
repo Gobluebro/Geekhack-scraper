@@ -1,0 +1,24 @@
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - .github/workflows/flat.yml
+      - ./tests/postProcess.ts
+  schedule:
+    - cron: 0 0 1 * *
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: v1.x
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - name: Fetch data
+        uses: githubocto/flat@v3
+        with:
+          http_url: https://geekhack.org/index.php?topic=113697.0
+          downloaded_filename: group-buy-test-page.html
+          postprocess: ./tests/postProcess.ts
