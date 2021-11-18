@@ -3,7 +3,6 @@ on:
   push:
     paths:
       - .github/workflows/flat.yml
-      - ./tests/postProcess.ts
   schedule:
     - cron: 0 0 1 * *
 jobs:
@@ -21,4 +20,3 @@ jobs:
         with:
           http_url: https://geekhack.org/index.php?topic=113697.0
           downloaded_filename: ./tests/group-buy-test-page.html
-          postprocess: ./tests/postProcess.ts
