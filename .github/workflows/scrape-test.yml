@@ -1,12 +1,10 @@
 on:
-  workflow_dispatch: {}
-  push:
-    paths:
-      - .github/workflows/flat.yml
   schedule:
-    - cron: 0 0 1 * *
+    - cron: 0 0 1 * * # Once a month. Ref https://crontab.guru/examples.html
+name: Scrape Test
 jobs:
   scheduled:
+    name: Scrape Test
     runs-on: ubuntu-latest
     steps:
       - name: Setup deno
@@ -20,3 +18,9 @@ jobs:
         with:
           http_url: https://geekhack.org/index.php?topic=113697.0
           downloaded_filename: ./tests/group-buy-test-page.html
+      - name: Build
+        run: npm install # any dependencies you may need
+      - name: Scrape
+        run: npm run test # actually run your npm script for testing
+        # env:
+        #   WHATEVER_TOKEN: ${{ secrets.YOU_WANT }}

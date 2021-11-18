@@ -4,7 +4,8 @@
   "description": "scraps geekhack for informations and images",
   "scripts": {
     "scrape": "ts-node ./geekhack-scraper/index.ts",
-    "server": "ts-node ./server/server.ts"
+    "server": "ts-node ./server/server.ts",
+    "test": "ts-node ./tests/runTests.ts"
   },
   "keywords": [
     "geek",
