@@ -11,17 +11,8 @@ jobs:
     name: Scrape Test
     runs-on: ubuntu-latest
     steps:
-      - name: Setup deno
-        uses: denoland/setup-deno@main
-        with:
-          deno-version: v1.x
       - name: Check out repo
         uses: actions/checkout@v2
-      - name: Fetch data
-        uses: githubocto/flat@v3
-        with:
-          http_url: https://geekhack.org/index.php?topic=113697.0
-          downloaded_filename: ./tests/group-buy-test-page.html
       - name: Build
         run: npm install # any dependencies you may need
       - name: Scrape
