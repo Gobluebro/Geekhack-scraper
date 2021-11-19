@@ -8,7 +8,6 @@ describe('getCleanedGroupBuyLinks', () => {
         //dom = await JSDOM.fromFile("./tests/group-buy-links-test-page.html");
         const dom = await JSDOM.fromURL("https://geekhack.org/index.php?board=70.0");
         cleanedLinks = getCleanedGroupBuyLinks(dom);
-        console.log(cleanedLinks);
     })
     
     test('check if multiple group buy links exist', () => {
