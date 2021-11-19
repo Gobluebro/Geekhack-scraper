@@ -1,5 +1,6 @@
 import { getCleanedGroupBuyLinks } from "../geekhack-scraper/grabGHGroupBuyLinks";
 import { JSDOM } from "jsdom";
+import {beforeAll, describe, expect, test} from '@jest/globals'
 
 describe('getCleanedGroupBuyLinks', () => {
     let cleanedLinks:string[]

@@ -39,6 +39,7 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-typescript": "^7.16.0",
+    "@jest/globals": "^27.3.1",
     "@tsconfig/recommended": "^1.0.1",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.3",
