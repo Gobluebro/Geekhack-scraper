@@ -1,6 +1,6 @@
 import images from "../database/images-model";
 import threads from "../database/threads-model";
-import { Thread, Image, PageInfo } from "./threadscrape";
+import { Image, PageInfo, Thread } from "../utils/types";
 import downloadImages from "./getImagesForDatabase";
 
 export const SaveToDatabase = async (pages: PageInfo[]): Promise<void> => {

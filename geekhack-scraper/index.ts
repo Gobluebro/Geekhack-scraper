@@ -1,8 +1,9 @@
 import db from "../database/initdb";
 import { GrabGHGroupBuyLinks, GroupBuyPage } from "./grabGHGroupBuyLinks";
-import threadscrape, { PageInfo } from "./threadscrape";
+import threadscrape from "./threadscrape";
 import { SaveToDatabase } from "./saveToDatabase";
 import { GroupBuyURL } from "../utils/constants";
+import { PageInfo } from "../utils/types";
 
 db.authenticate()
   .then(() => console.log("Database connected..."))

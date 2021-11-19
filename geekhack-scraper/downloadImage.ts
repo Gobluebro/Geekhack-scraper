@@ -7,7 +7,7 @@ import {
 } from "node-downloader-helper";
 import fs from "fs";
 
-import { Image } from "./threadscrape";
+import { Image } from "../utils/types";
 import { Environment } from "../utils/constants";
 
 const downloadImageAndReturnFilename = (url: string, path: string): Promise<string | null> => {

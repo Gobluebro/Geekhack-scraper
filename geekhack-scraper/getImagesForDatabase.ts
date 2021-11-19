@@ -1,5 +1,5 @@
 import download from "./downloadImage";
-import { Image } from "./threadscrape";
+import { Image } from "../utils/types";
 
 export default async (imagesToTryToDownload: Image[]): Promise<Image[]> => {
   const downloadedImages = await Promise.all(
