@@ -19,6 +19,12 @@ export function getCleanedGroupBuyLinks(dom: JSDOM) {
   return cleanLinks;
 }
 
+async function getDomFromURL(url:string) {
+  const response = await axios.get(url);
+  const dom = new JSDOM(response.data);
+  return dom;
+}
+
 
 export const GrabGHGroupBuyLinks = async (
   gbUrl: string
@@ -26,8 +32,7 @@ export const GrabGHGroupBuyLinks = async (
   let pages: GroupBuyPage[] = [];
 
   try {
-    const response = await axios.get(gbUrl);
-    const dom = new JSDOM(response.data);
+    const dom = await getDomFromURL(gbUrl);
 
     // There are 50 posts on one page.
     // We are looking for the link to the group buy.
