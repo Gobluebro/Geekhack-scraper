@@ -75,7 +75,7 @@ function getFormattedTitle(dom: JSDOM): string | undefined {
 }
 
 function getImageLinks(dom: JSDOM): (string | undefined)[] {
-  const allPosts = Array.from(
+  const allPosts:Array<HTMLDivElement> = Array.from(
     dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper")
   );
   const limitedPostLength = allPosts.length >= 3 ? 3 : allPosts.length;
