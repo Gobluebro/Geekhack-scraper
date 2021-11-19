@@ -1,4 +1,3 @@
-import axios from "axios";
 import { JSDOM } from "jsdom";
 
 export interface GroupBuyPage {
@@ -19,20 +18,13 @@ export function getCleanedGroupBuyLinks(dom: JSDOM) {
   return cleanLinks;
 }
 
-async function getDomFromURL(url:string) {
-  const response = await axios.get(url);
-  const dom = new JSDOM(response.data);
-  return dom;
-}
-
-
 export const GrabGHGroupBuyLinks = async (
   gbUrl: string
 ): Promise<GroupBuyPage[]> => {
   let pages: GroupBuyPage[] = [];
 
   try {
-    const dom = await getDomFromURL(gbUrl);
+    const dom = await JSDOM.fromURL(gbUrl);
 
     // There are 50 posts on one page.
     // We are looking for the link to the group buy.
@@ -43,8 +35,7 @@ export const GrabGHGroupBuyLinks = async (
 
     const threadDoms: JSDOM[] = await Promise.all(
       cleanLinks.map(async (link) => {
-        const response = await axios.get(link);
-        const dom = new JSDOM(response.data);
+        const dom = await JSDOM.fromURL(link);
         return dom;
       })
     );
