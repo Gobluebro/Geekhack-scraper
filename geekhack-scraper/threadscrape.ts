@@ -3,14 +3,18 @@ import { TopicEnum, WebsiteEnum } from "../utils/constants";
 import { Image, PageInfo, Thread } from "../utils/types";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 
-function getAuthor(dom: JSDOM): string | undefined {
+export function getAuthor(dom: JSDOM): string  {
   const authorLink =
     dom.window.document.querySelector<HTMLAnchorElement>(".poster > h4 > a");
 
-  return authorLink?.text;
+  if (authorLink){
+    return authorLink.text;
+  }
+
+  return "";
 }
 
-function getFormattedModDate(dom: JSDOM): number | null {
+export function getFormattedModDate(dom: JSDOM): number | null {
   // There is always a div for the last edit, even if there is no edit.
   // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
   const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
@@ -33,7 +37,7 @@ function getFormattedModDate(dom: JSDOM): number | null {
   return formattedDate;
 }
 
-function getFormattedStartDate(dom: JSDOM): number | null {
+export function getFormattedStartDate(dom: JSDOM): number | null {
   // query selctor means this gets the first post
   const firstPostStartDate = dom.window.document.querySelector<HTMLDivElement>(
     ".keyinfo > .smalltext"
@@ -58,7 +62,7 @@ function getFormattedStartDate(dom: JSDOM): number | null {
   return formattedDate;
 }
 
-function getFormattedTitle(dom: JSDOM): string | undefined {
+export function getFormattedTitle(dom: JSDOM): string | undefined {
   // even though HTML Heading Element extends HTMLElement which contains .innerText I am unable to get anything back from it.
   // so I need to use textContent and rip out all tabs and new lines added.
   const title =
@@ -74,7 +78,7 @@ function getFormattedTitle(dom: JSDOM): string | undefined {
   return cleanedTitle;
 }
 
-function getImageLinks(dom: JSDOM): (string | undefined)[] {
+export function getImageLinks(dom: JSDOM): (string | undefined)[] {
   const allPosts:Array<HTMLDivElement> = Array.from(
     dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper")
   );
