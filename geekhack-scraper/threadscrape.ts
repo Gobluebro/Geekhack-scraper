@@ -3,11 +3,11 @@ import { TopicEnum, WebsiteEnum } from "../utils/constants";
 import { Image, PageInfo, Thread } from "../utils/types";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 
-export function getAuthor(dom: JSDOM): string  {
+export function getAuthor(dom: JSDOM): string {
   const authorLink =
     dom.window.document.querySelector<HTMLAnchorElement>(".poster > h4 > a");
 
-  if (authorLink){
+  if (authorLink) {
     return authorLink.text;
   }
 
@@ -79,7 +79,7 @@ export function getFormattedTitle(dom: JSDOM): string | undefined {
 }
 
 export function getImageLinks(dom: JSDOM): (string | undefined)[] {
-  const allPosts:Array<HTMLDivElement> = Array.from(
+  const allPosts: Array<HTMLDivElement> = Array.from(
     dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper")
   );
   const limitedPostLength = allPosts.length >= 3 ? 3 : allPosts.length;
