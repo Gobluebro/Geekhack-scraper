@@ -22,12 +22,14 @@ describe("threadscape", () => {
 
   test("getFormattedModDate returns the date when the thread was modified", () => {
     const modDate = getFormattedModDate(dom);
-    console.log({ modDate });
+
+    expect(modDate).toBe(1587758881000);
   });
 
   test("getFormattedStartDate returns the date when the thread was started", () => {
     const startDate = getFormattedStartDate(dom);
-    console.log({ startDate });
+
+    expect(startDate).toBe(1507945962000);
   });
 
   test("getFormattedTitle returns the title of the thread", () => {
