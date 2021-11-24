@@ -14,30 +14,7 @@ export function getAuthor(dom: JSDOM): string {
   return "";
 }
 
-export function getFormattedModDate(dom: JSDOM): number | null {
-  // There is always a div for the last edit, even if there is no edit.
-  // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
-  const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
-
-  let formattedDate = null;
-  if (modDate) {
-    const temp = modDate.textContent?.split("Edit:")[1].split("by")[0];
-    if (temp) {
-      try {
-        formattedDate = Date.parse(temp);
-        if (isNaN(formattedDate)) {
-          formattedDate = null;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }
-
-  return formattedDate;
-}
-
-export function getFormattedStartDate(dom: JSDOM): number | null {
+export function getFormattedStartDate(dom: JSDOM): Date | null {
   // query selctor means this gets the first post
   const firstPostStartDate = dom.window.document.querySelector<HTMLDivElement>(
     ".keyinfo > .smalltext"
@@ -48,14 +25,23 @@ export function getFormattedStartDate(dom: JSDOM): number | null {
     const temp = firstPostStartDate.innerHTML
       .replace("« <strong> on:</strong> ", "")
       .replace(" »", "");
+    formattedDate = new Date(temp);
+  }
 
-    try {
-      formattedDate = Date.parse(temp);
-      if (isNaN(formattedDate)) {
-        formattedDate = null;
-      }
-    } catch (e) {
-      console.error(e);
+  return formattedDate;
+}
+
+export function getFormattedModDate(dom: JSDOM): Date | null {
+  // There is always a div for the last edit, even if there is no edit.
+  // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
+  const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
+
+  let formattedDate = null;
+
+  if (modDate) {
+    const temp = modDate.textContent?.split("Edit:")[1].split("by")[0];
+    if (temp) {
+      formattedDate = new Date(temp);
     }
   }
 
