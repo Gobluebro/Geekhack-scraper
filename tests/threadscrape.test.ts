@@ -20,16 +20,18 @@ describe("threadscape", () => {
     expect(author).toBe("xondat");
   });
 
-  test("getFormattedModDate returns the date when the thread was modified", () => {
-    const modDate = getFormattedModDate(dom);
-
-    expect(modDate).toBe(1587758881000);
-  });
-
   test("getFormattedStartDate returns the date when the thread was started", () => {
+    const mockDate = new Date("Fri, 13 October 2017, 21:52:42");
     const startDate = getFormattedStartDate(dom);
 
-    expect(startDate).toBe(1507945962000);
+    expect(startDate).toBe(mockDate);
+  });
+
+  test("getFormattedModDate returns the date when the thread was modified", () => {
+    const mockDate = new Date("Fri, 24 April 2020, 16:08:01");
+    const modDate = getFormattedModDate(dom);
+
+    expect(modDate).toBe(mockDate);
   });
 
   test("getFormattedTitle returns the title of the thread", () => {
