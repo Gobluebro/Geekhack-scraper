@@ -4,6 +4,7 @@ import threadscrape from "./threadscrape";
 import { SaveToDatabase } from "./saveToDatabase";
 import { GroupBuyURL } from "../utils/constants";
 import { PageInfo } from "../utils/types";
+import createFolders from "./createFolders";
 
 db.authenticate()
   .then(() => console.log("Database connected..."))
@@ -13,8 +14,8 @@ db.authenticate()
   const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(GroupBuyURL);
   // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(InterestCheckURL);
 
-  // returns object of threads and object of images in an array
   const ghGbPagesInfo: PageInfo[] = ghGBPages.map((page) => threadscrape(page));
-  
+  createFolders(ghGbPagesInfo);
+
   const saveInfo = await SaveToDatabase(ghGbPagesInfo);
 })();
