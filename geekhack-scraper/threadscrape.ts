@@ -92,7 +92,8 @@ export function getImageLinks(dom: JSDOM): (string | undefined)[] {
   const flattenedImgLinkArray = imgLinks.flat().filter((link) => {
     return link;
   });
-  return flattenedImgLinkArray;
+  // remove duplicates
+  return [...new Set(flattenedImgLinkArray)];
 }
 
 export default (page: GroupBuyPage): PageInfo => {
