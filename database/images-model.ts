@@ -22,10 +22,10 @@ const ImagesModel = db.define<ImagesInstance>(
       type: DataTypes.INTEGER.UNSIGNED,
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     url: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     is_hidden: {
       type: DataTypes.BOOLEAN,
