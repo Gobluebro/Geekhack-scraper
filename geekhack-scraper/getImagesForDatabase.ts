@@ -1,9 +1,11 @@
-import { DownloadImage } from "./downloadImage";
+import { DownloadImage } from "./downloadImageWorker";
 import { Image } from "../utils/types";
 import { spawn, Pool, Worker } from "threads";
 
 export default async (imagesToTryToDownload: Image[]): Promise<Image[]> => {
-  const pool = Pool(() => spawn<DownloadImage>(new Worker("./downloadImage")));
+  const pool = Pool(() =>
+    spawn<DownloadImage>(new Worker("./downloadImageWorker"))
+  );
 
   const tasks = imagesToTryToDownload.map((image) => {
     const task = pool.queue((worker) => worker(image));
