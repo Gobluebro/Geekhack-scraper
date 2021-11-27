@@ -19,6 +19,6 @@ export type Thread = {
 export type Image = {
   thread_id: number;
   url: string | undefined;
-  orderNumber: number;
+  sort_order: number;
   name?: string;
 };

@@ -73,7 +73,7 @@ const downloadImageAndReturnFilename = (
 };
 
 const downloadImage = async (imageToDowload: Image): Promise<Image | null> => {
-  const { orderNumber, url, thread_id } = imageToDowload;
+  const { sort_order, url, thread_id } = imageToDowload;
 
   const path = `${Environment.imagePath}/${thread_id}`;
 
@@ -86,7 +86,7 @@ const downloadImage = async (imageToDowload: Image): Promise<Image | null> => {
           thread_id,
           name: filename,
           url,
-          orderNumber,
+          sort_order,
         };
         return downloadedImage;
       }

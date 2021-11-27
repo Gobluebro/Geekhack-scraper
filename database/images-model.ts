@@ -31,7 +31,7 @@ const ImagesModel = db.define<ImagesInstance>(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    order_number: {
+    sort_order: {
       type: DataTypes.INTEGER,
     },
   },

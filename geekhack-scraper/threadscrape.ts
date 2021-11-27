@@ -115,7 +115,7 @@ export default (page: GroupBuyPage): PageInfo => {
     (image: string | undefined, index: number): Image => ({
       thread_id: urlTopicID,
       url: image,
-      orderNumber: index,
+      sort_order: index,
     })
   );
 
