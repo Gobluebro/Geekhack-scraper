@@ -72,8 +72,8 @@ export function getImageLinks(dom: JSDOM): (string | undefined)[] {
   const firstThreePosts = allPosts.slice(0, limitedPostLength);
   //slice this into 3 instead and then map
   const imgLinks = firstThreePosts.map(
-    (post: HTMLDivElement): string[] | undefined => {
-      let imageLinks: string[] | undefined;
+    (post: HTMLDivElement): (string | undefined)[] => {
+      let imageLinks: (string | undefined)[] = [];
       const threadStarterCheck = post.querySelector(".threadstarter");
       // is the post made by the threadstarter? get all images links then
       if (threadStarterCheck !== null) {
@@ -83,7 +83,18 @@ export function getImageLinks(dom: JSDOM): (string | undefined)[] {
             ".post img.bbc_img:not(.resized)"
           )
         );
-        imageLinks = allImgElements.map((img: HTMLImageElement) => img.src);
+        // https://geekhack.org/index.php?topic=115405
+        // https://geekhack.org/index.php?topic=114034
+        // .querySelectorAll("[id^='link_'] > img")
+        imageLinks = allImgElements.map((img: HTMLImageElement) => {
+          const imageTypes = [".jpg", ".png", ".jpeg", ".gif", ".mp4"];
+          const hasImageType = imageTypes.some((imgType) =>
+            img.src.includes(imgType)
+          );
+          if (hasImageType) {
+            return img.src;
+          }
+        });
       }
       return imageLinks;
     }
