@@ -80,18 +80,19 @@ export function getImageLinks(dom: JSDOM): (string | undefined)[] {
         // TODO: collect some URLs for testing this to make sure all wanted images come back.
         const allImgElements = Array.from(
           post.querySelectorAll<HTMLImageElement>(
-            ".post img.bbc_img:not(.resized)"
+            ".post img.bbc_img:not(.resized), img:not(.resized)[src*='action=dlattach;topic=']"
           )
         );
-        // https://geekhack.org/index.php?topic=115405
-        // https://geekhack.org/index.php?topic=114034
-        // .querySelectorAll("[id^='link_'] > img")
+
         imageLinks = allImgElements.map((img: HTMLImageElement) => {
-          const imageTypes = [".jpg", ".png", ".jpeg", ".gif", ".mp4"];
-          const hasImageType = imageTypes.some((imgType) =>
-            img.src.includes(imgType)
-          );
-          if (hasImageType) {
+          if (img.src.includes("PHPSESSID")) {
+            // looks something like ?PHPSESSID= with a GUID and then &action
+            const firstIndex = img.src.indexOf("PHPSESSID");
+            const secondIndex = img.src.indexOf("&");
+            const subString = img.src.substring(firstIndex, secondIndex + 1);
+
+            return img.src.replace(subString, "");
+          } else {
             return img.src;
           }
         });

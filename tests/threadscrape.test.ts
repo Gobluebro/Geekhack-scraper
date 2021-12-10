@@ -10,8 +10,12 @@ import {
 
 describe("threadscape", () => {
   let dom: JSDOM;
+  let extraImageCheckDom: JSDOM;
   beforeAll(async () => {
     dom = await JSDOM.fromURL("https://geekhack.org/index.php?topic=92066.0");
+    extraImageCheckDom = await JSDOM.fromURL(
+      "https://geekhack.org/index.php?topic=115405"
+    );
   });
 
   test("getAuthor returns the author of the thread", () => {
@@ -48,8 +52,19 @@ describe("threadscape", () => {
       "https://i.imgur.com/ETQAiNS.png",
       "https://i.imgur.com/dF6UXLZ.png",
     ];
+
     const imageLinks = getImageLinks(dom);
 
     expect(imageLinks).toEqual(expect.arrayContaining(expectedImageLinks));
+
+    const expectedGHUploadedImageLink = [
+      "https://geekhack.org/index.php?action=dlattach;topic=115405.0;attach=279004;image",
+    ];
+
+    const extraImageLink = getImageLinks(extraImageCheckDom);
+
+    expect(extraImageLink).toEqual(
+      expect.arrayContaining(expectedGHUploadedImageLink)
+    );
   });
 });
