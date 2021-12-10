@@ -8,7 +8,7 @@ import createFolders from "./createFolders";
 
 db.authenticate()
   .then(() => console.log("Database connected..."))
-  .catch((err) => console.log(`Database Error: ${err}`));
+  .catch((err: Error) => console.log(`Database Error: ${err}`));
 
 (async (): Promise<void> => {
   const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(GroupBuyURL);
