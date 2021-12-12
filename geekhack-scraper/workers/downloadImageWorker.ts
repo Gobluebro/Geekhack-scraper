@@ -98,6 +98,7 @@ export const downloadImage = async (
       const uniqueImageNumber = isGeekhackImage
         ? url.split("attach=")[1].split(";")[0]
         : "";
+
       const filename = await downloadImageAndReturnFilename(
         url,
         path,
