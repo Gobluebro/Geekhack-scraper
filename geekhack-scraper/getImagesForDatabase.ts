@@ -1,15 +1,14 @@
-import { DownloadImage } from "./downloadImageWorker";
 import { Image } from "../utils/types";
-import { spawn, Pool, Worker } from "threads";
+import path from "path";
+import Piscina from "piscina";
 
 export default async (imagesToTryToDownload: Image[]): Promise<Image[]> => {
-  const pool = Pool(() =>
-    spawn<DownloadImage>(new Worker("./downloadImageWorker"))
-  );
+  const piscina = new Piscina({
+    filename: path.resolve(__dirname, "workers/tsImport.js"),
+  });
 
-  const tasks = imagesToTryToDownload.map((image) => {
-    const task = pool.queue((worker) => worker(image));
-    return task;
+  const tasks = imagesToTryToDownload.map(async (image) => {
+    return await piscina.run(image);
   });
 
   const downloadedImages = await Promise.all(tasks);

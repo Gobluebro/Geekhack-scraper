@@ -4,29 +4,38 @@ import {
   DownloaderHelperOptions,
   DownloadInfoStats,
   RetryOptions,
+  Stats,
 } from "node-downloader-helper";
 
-import { expose } from "threads/worker";
-
-import { Image } from "../utils/types";
-import { Environment } from "../utils/constants";
+import { Image } from "../../utils/types";
+import { Environment } from "../../utils/constants";
 
 const downloadImageAndReturnFilename = (
   url: string,
-  path: string
+  path: string,
+  uniqueImageNumber: string
 ): Promise<string | null> => {
   const options: DownloaderHelperOptions = {
     method: "GET", // Request Method Verb
-    /* override
+    /* override:
     object: { skip: skip if already exists, skipSmaller: skip if smaller }
     boolean: true to override file, false to append '(number)' to new file name
     */
+    fileName: (filename) => {
+      if (uniqueImageNumber) {
+        return `${uniqueImageNumber}_${filename}`;
+      } else {
+        return filename;
+      }
+    },
     retry: { maxRetries: 1, delay: 3000 }, // { maxRetries: number, delay: number in ms } or false to disable (default)
     override: { skip: true, skipSmaller: true },
     forceResume: false, // If the server does not return the "accept-ranges" header but it does support it
     removeOnStop: true, // remove the file when is stopped (default:true)
     removeOnFail: true, // remove the file when fail (default:true)
-    httpRequestOptions: { timeout: 5000 },
+    httpRequestOptions: {
+      timeout: 15000,
+    },
   };
 
   return new Promise((resolve, reject) => {
@@ -72,14 +81,28 @@ const downloadImageAndReturnFilename = (
   });
 };
 
-const downloadImage = async (imageToDowload: Image): Promise<Image | null> => {
+export const downloadImage = async (
+  imageToDowload: Image
+): Promise<Image | null> => {
   const { sort_order, url, thread_id } = imageToDowload;
 
   const path = `${Environment.imagePath}/${thread_id}`;
 
   if (url) {
     try {
-      const filename = await downloadImageAndReturnFilename(url, path);
+      // geekhack images have a unique number for their images.
+      // the filename may be duplicate, but the attach number will be unique.
+      // ?action=dlattach;topic=123456.0;attach=123456;image
+      const isGeekhackImage = new URL(url).searchParams.has("action");
+      // if it has attach= then get the number.
+      const uniqueImageNumber = isGeekhackImage
+        ? url.split("attach=")[1].split(";")[0]
+        : "";
+      const filename = await downloadImageAndReturnFilename(
+        url,
+        path,
+        uniqueImageNumber
+      );
 
       if (filename) {
         const downloadedImage: Image | null = {
@@ -97,7 +120,3 @@ const downloadImage = async (imageToDowload: Image): Promise<Image | null> => {
   }
   return null;
 };
-
-export type DownloadImage = typeof downloadImage;
-
-expose(downloadImage);
