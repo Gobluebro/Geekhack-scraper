@@ -7,6 +7,8 @@ import {
   // Stats,
 } from "node-downloader-helper";
 
+import { decode } from "html-entities";
+
 import { Image } from "../../utils/types";
 import { Environment } from "../../utils/constants";
 
@@ -22,10 +24,12 @@ const downloadImageAndReturnFilename = (
     boolean: true to override file, false to append '(number)' to new file name
     */
     fileName: (filename) => {
+      // make sure the file name is decoded for other languages.
+      const decodedFileName = decode(filename);
       if (uniqueImageNumber) {
-        return `${uniqueImageNumber}_${filename}`;
+        return `${uniqueImageNumber}_${decodedFileName}`;
       } else {
-        return filename;
+        return decodedFileName;
       }
     },
     retry: { maxRetries: 1, delay: 3000 }, // { maxRetries: number, delay: number in ms } or false to disable (default)
