@@ -4,7 +4,7 @@ import {
   DownloaderHelperOptions,
   DownloadInfoStats,
   RetryOptions,
-  Stats,
+  // Stats,
 } from "node-downloader-helper";
 
 import { Image } from "../../utils/types";
