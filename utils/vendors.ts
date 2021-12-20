@@ -20,7 +20,7 @@ export const Vendors = [
     locations: ["oceania", "oceana", "oce", "australia", "aus", "au"],
   },
   {
-    names: ["Proto[Typist]", "prototypist"],
+    names: ["Proto[Typist]", "prototypist", "proto"],
     urls: ["prototypist.net"],
     locations: ["uk", "united kingdom"],
   },
@@ -32,7 +32,17 @@ export const Vendors = [
   {
     names: ["kbdfans"],
     urls: ["kbdfans.com"],
-    locations: ["world", "worldwide", "ww", "asia", "china", "cn", "glo"],
+    locations: [
+      "world",
+      "worldwide",
+      "ww",
+      "asia",
+      "china",
+      "cn",
+      "global",
+      "glo",
+      "as",
+    ],
   },
   {
     names: ["ilumkb"],
@@ -47,7 +57,7 @@ export const Vendors = [
   {
     names: ["swagkeys"],
     urls: ["swagkeys.com"],
-    locations: ["korea", "kor", "kr"],
+    locations: ["south korea", "korea", "kor", "kr"],
   },
   {
     names: ["space cables", "space"],
@@ -67,17 +77,34 @@ export const Vendors = [
   {
     names: ["switchkeys", "switchkeys.au"],
     urls: ["switchkeys.com.au"],
-    locations: ["oceania", "oceana", "oce", "aus"],
+    locations: ["oceania", "oceana", "oce", "aus", "au"],
   },
   {
-    names: ["zfrontier"],
+    names: [
+      "zfrontier",
+      "zfrontier en",
+      "zfrontier-en",
+      "zfrontier-cn",
+      "en.zfrontier",
+      "zFrontier Intl",
+    ],
     urls: ["zfrontier.com", "en.zfrontier.com"],
-    locations: ["global", "rest of world", "row", "asia", "china", "cn"],
+    locations: [
+      "global",
+      "rest of world",
+      "intl",
+      "row",
+      "asia",
+      "as",
+      "china",
+      "cn",
+      "ch",
+    ],
   },
   {
     names: ["funkeys"],
     urls: ["funkeys.com.ua"],
-    locations: ["ukraine", "russia", "belarus"],
+    locations: ["ukraine", "ukr", "russia", "rus", "belarus"],
   },
   {
     names: ["hexkeyboards"],
@@ -85,7 +112,7 @@ export const Vendors = [
     locations: ["sea"],
   },
   {
-    names: ["kono"],
+    names: ["kono", "kono store"],
     urls: ["kono.store"],
     locations: ["usa", "us", "united states"],
   },
@@ -100,9 +127,9 @@ export const Vendors = [
     locations: ["canada", "ca"],
   },
   {
-    names: ["fancy customs"],
+    names: ["fancy customs", "fancycustoms"],
     urls: ["fancycustoms.com"],
-    locations: ["latin america", "south america"],
+    locations: ["latin america", "south america", "sa"],
   },
   {
     names: ["rheset"],
@@ -110,24 +137,24 @@ export const Vendors = [
     locations: ["mexico", "mx"],
   },
   {
-    names: ["rectangles"],
+    names: ["rectangles", "rectangles.store"],
     urls: ["rectangles.store"],
-    locations: ["india"],
+    locations: ["india", "in"],
   },
   {
-    names: ["zion studios"],
+    names: ["zion studios", "zion studios ph"],
     urls: ["zionstudios.ph"],
     locations: ["philippines", "ph", "southeast asia", "sea"],
   },
   {
     names: ["mechs & co", "mechs and co", "mechs&co"],
     urls: ["mechsandco.com"],
-    locations: ["united states", "us"],
+    locations: ["north america", "united states", "us"],
   },
   {
     names: ["kanatakeys"],
     urls: ["kanatakeys.co"],
-    locations: ["canada", "ca"],
+    locations: ["canada", "can", "ca"],
   },
   {
     names: ["protozoa studio", "protozoa"],
@@ -137,12 +164,12 @@ export const Vendors = [
   {
     names: ["qwertyqop"],
     urls: ["qwertyqop.com"],
-    locations: ["singapore"],
+    locations: ["singapore", "sg"],
   },
   {
-    names: ["milkyway"],
+    names: ["milkyway", "milkywaykeys"],
     urls: ["milkywaykeys.com"],
-    locations: ["china"],
+    locations: ["china", "cn"],
   },
   {
     names: ["mechboards"],
@@ -150,9 +177,9 @@ export const Vendors = [
     locations: ["uk"],
   },
   {
-    names: ["vala supply", "vala"],
+    names: ["vala supply", "vala", "valasupply"],
     urls: ["vala.supply"],
-    locations: ["usa", "us"],
+    locations: ["usa", "us", "ua"],
   },
   {
     names: ["apexkeyboards"],
@@ -160,7 +187,7 @@ export const Vendors = [
     locations: ["ca"],
   },
   {
-    names: ["monokei.co"],
+    names: ["monokei", "monokei.co"],
     urls: ["monokei.co"],
     locations: ["sea"],
   },
@@ -172,7 +199,7 @@ export const Vendors = [
   {
     names: ["novelkeys"],
     urls: ["novelkeys.com", "novelkeys.xyz"],
-    locations: ["na", "us"],
+    locations: ["na", "usa", "us"],
   },
   {
     names: ["mkultra", "mkultra corporation"],
@@ -180,24 +207,24 @@ export const Vendors = [
     locations: ["us"],
   },
   {
-    names: ["thic thock"],
+    names: ["thic thock", "thicthock"],
     urls: ["thicthock.com"],
     locations: ["asia", "sea"],
   },
   {
     names: ["the key company", "the key dot co"],
     urls: ["thekey.company"],
-    locations: ["us"],
+    locations: ["usa", "us"],
   },
   {
     names: ["cannon keys"],
     urls: ["cannonkeys.com"],
-    locations: ["us"],
+    locations: ["usa", "us", "north america"],
   },
   {
-    names: ["monstargear", "monstargears"],
+    names: ["monstargear", "monstargears", "monstagear"],
     urls: ["monstargears.com"],
-    locations: ["asia", "kr"],
+    locations: ["asia", "kr", "south korea", "sk"],
   },
   {
     names: ["keyboardarcade"],
@@ -209,11 +236,85 @@ export const Vendors = [
     urls: ["kibou.store"],
     locations: ["sea"],
   },
+  {
+    names: ["omnitype", "dixie mech"],
+    urls: ["omnitype.com", "dixiemech.com"],
+    locations: ["us", "na"],
+  },
+  {
+    names: ["oblotzky industries"],
+    urls: ["oblotzky.industries"],
+    locations: ["eu"],
+  },
+  {
+    names: ["keebcats"],
+    urls: ["keebcats.co.uk"],
+    locations: ["uk"],
+  },
+  {
+    names: ["originative", "originativeco"],
+    urls: ["originativeco.com"],
+    locations: [""],
+  },
+  {
+    names: ["the right pc"],
+    urls: ["therightpc.tech"],
+    locations: ["us"],
+  },
+  {
+    names: ["shockport keyboards"],
+    urls: ["shockport.com"],
+    locations: ["ca"],
+  },
+  {
+    names: ["eloquent clicks", "eloquentclicks"],
+    urls: ["eloquentclicks.com"],
+    locations: ["eu"],
+  },
+  {
+    names: ["stackskb"],
+    urls: ["stackskb.com"],
+    locations: ["in"],
+  },
+  {
+    names: ["rebultkeyboards"],
+    urls: ["rebultkeyboards.com"],
+    locations: ["south east asia", "sea", "my"],
+  },
+  {
+    names: ["thockeys"],
+    urls: ["thockeys.com"],
+    locations: ["us"],
+  },
+  {
+    names: ["handengineering"],
+    urls: ["hand.engineering"],
+    locations: ["uk"],
+  },
+  {
+    names: ["keygem"],
+    urls: ["keygem.store"],
+    locations: ["eu"],
+  },
+  {
+    names: ["letsgetit", "letsgetit.io"],
+    urls: ["letsgetit.io"],
+    locations: ["korea"],
+  },
+  {
+    names: ["captus keycaps"],
+    urls: ["captus.io"],
+    locations: ["us"],
+  },
+  {
+    names: ["project keyboard"],
+    urls: ["projectkeyboard.com"],
+    locations: ["us"],
+  },
+  // template
+  {
+    names: [""],
+    urls: [""],
+    locations: [""],
+  },
 ];
-
-// template
-// {
-//   names: [""],
-//   urls: [""],
-//   locations: [""],
-// },
