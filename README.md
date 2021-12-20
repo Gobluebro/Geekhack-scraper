@@ -29,19 +29,13 @@ It should be used just to spark interest enough for a user to click a link to go
 
 Since this solution is based on automated scraping of data and then displaying said data, issues arise when you cannot predict how someone might structure their post.
 
-The main issue that I have come across so far is that when you scrape a photo, it's hard to know if that photo is important or not. I currently take the same photo order that is on the original post.
+The main issue that I have come across when you scrape a photo is it's hard to know if that photo is important or not. I currently take the same photo order that is on the original post.
 
-So my idea was to have up to 4 photos that could hopefully describe what the post is about.
-Pros:
+Grabbing the vendors from a page are difficult as well. I'm attempting to grab them through the base domain names. The problem is that I will never really know what vendor is on the page unless I try to match it to a list of vendors. If the vendor does not have a link (for whatever reason) then I won't be getting back the vendors for the group buy.
 
-- Has enough photos to on most cases showcase what the post is about.
-- This allows the site to exist with very little maintaining.
+Keycap kits are basically hit or miss. Not all people label their kits with text. Sometimes they do it on the photos themselves. Finding text itself is already a struggle. So I believe this should generally end up as a manual task that cannot be totally automated.
 
-Cons:
-
-- Large amount of space taken up.
-- Looks busy
-- Goes against the standard of only one photo per card
+The hardest issue is finding the start and end date of a group buy. There is no way to truly identify these dates from a geekhack post itself. It is more like to scrape it from a vendor's website instead as they are generally structured in a similar manner for every group buy. Atleast more than the wild west that is a geekhack post.
 
 ## Installation and Start the project
 
