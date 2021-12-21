@@ -192,7 +192,7 @@ export const Vendors = [
     locations: ["sea"],
   },
   {
-    names: ["yushakobo"],
+    names: ["yusha kobo", "yushakobo"],
     urls: ["yushakobo.jp"],
     locations: ["jp"],
   },
