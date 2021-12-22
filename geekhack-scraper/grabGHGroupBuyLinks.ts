@@ -6,15 +6,16 @@ export interface GroupBuyPage {
 }
 
 export function getCleanedGroupBuyLinks(dom: JSDOM) {
-  const anchorListWithNoStickiedPosts: NodeListOf<HTMLAnchorElement> = dom.window.document.querySelectorAll(
-    ".subject.windowbg2 > div > span > a"
-  );
+  const anchorListWithNoStickiedPosts: NodeListOf<HTMLAnchorElement> =
+    dom.window.document.querySelectorAll(".subject.windowbg2 > div > span > a");
 
   const urlArray = Array.from(anchorListWithNoStickiedPosts, (a) => a.href);
 
   // I don't know what PHPSESSID but I don't like the look of it so remove it.
   const baseLink = "https://geekhack.org/index.php?topic=";
-  const cleanLinks: string[] = urlArray.map((link) => baseLink + link?.split("=")[2]);
+  const cleanLinks: string[] = urlArray.map(
+    (link) => baseLink + link?.split("=")[2]
+  );
   return cleanLinks;
 }
 
