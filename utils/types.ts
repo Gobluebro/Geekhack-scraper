@@ -2,7 +2,8 @@ import { WebsiteEnum, TopicEnum } from "../utils/constants";
 
 export type PageInfo = {
   thread: Thread;
-  image: Image[];
+  images: Image[];
+  vendors: Vendor[];
 };
 
 export type Thread = {
@@ -21,4 +22,11 @@ export type Image = {
   url: string | undefined;
   sort_order: number;
   name?: string;
+};
+
+export type Vendor = {
+  id: number;
+  thread_id: number;
+  location: string;
+  url: string;
 };

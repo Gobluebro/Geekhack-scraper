@@ -17,6 +17,7 @@ const ImagesModel = db.define<ImagesInstance>(
       type: DataTypes.INTEGER.UNSIGNED,
       primaryKey: true,
       autoIncrement: true,
+      allowNull: false,
     },
     thread_id: {
       type: DataTypes.INTEGER.UNSIGNED,

@@ -27,8 +27,8 @@ const VendorsModel = db.define<VendorsInstance>(
     },
   },
   {
-    timestamps: true,
-    createdAt: "scraped",
+    createdAt: true,
+    // maybe I want to update them later? I am not sure.
     updatedAt: false,
   }
 );
