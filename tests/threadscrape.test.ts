@@ -9,6 +9,9 @@ import {
   getVendors,
 } from "../geekhack-scraper/threadscrape";
 
+// some issues with tests taking a while to run when getting doms for beforeAll.
+jest.setTimeout(30000);
+
 describe("threadscape", () => {
   let dom: JSDOM;
   let extraImageCheckDom: JSDOM;
