@@ -1,4 +1,4 @@
-export const Vendors = [
+export const VendorsList = [
   {
     names: ["mekibo", "txkeyboards", "tx keyboards"],
     urls: ["mekibo.com", "us.txkeyboards.com"],
