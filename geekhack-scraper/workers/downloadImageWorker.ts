@@ -81,7 +81,12 @@ const downloadImageAndReturnFilename = (
         download.stop();
         reject(null);
       });
-    download.start();
+    // looks weird but this was recommended
+    // https://github.com/hgouveia/node-downloader-helper/issues/61
+    download.start().catch((err) => {
+      console.error(err);
+      reject(null);
+    });
   });
 };
 
@@ -94,14 +99,25 @@ export const downloadImage = async (
 
   if (url) {
     try {
+      const urlChecker = new URL(url);
       // geekhack images have a unique number for their images.
       // the filename may be duplicate, but the attach number will be unique.
       // ?action=dlattach;topic=123456.0;attach=123456;image
-      const isGeekhackImage = new URL(url).searchParams.has("action");
-      // if it has attach= then get the number.
-      const uniqueImageNumber = isGeekhackImage
-        ? url.split("attach=")[1].split(";")[0]
-        : "";
+      const isGeekhackImage = urlChecker.searchParams.has("action");
+
+      // discord images can have duplicate file name names.
+      // they also come with a unique number for their images.
+      // 123456789010111213/file.png
+      const isDiscordImage = urlChecker.origin === "https://cdn.discordapp.com";
+
+      let uniqueImageNumber = "";
+      if (isGeekhackImage) {
+        uniqueImageNumber = url.split("attach=")[1].split(";")[0];
+      } else if (isDiscordImage) {
+        const tempUrl = urlChecker.pathname.split("/");
+        // get the random number before the file name
+        uniqueImageNumber = tempUrl[tempUrl.length - 2];
+      }
 
       const filename = await downloadImageAndReturnFilename(
         url,
