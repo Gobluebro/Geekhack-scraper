@@ -81,7 +81,7 @@ const downloadImageAndReturnFilename = (
         download.stop();
         reject(null);
       });
-    // looks weird but this was recommended
+    // looks weird but this was recommended for preventing crashing errors due to 404s and 500 errors
     // https://github.com/hgouveia/node-downloader-helper/issues/61
     download.start().catch((err) => {
       console.error(err);
