@@ -111,19 +111,39 @@ export function getImageLinks(dom: JSDOM): (string | undefined)[] {
 
 export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
   const scrappedVendors: Vendor[] = [];
+
+  // it is unlikely that vendors will appear in anything but the first post so use that as our dom.
+  const firstPost =
+    dom.window.document.querySelector<HTMLDivElement>(".post_wrapper");
+
   for (const vendor of VendorsList) {
-    const { names, locations, urls } = vendor;
-    for (const url of urls) {
-      const foundVendor =
-        dom.window.document.querySelectorAll<HTMLAnchorElement>(
-          `a.bbc_link[href*='${url}'`
-        );
-      if (foundVendor.length > 0) {
+    for (const url of vendor.urls) {
+      // first post could possibly be null in theory if the styling changed but it hasn't since I started this.
+      // this css selector looks anchor elements with bbc_link as the class.
+      // then it looks at the href to see if any part of it contains something from our list of urls.
+      const foundVendor = firstPost?.querySelector<HTMLAnchorElement>(
+        `a.bbc_link[href*='${url}'`
+      );
+      if (foundVendor) {
+        let location = "";
+        const locationGuess = foundVendor.previousSibling?.textContent;
+
+        if (locationGuess) {
+          const tempLocation = locationGuess.replace(":", "").trim();
+          const locationFound = vendor.locations.some(
+            (vendorLocation) => vendorLocation === tempLocation.toLowerCase()
+          );
+          if (locationFound) {
+            location = tempLocation;
+          }
+        }
+
         const scrappedVendor: Vendor = {
           thread_id: urlTopicID,
-          location: "NA",
+          location,
           url,
         };
+
         scrappedVendors.push(scrappedVendor);
       }
     }
