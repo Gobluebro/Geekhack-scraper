@@ -7,7 +7,9 @@ export const SaveToDatabase = async (pages: PageInfo[]): Promise<void> => {
   const threadsToSaveToDatabase: Thread[] = pages.map(
     (page: PageInfo) => page.thread
   );
-  const imagesToTryToDownload: Image[] = pages.map((page) => page.image).flat();
+  const imagesToTryToDownload: Image[] = pages
+    .map((page) => page.images)
+    .flat();
 
   const imagesToSaveToDatabase = await downloadImages(imagesToTryToDownload);
 
