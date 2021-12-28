@@ -6,15 +6,20 @@ import {
   getFormattedStartDate,
   getFormattedTitle,
   getImageLinks,
+  getVendors,
 } from "../geekhack-scraper/threadscrape";
 
 describe("threadscape", () => {
   let dom: JSDOM;
   let extraImageCheckDom: JSDOM;
+  let keycapGbDom: JSDOM;
   beforeAll(async () => {
     dom = await JSDOM.fromURL("https://geekhack.org/index.php?topic=92066.0");
     extraImageCheckDom = await JSDOM.fromURL(
       "https://geekhack.org/index.php?topic=115405"
+    );
+    keycapGbDom = await JSDOM.fromURL(
+      "https://geekhack.org/index.php?topic=115099.0"
     );
   });
 
@@ -66,5 +71,59 @@ describe("threadscape", () => {
     expect(extraImageLink).toEqual(
       expect.arrayContaining(expectedGHUploadedImageLink)
     );
+  });
+
+  test("getVendors returns the vendors on the thread page", () => {
+    const expectedVendors = [
+      {
+        thread_id: 115099,
+        location: "UK",
+        url: "prototypist.net",
+      },
+      {
+        thread_id: 115099,
+        location: "SEA",
+        url: "ilumkb.com",
+      },
+      {
+        thread_id: 115099,
+        location: "KR",
+        url: "swagkeys.com",
+      },
+      {
+        thread_id: 115099,
+        location: "CA",
+        url: "ashkeebs.com",
+      },
+      {
+        thread_id: 115099,
+        location: "EU",
+        url: "candykeys.com",
+      },
+      {
+        thread_id: 115099,
+        location: "OCE",
+        url: "switchkeys.com.au",
+      },
+      {
+        thread_id: 115099,
+        location: "CN",
+        url: "www.zfrontier.com",
+      },
+      {
+        thread_id: 115099,
+        location: "IN",
+        url: "rectangles.store",
+      },
+      {
+        thread_id: 115099,
+        location: "NA",
+        url: "vala.supply",
+      },
+    ];
+
+    const vendors = getVendors(keycapGbDom, 115099);
+
+    expect(vendors).toEqual(expectedVendors);
   });
 });
