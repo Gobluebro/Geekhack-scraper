@@ -1,7 +1,8 @@
 import { JSDOM } from "jsdom";
 import { TopicEnum, WebsiteEnum } from "../utils/constants";
-import { Image, PageInfo, Thread } from "../utils/types";
+import { Image, PageInfo, Thread, Vendor } from "../utils/types";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
+import { VendorsList } from "../utils/vendors";
 
 export function getAuthor(dom: JSDOM): string {
   const authorLink =
@@ -108,12 +109,35 @@ export function getImageLinks(dom: JSDOM): (string | undefined)[] {
   return [...new Set(flattenedImgLinkArray)];
 }
 
+export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
+  const scrappedVendors: Vendor[] = [];
+  for (const vendor of VendorsList) {
+    const { names, locations, urls } = vendor;
+    for (const url of urls) {
+      const foundVendor =
+        dom.window.document.querySelectorAll<HTMLAnchorElement>(
+          `a.bbc_link[href*='${url}'`
+        );
+      if (foundVendor.length > 0) {
+        const scrappedVendor: Vendor = {
+          thread_id: urlTopicID,
+          location: "NA",
+          url,
+        };
+        scrappedVendors.push(scrappedVendor);
+      }
+    }
+  }
+
+  return scrappedVendors;
+}
+
 export default (page: GroupBuyPage): PageInfo => {
   const imageLinks = getImageLinks(page.BodyDom);
-  const urlTopicID = parseInt(page.PageLink.split("=")[1].split(".")[0], 10);
+  const urlThreadId = parseInt(page.PageLink.split("=")[1], 10);
 
   const thread: Thread = {
-    id: urlTopicID,
+    id: urlThreadId,
     website: WebsiteEnum.geekhack,
     title: getFormattedTitle(page.BodyDom),
     start: getFormattedStartDate(page.BodyDom),
@@ -125,12 +149,18 @@ export default (page: GroupBuyPage): PageInfo => {
 
   const images = imageLinks.map(
     (image: string | undefined, index: number): Image => ({
-      thread_id: urlTopicID,
+      thread_id: urlThreadId,
       url: image,
       sort_order: index,
     })
   );
 
-  const pageInfo: PageInfo = { thread: thread, image: images };
+  const vendors = getVendors(page.BodyDom, urlThreadId);
+
+  const pageInfo: PageInfo = {
+    thread: thread,
+    images: images,
+    vendors: vendors,
+  };
   return pageInfo;
 };
