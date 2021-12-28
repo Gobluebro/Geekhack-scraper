@@ -88,7 +88,7 @@ export const VendorsList = [
       "en.zfrontier",
       "zFrontier Intl",
     ],
-    urls: ["zfrontier.com", "en.zfrontier.com"],
+    urls: ["www.zfrontier.com", "en.zfrontier.com"],
     locations: [
       "global",
       "rest of world",
@@ -179,7 +179,7 @@ export const VendorsList = [
   {
     names: ["vala supply", "vala", "valasupply"],
     urls: ["vala.supply"],
-    locations: ["usa", "us", "ua"],
+    locations: ["na", "usa", "us", "ua"],
   },
   {
     names: ["apexkeyboards"],
