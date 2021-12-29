@@ -41,6 +41,10 @@ The hardest issue is finding the start and end date of a group buy. There is no 
 
 ```
 npm install
+
+`cp .env.template .env`
+Configure your .env file.
+
 npm run scrape
 ```
 
