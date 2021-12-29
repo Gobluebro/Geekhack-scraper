@@ -65,48 +65,42 @@ export function getFormattedTitle(dom: JSDOM): string {
   return cleanedTitle || "";
 }
 
-export function getImageLinks(dom: JSDOM): (string | undefined)[] {
+export function getImageLinks(dom: JSDOM): string[] {
   const allPosts: Array<HTMLDivElement> = Array.from(
     dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper")
   );
   const limitedPostLength = allPosts.length >= 3 ? 3 : allPosts.length;
   const firstThreePosts = allPosts.slice(0, limitedPostLength);
   //slice this into 3 instead and then map
-  const imgLinks = firstThreePosts.map(
-    (post: HTMLDivElement): (string | undefined)[] => {
-      let imageLinks: (string | undefined)[] = [];
-      const threadStarterCheck = post.querySelector(".threadstarter");
-      // is the post made by the threadstarter? get all images links then
-      if (threadStarterCheck !== null) {
-        // TODO: collect some URLs for testing this to make sure all wanted images come back.
-        const allImgElements = Array.from(
-          post.querySelectorAll<HTMLImageElement>(
-            ".post img.bbc_img:not(.resized), img:not(.resized)[src*='action=dlattach;topic=']"
-          )
+  const imageLinks: string[] = [];
+  for (const post of firstThreePosts) {
+    const threadStarterCheck = post.querySelector(".threadstarter");
+    // only get images from the thread starter
+    if (threadStarterCheck !== null) {
+      const allImgElements: NodeListOf<HTMLImageElement> =
+        post.querySelectorAll<HTMLImageElement>(
+          ".post img.bbc_img:not(.resized), img:not(.resized)[src*='action=dlattach;topic=']"
         );
 
-        imageLinks = allImgElements.map((img: HTMLImageElement) => {
-          if (img.src.includes("PHPSESSID")) {
-            // looks something like ?PHPSESSID= with a GUID and then &action
-            const firstIndex = img.src.indexOf("PHPSESSID");
-            const secondIndex = img.src.indexOf("&");
-            const subString = img.src.substring(firstIndex, secondIndex + 1);
+      for (const imageElement of allImgElements) {
+        if (imageElement.src.includes("PHPSESSID")) {
+          // looks something like ?PHPSESSID= with a GUID and then &action
+          const firstIndex = imageElement.src.indexOf("PHPSESSID");
+          const secondIndex = imageElement.src.indexOf("&");
+          const subString = imageElement.src.substring(
+            firstIndex,
+            secondIndex + 1
+          );
 
-            return img.src.replace(subString, "");
-          } else {
-            return img.src;
-          }
-        });
+          imageLinks.push(imageElement.src.replace(subString, ""));
+        } else {
+          imageLinks.push(imageElement.src);
+        }
       }
-      return imageLinks;
     }
-  );
-  // remove array of arrays, and remove empty strings
-  const flattenedImgLinkArray = imgLinks.flat().filter((link) => {
-    return link;
-  });
+  }
   // remove duplicates
-  return [...new Set(flattenedImgLinkArray)];
+  return [...new Set(imageLinks)];
 }
 
 export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
