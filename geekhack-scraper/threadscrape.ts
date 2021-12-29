@@ -49,7 +49,7 @@ export function getFormattedModDate(dom: JSDOM): Date | null {
   return formattedDate;
 }
 
-export function getFormattedTitle(dom: JSDOM): string | undefined {
+export function getFormattedTitle(dom: JSDOM): string {
   // even though HTML Heading Element extends HTMLElement which contains .innerText I am unable to get anything back from it.
   // so I need to use textContent and rip out all tabs and new lines added.
   const title =
@@ -62,7 +62,7 @@ export function getFormattedTitle(dom: JSDOM): string | undefined {
     .replace(/\s+/g, " ")
     .trim();
 
-  return cleanedTitle;
+  return cleanedTitle || "";
 }
 
 export function getImageLinks(dom: JSDOM): (string | undefined)[] {
