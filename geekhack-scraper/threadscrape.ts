@@ -123,7 +123,8 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
         const locationSiblingGuess = foundVendor.previousSibling?.textContent;
 
         if (locationSiblingGuess) {
-          const tempLocation = locationSiblingGuess.replace(":", "").trim();
+          // removes everythintg but letters. you will generally find a user will add some symbol between the location and the link.
+          const tempLocation = locationSiblingGuess.replace(/\W/gi, "").trim();
           const locationFound = vendor.locations.some(
             (vendorLocation) => vendorLocation === tempLocation.toLowerCase()
           );
@@ -160,7 +161,7 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
         const scrappedVendor: Vendor = {
           thread_id: urlTopicID,
           location,
-          url,
+          url: foundVendor.href,
         };
 
         scrappedVendors.push(scrappedVendor);
