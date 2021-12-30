@@ -17,12 +17,12 @@ export const VendorsList = [
   {
     names: ["dailyclack", "daily clack"],
     urls: ["dailyclack.com"],
-    locations: ["oceania", "oceana", "oce", "australia", "aus", "au"],
+    locations: ["oceania", "oceana", "oce", "oc", "australia", "aus", "au"],
   },
   {
     names: ["proto[typist]", "prototypist", "proto"],
     urls: ["prototypist.net"],
-    locations: ["uk", "united kingdom"],
+    locations: ["europe", "eu", "uk", "united kingdom"],
   },
   {
     names: ["keyspresso"],
