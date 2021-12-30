@@ -20,14 +20,14 @@ export const VendorsList = [
     locations: ["oceania", "oceana", "oce", "australia", "aus", "au"],
   },
   {
-    names: ["Proto[Typist]", "prototypist", "proto"],
+    names: ["proto[typist]", "prototypist", "proto"],
     urls: ["prototypist.net"],
     locations: ["uk", "united kingdom"],
   },
   {
     names: ["keyspresso"],
     urls: ["keyspresso.ca"],
-    locations: ["na"],
+    locations: ["north america", "na", "canada", "ca"],
   },
   {
     names: ["kbdfans"],
@@ -309,6 +309,11 @@ export const VendorsList = [
   {
     names: ["project keyboard"],
     urls: ["projectkeyboard.com"],
+    locations: ["us"],
+  },
+  {
+    names: ["dangkeebs, dang keebs"],
+    urls: ["dangkeebs.com"],
     locations: ["us"],
   },
   // template
