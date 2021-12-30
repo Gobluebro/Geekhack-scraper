@@ -14,12 +14,12 @@ const ImagesModel = db.define<ImagesInstance>(
   "images",
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       allowNull: false,
     },
     thread_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       primaryKey: true,
     },
     name: {

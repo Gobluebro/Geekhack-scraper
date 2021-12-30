@@ -16,11 +16,12 @@ const ThreadsModel = db.define<ThreadsInstance>(
   "threads",
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       primaryKey: true,
+      allowNull: false,
     },
     website: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
     },
     title: {
       type: DataTypes.STRING,
