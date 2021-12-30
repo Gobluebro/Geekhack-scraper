@@ -81,47 +81,47 @@ describe("threadscape", () => {
       {
         thread_id: 115099,
         location: "UK",
-        url: "prototypist.net",
+        url: "https://prototypist.net/collections/live-group-buys/products/group-buy-gmk-panda",
       },
       {
         thread_id: 115099,
         location: "SEA",
-        url: "ilumkb.com",
+        url: "https://ilumkb.com/products/gmk-panda",
       },
       {
         thread_id: 115099,
         location: "KR",
-        url: "swagkeys.com",
+        url: "https://swagkeys.com/products/gb-gmk-panda",
       },
       {
         thread_id: 115099,
         location: "CA",
-        url: "ashkeebs.com",
+        url: "https://www.ashkeebs.com/product/gmk-panda-keycaps/",
       },
       {
         thread_id: 115099,
         location: "EU",
-        url: "candykeys.com",
+        url: "https://candykeys.com/group-buys/gmk-panda",
       },
       {
         thread_id: 115099,
         location: "OCE",
-        url: "switchkeys.com.au",
+        url: "https://www.switchkeys.com.au/products/gmk-panda-group-buy",
       },
       {
         thread_id: 115099,
         location: "CN",
-        url: "www.zfrontier.com",
+        url: "https://www.zfrontier.com/app/mch/BpVxweVJ896l",
       },
       {
         thread_id: 115099,
         location: "IN",
-        url: "rectangles.store",
+        url: "https://rectangles.store/products/group-buy-gmk-panda",
       },
       {
         thread_id: 115099,
         location: "NA",
-        url: "vala.supply",
+        url: "https://vala.supply/products/gmk-panda",
       },
     ];
 
