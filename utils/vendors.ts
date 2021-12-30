@@ -199,7 +199,7 @@ export const VendorsList = [
   {
     names: ["novelkeys"],
     urls: ["novelkeys.com", "novelkeys.xyz"],
-    locations: ["na", "usa", "us"],
+    locations: ["north america", "na", "usa", "us"],
   },
   {
     names: ["mkultra", "mkultra corporation"],
