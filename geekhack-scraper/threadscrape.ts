@@ -120,12 +120,37 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
       );
       if (foundVendor) {
         let location = "";
-        const locationGuess = foundVendor.previousSibling?.textContent;
+        const locationSiblingGuess = foundVendor.previousSibling?.textContent;
 
-        if (locationGuess) {
-          const tempLocation = locationGuess.replace(":", "").trim();
+        if (locationSiblingGuess) {
+          const tempLocation = locationSiblingGuess.replace(":", "").trim();
           const locationFound = vendor.locations.some(
             (vendorLocation) => vendorLocation === tempLocation.toLowerCase()
+          );
+          if (locationFound) {
+            location = tempLocation;
+          }
+        }
+
+        // we didn't find it. try again
+        if (!location) {
+          const locationAnchorTextGuess = foundVendor.text;
+          let tempLocation = locationAnchorTextGuess
+            .replace(":", "")
+            .toLowerCase()
+            .trim();
+
+          // remove any url from the text.
+          for (const url of vendor.urls) {
+            tempLocation = tempLocation.replace(url, "").trim();
+          }
+
+          // remove any names found in the text.
+          for (const name of vendor.names) {
+            tempLocation = tempLocation.replace(name, "").trim();
+          }
+          const locationFound = vendor.locations.some(
+            (vendorLocation) => vendorLocation === tempLocation
           );
           if (locationFound) {
             location = tempLocation;
