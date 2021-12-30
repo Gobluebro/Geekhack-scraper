@@ -1,6 +1,7 @@
 import images from "../database/images-model";
 import threads from "../database/threads-model";
-import { Image, PageInfo, Thread } from "../utils/types";
+import vendors from "../database/vendors-model";
+import { Image, PageInfo, Thread, Vendor } from "../utils/types";
 import downloadImages from "./getImagesForDatabase";
 
 export const SaveToDatabase = async (pages: PageInfo[]): Promise<void> => {
@@ -9,6 +10,9 @@ export const SaveToDatabase = async (pages: PageInfo[]): Promise<void> => {
   );
   const imagesToTryToDownload: Image[] = pages
     .map((page) => page.images)
+    .flat();
+  const vendorsToSaveToDatabase: Vendor[] = pages
+    .map((page: PageInfo) => page.vendors)
     .flat();
 
   const imagesToSaveToDatabase = await downloadImages(imagesToTryToDownload);
@@ -20,6 +24,9 @@ export const SaveToDatabase = async (pages: PageInfo[]): Promise<void> => {
 
   if (threadsSaved) {
     await images.bulkCreate(imagesToSaveToDatabase, {
+      ignoreDuplicates: true,
+    });
+    await vendors.bulkCreate(vendorsToSaveToDatabase, {
       ignoreDuplicates: true,
     });
   }
