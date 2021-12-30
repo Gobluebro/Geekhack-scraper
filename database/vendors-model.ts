@@ -13,17 +13,18 @@ const VendorsModel = db.define<VendorsInstance>(
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
-      primaryKey: true,
       autoIncrement: true,
     },
     thread_id: {
       type: DataTypes.INTEGER.UNSIGNED,
+      primaryKey: true,
     },
     location: {
       type: DataTypes.TEXT,
     },
     url: {
       type: DataTypes.TEXT,
+      primaryKey: true,
     },
   },
   {
