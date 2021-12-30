@@ -108,7 +108,8 @@ export const downloadImage = async (
       // discord images can have duplicate file name names.
       // they also come with a unique number for their images.
       // 123456789010111213/file.png
-      const isDiscordImage = urlChecker.origin === "https://cdn.discordapp.com";
+      // can be cdn.discordapp.com or media.discordapp.net
+      const isDiscordImage = urlChecker.origin.includes("discordapp");
 
       let uniqueImageNumber = "";
       if (isGeekhackImage) {
