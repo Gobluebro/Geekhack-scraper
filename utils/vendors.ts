@@ -33,8 +33,8 @@ export const VendorsList = [
     names: ["kbdfans"],
     urls: ["kbdfans.com"],
     locations: [
-      "world",
       "worldwide",
+      "world",
       "ww",
       "asia",
       "china",
@@ -52,7 +52,7 @@ export const VendorsList = [
   {
     names: ["basekeys"],
     urls: ["basekeys.jp"],
-    locations: ["japan", "jp"],
+    locations: ["japan", "jpn", "jp"],
   },
   {
     names: ["swagkeys"],
@@ -67,7 +67,7 @@ export const VendorsList = [
   {
     names: ["ashkeebs"],
     urls: ["ashkeebs.com"],
-    locations: ["canada", "ca"],
+    locations: ["canada", "can", "ca"],
   },
   {
     names: ["candykeys"],
@@ -142,7 +142,7 @@ export const VendorsList = [
     locations: ["india", "in"],
   },
   {
-    names: ["zion studios", "zion studios ph"],
+    names: ["zionstudios", "zion studios", "zion studios ph"],
     urls: ["zionstudios.ph"],
     locations: ["philippines", "ph", "southeast asia", "sea"],
   },
@@ -177,7 +177,7 @@ export const VendorsList = [
     locations: ["uk"],
   },
   {
-    names: ["vala supply", "vala", "valasupply"],
+    names: ["valasupply", "vala supply", "vala"],
     urls: ["vala.supply"],
     locations: ["na", "usa", "us", "ua"],
   },
@@ -238,7 +238,7 @@ export const VendorsList = [
   },
   {
     names: ["omnitype", "dixie mech"],
-    urls: ["omnitype.com", "dixiemech.com"],
+    urls: ["omnitype.com", "dixiemech.com", "dixiemech.store"],
     locations: ["us", "na"],
   },
   {
