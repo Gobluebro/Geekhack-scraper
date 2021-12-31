@@ -7,7 +7,9 @@ import {
   getFormattedTitle,
   getImageLinks,
   getVendors,
+  tryToGuessVendor,
 } from "../geekhack-scraper/threadscrape";
+import { VendorsList } from "../utils/vendors";
 
 // some issues with tests taking a while to run when getting doms for beforeAll.
 jest.setTimeout(30000);
@@ -76,51 +78,76 @@ describe("threadscape", () => {
     );
   });
 
+  test("tryToGuessVendor returns worldwide from complicated vendor string", () => {
+    const leftColonWithTwoNames = "CN/Worldwide: KBDFans";
+    const expectedWorldWide = "worldwide";
+
+    let vendorGuess = "";
+
+    const kbdfansVendor = VendorsList.find((vendor) => {
+      if (vendor.names.includes("kbdfans")) {
+        return vendor;
+      }
+    });
+
+    if (kbdfansVendor) {
+      const tempVendorGuess = tryToGuessVendor(
+        kbdfansVendor,
+        leftColonWithTwoNames
+      );
+      if (tempVendorGuess) {
+        vendorGuess = tempVendorGuess;
+      }
+    }
+
+    expect(vendorGuess).toBe(expectedWorldWide);
+  });
+
   test("getVendors returns the vendors on the thread page", () => {
     const expectedVendors = [
       {
         thread_id: 115099,
-        location: "UK",
+        location: "uk",
         url: "https://prototypist.net/collections/live-group-buys/products/group-buy-gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "SEA",
+        location: "sea",
         url: "https://ilumkb.com/products/gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "KR",
+        location: "kr",
         url: "https://swagkeys.com/products/gb-gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "CA",
+        location: "ca",
         url: "https://www.ashkeebs.com/product/gmk-panda-keycaps/",
       },
       {
         thread_id: 115099,
-        location: "EU",
+        location: "eu",
         url: "https://candykeys.com/group-buys/gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "OCE",
+        location: "oce",
         url: "https://www.switchkeys.com.au/products/gmk-panda-group-buy",
       },
       {
         thread_id: 115099,
-        location: "CN",
+        location: "cn",
         url: "https://www.zfrontier.com/app/mch/BpVxweVJ896l",
       },
       {
         thread_id: 115099,
-        location: "IN",
+        location: "in",
         url: "https://rectangles.store/products/group-buy-gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "NA",
+        location: "na",
         url: "https://vala.supply/products/gmk-panda",
       },
     ];

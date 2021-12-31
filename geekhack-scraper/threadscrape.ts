@@ -103,6 +103,64 @@ export function getImageLinks(dom: JSDOM): string[] {
   return [...new Set(imageLinks)];
 }
 
+export function tryToGuessVendor(
+  currentVendor: {
+    names: string[];
+    urls: string[];
+    locations: string[];
+  },
+  foundVendor: string
+): string {
+  // removes everythintg but letters. you will generally find a user will add some symbol between the location and the link.
+  const tempVendorGuess = foundVendor.replace(/\W/gi, " ").toLowerCase().trim();
+
+  // check if the string and vendor match before we start removing other text.
+  const locationFound = currentVendor.locations.some(
+    (vendorLocation: string) => vendorLocation === tempVendorGuess
+  );
+  if (locationFound) {
+    return tempVendorGuess;
+  }
+
+  let vendorLocationGuess = "";
+  for (const vendorLocation of currentVendor.locations) {
+    // remove any url from the text.
+    for (const url of currentVendor.urls) {
+      const urlGuessAttempt = tempVendorGuess.replace(url, "").trim();
+      if (urlGuessAttempt !== tempVendorGuess) {
+        if (
+          tempVendorGuess.includes(` ${vendorLocation}`) ||
+          tempVendorGuess.includes(`${vendorLocation} `) ||
+          tempVendorGuess === vendorLocation
+        ) {
+          vendorLocationGuess = vendorLocation;
+          break;
+        }
+      }
+    }
+
+    if (vendorLocationGuess) {
+      break;
+    }
+
+    // remove any names found in the text.
+    for (const name of currentVendor.names) {
+      const nameGuessAttempt = tempVendorGuess.replace(name, "").trim();
+      if (nameGuessAttempt !== tempVendorGuess) {
+        if (
+          tempVendorGuess.includes(` ${vendorLocation}`) ||
+          tempVendorGuess.includes(`${vendorLocation} `) ||
+          tempVendorGuess === vendorLocation
+        ) {
+          vendorLocationGuess = vendorLocation;
+          break;
+        }
+      }
+    }
+  }
+  return vendorLocationGuess || "";
+}
+
 export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
   const scrappedVendors: Vendor[] = [];
 
@@ -120,41 +178,24 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
       );
       if (foundVendor) {
         let location = "";
-        const locationSiblingGuess = foundVendor.previousSibling?.textContent;
-
-        if (locationSiblingGuess) {
-          // removes everythintg but letters. you will generally find a user will add some symbol between the location and the link.
-          const tempLocation = locationSiblingGuess.replace(/\W/gi, "").trim();
-          const locationFound = vendor.locations.some(
-            (vendorLocation) => vendorLocation === tempLocation.toLowerCase()
+        if (foundVendor.previousSibling?.textContent) {
+          const locationSiblingGuess = tryToGuessVendor(
+            vendor,
+            foundVendor.previousSibling.textContent
           );
-          if (locationFound) {
-            location = tempLocation;
+          if (locationSiblingGuess) {
+            location = locationSiblingGuess;
           }
         }
 
         // we didn't find it. try again
         if (!location) {
-          const locationAnchorTextGuess = foundVendor.text;
-          let tempLocation = locationAnchorTextGuess
-            .replace(":", "")
-            .toLowerCase()
-            .trim();
-
-          // remove any url from the text.
-          for (const url of vendor.urls) {
-            tempLocation = tempLocation.replace(url, "").trim();
-          }
-
-          // remove any names found in the text.
-          for (const name of vendor.names) {
-            tempLocation = tempLocation.replace(name, "").trim();
-          }
-          const locationFound = vendor.locations.some(
-            (vendorLocation) => vendorLocation === tempLocation
+          const locationAnchorTextGuess = tryToGuessVendor(
+            vendor,
+            foundVendor.text
           );
-          if (locationFound) {
-            location = tempLocation;
+          if (locationAnchorTextGuess) {
+            location = locationAnchorTextGuess;
           }
         }
 
