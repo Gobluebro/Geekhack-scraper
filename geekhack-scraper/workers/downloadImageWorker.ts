@@ -27,10 +27,12 @@ const downloadImageAndReturnFilename = (
       // make sure the file name is decoded for other languages.
       const decodedFileName = decode(filename);
       if (uniqueImageNumber) {
-        return `${uniqueImageNumber}_${decodedFileName}`;
-      } else {
-        return decodedFileName;
+        if (uniqueImageNumber !== decodedFileName.split(".")[0]) {
+          return `${uniqueImageNumber}_${decodedFileName}`;
+        }
       }
+
+      return decodedFileName;
     },
     retry: { maxRetries: 1, delay: 3000 }, // { maxRetries: number, delay: number in ms } or false to disable (default)
     override: { skip: true, skipSmaller: true },
@@ -50,12 +52,22 @@ const downloadImageAndReturnFilename = (
         download.stop();
         reject(null);
       })
-      .on("download", (downloadInfo: DownloadInfoStats) =>
+      .on("download", (downloadInfo: DownloadInfoStats) => {
         console.log("Download Begins: ", {
           name: downloadInfo.fileName,
           total: downloadInfo.totalSize,
-        })
-      )
+        });
+
+        // we need to check to see if the imgur file has been removed, we can't tell until we start the download.
+        const urlChecker = new URL(url);
+        if (
+          urlChecker.hostname.includes("imgur") &&
+          downloadInfo.fileName.includes("removed")
+        ) {
+          download.stop();
+          reject(null);
+        }
+      })
       .on("timeout", () => {
         console.log("timed out");
         download.stop();
@@ -100,6 +112,7 @@ export const downloadImage = async (
   if (url) {
     try {
       const urlChecker = new URL(url);
+
       // geekhack images have a unique number for their images.
       // the filename may be duplicate, but the attach number will be unique.
       // ?action=dlattach;topic=123456.0;attach=123456;image
@@ -109,7 +122,10 @@ export const downloadImage = async (
       // they also come with a unique number for their images.
       // 123456789010111213/file.png
       // can be cdn.discordapp.com or media.discordapp.net
-      const isDiscordImage = urlChecker.origin.includes("discordapp");
+      const isDiscordImage = urlChecker.hostname.includes("discordapp");
+
+      // this is specifically for imgur images that become removed. They lose their unique id once they are removed.
+      const isImgurImage = urlChecker.hostname.includes("imgur");
 
       let uniqueImageNumber = "";
       if (isGeekhackImage) {
@@ -118,6 +134,10 @@ export const downloadImage = async (
         const tempUrl = urlChecker.pathname.split("/");
         // get the random number before the file name
         uniqueImageNumber = tempUrl[tempUrl.length - 2];
+      } else if (isImgurImage) {
+        // looks something like "/AAEI7s1.png"
+        const uniqueId = urlChecker.pathname.split(".")[0].replace("/", "");
+        uniqueImageNumber = uniqueId;
       }
 
       const filename = await downloadImageAndReturnFilename(
