@@ -12,7 +12,7 @@ export const VendorsList = [
   {
     names: ["deskhero"],
     urls: ["deskhero.ca"],
-    locations: ["canada", "ca"],
+    locations: ["canada", "can", "ca"],
   },
   {
     names: ["dailyclack", "daily clack"],
@@ -22,7 +22,7 @@ export const VendorsList = [
   {
     names: ["proto[typist]", "prototypist", "proto"],
     urls: ["prototypist.net"],
-    locations: ["europe", "eu", "uk", "united kingdom"],
+    locations: ["everywhere", "europe", "eu", "uk", "united kingdom"],
   },
   {
     names: ["keyspresso"],
@@ -90,6 +90,7 @@ export const VendorsList = [
     ],
     urls: ["www.zfrontier.com", "en.zfrontier.com"],
     locations: [
+      "worldwide",
       "global",
       "rest of world",
       "intl",
@@ -149,7 +150,7 @@ export const VendorsList = [
   {
     names: ["mechs & co", "mechs and co", "mechs&co"],
     urls: ["mechsandco.com"],
-    locations: ["north america", "united states", "us"],
+    locations: ["north america", "na", "united states", "us"],
   },
   {
     names: ["kanatakeys"],
@@ -199,7 +200,7 @@ export const VendorsList = [
   {
     names: ["novelkeys"],
     urls: ["novelkeys.com", "novelkeys.xyz"],
-    locations: ["north america", "na", "usa", "us"],
+    locations: ["north america", "america", "na", "usa", "us"],
   },
   {
     names: ["mkultra", "mkultra corporation"],
@@ -315,6 +316,26 @@ export const VendorsList = [
     names: ["dangkeebs, dang keebs"],
     urls: ["dangkeebs.com"],
     locations: ["us"],
+  },
+  {
+    names: ["deskeys"],
+    urls: ["deskeys.io"],
+    locations: ["asia"],
+  },
+  {
+    names: ["aeternus"],
+    urls: ["aeternus.co"],
+    locations: ["north america", "na", "us", "canada", "mexico"],
+  },
+  {
+    names: ["thock co"],
+    urls: ["thock.co"],
+    locations: ["worldwide"],
+  },
+  {
+    names: ["tastatur"],
+    urls: ["tastatur.no"],
+    locations: ["norway", "nr"],
   },
   // template
   {
