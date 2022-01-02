@@ -115,11 +115,14 @@ export function tryToGuessVendor(
   const tempVendorGuess = foundVendor.replace(/\W/gi, " ").toLowerCase().trim();
 
   // check if the string and vendor match before we start removing other text.
-  const locationFound = currentVendor.locations.some(
-    (vendorLocation: string) => vendorLocation === tempVendorGuess
+  const locationFound = currentVendor.locations.find(
+    (vendorLocation: string) =>
+      tempVendorGuess.includes(` ${vendorLocation}`) ||
+      tempVendorGuess.includes(`${vendorLocation} `) ||
+      vendorLocation === tempVendorGuess
   );
   if (locationFound) {
-    return tempVendorGuess;
+    return locationFound;
   }
 
   let vendorLocationGuess = "";
@@ -145,7 +148,8 @@ export function tryToGuessVendor(
 
     // remove any names found in the text.
     for (const name of currentVendor.names) {
-      const nameGuessAttempt = tempVendorGuess.replace(name, "").trim();
+      const tempName = name.replace(/\W/gi, " ").toLowerCase().trim();
+      const nameGuessAttempt = tempVendorGuess.replace(tempName, "").trim();
       if (nameGuessAttempt !== tempVendorGuess) {
         if (
           tempVendorGuess.includes(` ${vendorLocation}`) ||
@@ -196,6 +200,20 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
           );
           if (locationAnchorTextGuess) {
             location = locationAnchorTextGuess;
+          }
+        }
+
+        // this is the least likely attempt but sometimes there is whitespace inbetween links and bolded text.
+        // sometimes structured like strong > whitespace > anchor.
+        if (!location) {
+          if (foundVendor.previousSibling?.previousSibling?.textContent) {
+            const locationSiblingGuess = tryToGuessVendor(
+              vendor,
+              foundVendor.previousSibling.previousSibling.textContent
+            );
+            if (locationSiblingGuess) {
+              location = locationSiblingGuess;
+            }
           }
         }
 
