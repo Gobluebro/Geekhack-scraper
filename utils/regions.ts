@@ -16,6 +16,7 @@ export enum Region {
   India,
   SouthEastAsia,
   Japan,
+  Malaysia,
   Philippines,
   Singapore,
   SouthKorea,
@@ -55,7 +56,7 @@ export const Regions = [
   },
   {
     region: Region.Norway,
-    names: [""],
+    names: ["norway", "nr"],
   },
   {
     region: Region.UnitedKingdom,
@@ -92,6 +93,10 @@ export const Regions = [
   {
     region: Region.Japan,
     names: ["japan", "jpn", "jp"],
+  },
+  {
+    region: Region.Malaysia,
+    names: ["malaysia", "my"],
   },
   {
     region: Region.Philippines,
