@@ -5,8 +5,9 @@ export enum Region {
   Mexico,
   SouthAmerica,
   Europe,
-  UnitedKingdom,
+  Germany,
   Norway,
+  UnitedKingdom,
   Russia,
   Ukraine,
   Belarus,
@@ -26,90 +27,104 @@ export enum Region {
 export const Regions = [
   {
     region: Region.NorthAmerica,
-    names: [""],
+    names: ["north america", "america", "na"],
   },
   {
     region: Region.UnitedStates,
-    names: [""],
+    names: ["united states", "usa", "us", "ua"],
   },
   {
     region: Region.Canada,
-    names: [""],
+    names: ["canada", "can", "ca"],
   },
   {
     region: Region.Mexico,
-    names: [""],
+    names: ["mexico", "mx"],
   },
   {
     region: Region.SouthAmerica,
-    names: [""],
+    names: ["south america", "sa", "latin america"],
   },
   {
     region: Region.Europe,
-    names: [""],
+    names: ["europe", "eu"],
   },
   {
-    region: Region.UnitedKingdom,
-    names: [""],
+    region: Region.Germany,
+    names: ["germany", "de"],
   },
   {
     region: Region.Norway,
     names: [""],
   },
   {
+    region: Region.UnitedKingdom,
+    names: ["united kingdom", "uk"],
+  },
+  {
     region: Region.Russia,
-    names: [""],
+    names: ["russia", "rus"],
   },
   {
     region: Region.Ukraine,
-    names: [""],
+    names: ["ukraine", "ukr"],
   },
   {
     region: Region.Belarus,
-    names: [""],
+    names: ["belarus"],
   },
   {
     region: Region.Asia,
-    names: [""],
+    names: ["asia", "as"],
   },
   {
     region: Region.China,
-    names: [""],
+    names: ["china", "cn", "ch"],
   },
   {
     region: Region.India,
-    names: [""],
+    names: ["india", "in"],
   },
   {
     region: Region.SouthEastAsia,
-    names: [""],
+    names: ["southeast asia", "sea"],
   },
   {
     region: Region.Japan,
-    names: [""],
+    names: ["japan", "jpn", "jp"],
   },
   {
     region: Region.Philippines,
-    names: [""],
+    names: ["philippines", "ph"],
   },
   {
     region: Region.Singapore,
-    names: [""],
+    names: ["singapore", "sg"],
   },
   {
     region: Region.SouthKorea,
-    names: [""],
+    names: ["south korea", "sk", "korea", "kor", "kr"],
   },
   {
     region: Region.Oceania,
-    names: [""],
+    names: ["oceania", "oceana", "oce", "oc"],
   },
   {
     region: Region.Australia,
-    names: [""],
+    names: ["australia", "aus", "au"],
   },
   {
     region: Region.WorldWide,
-    names: [""],
+    names: [
+      "everywhere",
+      "worldwide",
+      "world",
+      "ww",
+      "global",
+      "glo",
+      "rest of world",
+      "row",
+      "intl",
+    ],
   },
 ];
