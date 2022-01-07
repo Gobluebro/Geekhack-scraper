@@ -103,7 +103,58 @@ export function getImageLinks(dom: JSDOM): string[] {
   return [...new Set(imageLinks)];
 }
 
-export function tryToGuessVendor(
+function tryGetSiblingOrParent(
+  isPrevious: boolean,
+  location: string,
+  currentVendor: {
+    names: string[];
+    urls: string[];
+    locations: string[];
+  },
+  foundVendor: HTMLAnchorElement
+): string {
+  // attempt to find it if it was labeled with bolded lettering, stop search at max cut off or if we hit a br tag.
+  const maxCutOff = 5;
+  let element: any = foundVendor;
+  for (let i = 0; i < maxCutOff; i++) {
+    if (element.tagName === "BR" || element.tagName === "DIV") {
+      break;
+    }
+    const siblingText = isPrevious
+      ? element.previousSibling?.textContent
+      : element.nextSibling?.textContent;
+    if (siblingText) {
+      console.log("previous sib", element.previousSibling.textContent);
+      const vendorGuess = tryToGuessVendor(
+        currentVendor,
+        element.previousSibling.textContent
+      );
+      if (vendorGuess) {
+        location = vendorGuess;
+        break;
+      } else {
+        element = element.previousSibling;
+        continue;
+      }
+    } else if (element.parentElement && element.parentElement.textContent) {
+      console.log("parent ele", element.parentElement.textContent);
+      const vendorGuess = tryToGuessVendor(
+        currentVendor,
+        element.parentElement.textContent
+      );
+      if (vendorGuess) {
+        location = vendorGuess;
+        break;
+      } else {
+        element = element.parentElement;
+        continue;
+      }
+    }
+  }
+  return location;
+}
+
+function tryToGuessVendor(
   currentVendor: {
     names: string[];
     urls: string[];
@@ -175,7 +226,7 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
   for (const vendor of VendorsList) {
     for (const url of vendor.urls) {
       // first post could possibly be null in theory if the styling changed but it hasn't since I started this.
-      // this css selector looks anchor elements with bbc_link as the class.
+      // this css selector looks for anchor elements with bbc_link as the class.
       // then it looks at the href to see if any part of it contains something from our list of urls.
       const foundVendor = firstPost?.querySelector<HTMLAnchorElement>(
         `a.bbc_link[href*='${url}'`
@@ -192,7 +243,19 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
           }
         }
 
-        // we didn't find it. try again
+        console.log("1st", location, "href", foundVendor.href);
+
+        if (foundVendor.nextSibling?.textContent) {
+          const locationSiblingGuess = tryToGuessVendor(
+            vendor,
+            foundVendor.nextSibling.textContent
+          );
+          if (locationSiblingGuess) {
+            location = locationSiblingGuess;
+          }
+        }
+        console.log("1.2", location, "href", foundVendor.href);
+        // try to find it in the text of the anchor.
         if (!location) {
           const locationAnchorTextGuess = tryToGuessVendor(
             vendor,
@@ -202,6 +265,7 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
             location = locationAnchorTextGuess;
           }
         }
+        console.log("2nd", location, "href", foundVendor.href);
 
         // this is the least likely attempt but sometimes there is whitespace inbetween links and bolded text.
         // sometimes structured like strong > whitespace > anchor.
@@ -216,6 +280,22 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
             }
           }
         }
+        console.log("3rd", location, "href", foundVendor.href);
+
+        if (!location) {
+          location = tryGetSiblingOrParent(true, location, vendor, foundVendor);
+        }
+        console.log("4th", location, "href", foundVendor.href);
+
+        if (!location) {
+          location = tryGetSiblingOrParent(
+            false,
+            location,
+            vendor,
+            foundVendor
+          );
+        }
+        console.log("5th", location, "href", foundVendor.href);
 
         const scrappedVendor: Vendor = {
           thread_id: urlTopicID,
