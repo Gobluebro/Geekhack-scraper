@@ -3,6 +3,7 @@ import { TopicEnum, WebsiteEnum } from "../utils/constants";
 import { Image, PageInfo, Thread, Vendor } from "../utils/types";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 import { VendorsList } from "../utils/vendors";
+import { Region } from "../utils/regions";
 
 export function getAuthor(dom: JSDOM): string {
   const authorLink =
@@ -158,7 +159,7 @@ function tryToGuessVendor(
   currentVendor: {
     names: string[];
     urls: string[];
-    locations: string[];
+    locations: Region[];
   },
   foundVendor: string
 ): string {
@@ -178,9 +179,15 @@ function tryToGuessVendor(
 
   let vendorLocationGuess = "";
   for (const vendorLocation of currentVendor.locations) {
+    let skipRest = false;
     // remove any url from the text.
     for (const url of currentVendor.urls) {
       const urlGuessAttempt = tempVendorGuess.replace(url, "").trim();
+      // if there is nothing left, then this won't have what we are looking for and we will only get false positives as we go forward.
+      if (urlGuessAttempt === "") {
+        skipRest = true;
+        break;
+      }
       if (urlGuessAttempt !== tempVendorGuess) {
         if (
           tempVendorGuess.includes(` ${vendorLocation}`) ||
@@ -193,7 +200,7 @@ function tryToGuessVendor(
       }
     }
 
-    if (vendorLocationGuess) {
+    if (vendorLocationGuess || skipRest) {
       break;
     }
 
@@ -201,6 +208,10 @@ function tryToGuessVendor(
     for (const name of currentVendor.names) {
       const tempName = name.replace(/\W/gi, " ").toLowerCase().trim();
       const nameGuessAttempt = tempVendorGuess.replace(tempName, "").trim();
+      // if there is nothing left, then this won't have what we are looking for and we will only get false positives as we go forward.
+      if (nameGuessAttempt === "") {
+        break;
+      }
       if (nameGuessAttempt !== tempVendorGuess) {
         if (
           tempVendorGuess.includes(` ${vendorLocation}`) ||
