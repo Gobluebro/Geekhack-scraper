@@ -329,9 +329,9 @@ export const VendorsList = [
     locations: [Region.Norway],
   },
   // template
-  {
-    names: [""],
-    urls: [""],
-    locations: [""],
-  },
+  // {
+  //   names: [""],
+  //   urls: [""],
+  //   locations: [Region.NoRegion],
+  // },
 ];
