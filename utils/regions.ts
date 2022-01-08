@@ -1,4 +1,5 @@
 export enum Region {
+  NoRegion,
   NorthAmerica,
   UnitedStates,
   Canada,
