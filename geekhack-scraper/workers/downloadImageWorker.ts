@@ -122,7 +122,10 @@ export const downloadImage = async (
       // they also come with a unique number for their images.
       // 123456789010111213/file.png
       // can be cdn.discordapp.com or media.discordapp.net
-      const isDiscordImage = urlChecker.hostname.includes("discordapp");
+      // some people are using giphy for group buys. luckily we can reuse code.
+      const isDiscordOrGiphyImage = ["discord", "giphy"].some((website) =>
+        urlChecker.hostname.includes(website)
+      );
 
       // this is specifically for imgur images that become removed. They lose their unique id once they are removed.
       const isImgurImage = urlChecker.hostname.includes("imgur");
@@ -130,7 +133,7 @@ export const downloadImage = async (
       let uniqueImageNumber = "";
       if (isGeekhackImage) {
         uniqueImageNumber = url.split("attach=")[1].split(";")[0];
-      } else if (isDiscordImage) {
+      } else if (isDiscordOrGiphyImage) {
         const tempUrl = urlChecker.pathname.split("/");
         // get the random number before the file name
         uniqueImageNumber = tempUrl[tempUrl.length - 2];
