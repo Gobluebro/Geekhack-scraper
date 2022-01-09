@@ -117,21 +117,28 @@ function tryGetSiblingOrParent(
   const maxCutOff = 5;
   let element: any = foundVendor;
   for (let i = 0; i < maxCutOff; i++) {
-    if (element.tagName === "BR" || element.tagName === "DIV") {
+    if (element.tagName === "DIV") {
       break;
     }
+
+    const siblingElement = isPrevious
+      ? element.previousSibling
+      : element.nextSibling;
+
     const siblingText = isPrevious
       ? element.previousSibling?.textContent
       : element.nextSibling?.textContent;
-    if (siblingText) {
-      console.log({ isPrevious }, element.previousSibling.textContent);
-      const vendorGuess = tryToGuessVendor(currentVendor, siblingText);
-      if (vendorGuess !== Region.NoRegion) {
-        return vendorGuess;
-      } else {
-        element = isPrevious ? element.previousSibling : element.nextSibling;
-        continue;
+
+    if (siblingElement) {
+      if (siblingText) {
+        console.log({ isPrevious }, siblingText);
+        const vendorGuess = tryToGuessVendor(currentVendor, siblingText);
+        if (vendorGuess !== Region.NoRegion) {
+          return vendorGuess;
+        }
       }
+      element = siblingElement;
+      continue;
     } else if (element.parentElement && element.parentElement.textContent) {
       if (element.parentElement.textContent.length > 50) {
         break;
@@ -151,7 +158,7 @@ function tryGetSiblingOrParent(
   return Region.NoRegion;
 }
 
-function tryToGuessVendor(
+export function tryToGuessVendor(
   currentVendor: {
     names: string[];
     urls: string[];
@@ -250,7 +257,7 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
       // then it looks at the href to see if any part of it contains something from our list of urls.
       const foundVendor = firstPost?.querySelector<HTMLAnchorElement>(
         `a.bbc_link[href*='${url}'`
-      );
+      ); // do I want more than 1? querySelectorAll could provide me with multiple links in the case of 102849 which would mean I would get the right one on the second try
       if (foundVendor) {
         let location = Region.NoRegion;
 
