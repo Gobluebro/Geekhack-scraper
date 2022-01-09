@@ -85,7 +85,12 @@ export const VendorsList = [
       "en.zfrontier",
       "zFrontier Intl",
     ],
-    urls: ["www.zfrontier.com", "en.zfrontier.com"],
+    urls: [
+      "www.zfrontier.com",
+      "en.zfrontier.com",
+      "https://zfrontier.com",
+      "http://zfrontier.com",
+    ],
     locations: [Region.WorldWide, Region.Asia, Region.China],
   },
   {

@@ -3,7 +3,7 @@ import { TopicEnum, WebsiteEnum } from "../utils/constants";
 import { Image, PageInfo, Thread, Vendor } from "../utils/types";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 import { VendorsList } from "../utils/vendors";
-import { Region } from "../utils/regions";
+import { Region, Regions } from "../utils/regions";
 
 export function getAuthor(dom: JSDOM): string {
   const authorLink =
@@ -110,7 +110,7 @@ function tryGetSiblingOrParent(
   currentVendor: {
     names: string[];
     urls: string[];
-    locations: string[];
+    locations: Region[];
   },
   foundVendor: HTMLAnchorElement
 ): string {
@@ -125,20 +125,19 @@ function tryGetSiblingOrParent(
       ? element.previousSibling?.textContent
       : element.nextSibling?.textContent;
     if (siblingText) {
-      console.log("previous sib", element.previousSibling.textContent);
-      const vendorGuess = tryToGuessVendor(
-        currentVendor,
-        element.previousSibling.textContent
-      );
+      console.log({ isPrevious }, element.previousSibling.textContent);
+      const vendorGuess = tryToGuessVendor(currentVendor, siblingText);
       if (vendorGuess) {
         location = vendorGuess;
         break;
       } else {
-        element = element.previousSibling;
+        element = isPrevious ? element.previousSibling : element.nextSibling;
         continue;
       }
     } else if (element.parentElement && element.parentElement.textContent) {
-      console.log("parent ele", element.parentElement.textContent);
+      if (element.parentElement.textContent.length > 50) {
+        break;
+      }
       const vendorGuess = tryToGuessVendor(
         currentVendor,
         element.parentElement.textContent
@@ -163,11 +162,26 @@ function tryToGuessVendor(
   },
   foundVendor: string
 ): string {
-  // removes everythintg but letters. you will generally find a user will add some symbol between the location and the link.
-  const tempVendorGuess = foundVendor.replace(/\W/gi, " ").toLowerCase().trim();
+  // removes everything but letters and periods. you will generally find a user will add some symbol between the location and the link.
+  const tempVendorGuess = foundVendor
+    .replace(/[^\w\s.]/g, " ")
+    .toLowerCase()
+    .trim();
+
+  // we match the region from the vendor to the list of name of locations in that region.
+  // then put them in an array of locations all together.
+  const vendorLocations = currentVendor.locations
+    .map((location) => {
+      const region = Regions.find(({ region }) => region === location);
+      if (region) {
+        return region.names;
+      }
+    })
+    .flat()
+    .filter((item): item is string => item !== undefined);
 
   // check if the string and vendor match before we start removing other text.
-  const locationFound = currentVendor.locations.find(
+  const locationFound = vendorLocations.find(
     (vendorLocation: string) =>
       tempVendorGuess.includes(` ${vendorLocation}`) ||
       tempVendorGuess.includes(`${vendorLocation} `) ||
@@ -178,7 +192,7 @@ function tryToGuessVendor(
   }
 
   let vendorLocationGuess = "";
-  for (const vendorLocation of currentVendor.locations) {
+  for (const vendorLocation of vendorLocations) {
     let skipRest = false;
     // remove any url from the text.
     for (const url of currentVendor.urls) {
@@ -206,7 +220,10 @@ function tryToGuessVendor(
 
     // remove any names found in the text.
     for (const name of currentVendor.names) {
-      const tempName = name.replace(/\W/gi, " ").toLowerCase().trim();
+      const tempName = name
+        .replace(/[^\w\s!?]/g, " ")
+        .toLowerCase()
+        .trim();
       const nameGuessAttempt = tempVendorGuess.replace(tempName, "").trim();
       // if there is nothing left, then this won't have what we are looking for and we will only get false positives as we go forward.
       if (nameGuessAttempt === "") {
@@ -244,28 +261,25 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
       );
       if (foundVendor) {
         let location = "";
-        if (foundVendor.previousSibling?.textContent) {
-          const locationSiblingGuess = tryToGuessVendor(
-            vendor,
-            foundVendor.previousSibling.textContent
-          );
-          if (locationSiblingGuess) {
-            location = locationSiblingGuess;
-          }
+
+        if (foundVendor.href === "http://en.zfrontier.com/") {
+          console.log("here");
         }
+
+        location = tryGetSiblingOrParent(true, location, vendor, foundVendor);
 
         console.log("1st", location, "href", foundVendor.href);
 
-        if (foundVendor.nextSibling?.textContent) {
-          const locationSiblingGuess = tryToGuessVendor(
+        if (!location) {
+          location = tryGetSiblingOrParent(
+            false,
+            location,
             vendor,
-            foundVendor.nextSibling.textContent
+            foundVendor
           );
-          if (locationSiblingGuess) {
-            location = locationSiblingGuess;
-          }
         }
-        console.log("1.2", location, "href", foundVendor.href);
+
+        console.log("2nd", location, "href", foundVendor.href);
         // try to find it in the text of the anchor.
         if (!location) {
           const locationAnchorTextGuess = tryToGuessVendor(
@@ -276,37 +290,7 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
             location = locationAnchorTextGuess;
           }
         }
-        console.log("2nd", location, "href", foundVendor.href);
-
-        // this is the least likely attempt but sometimes there is whitespace inbetween links and bolded text.
-        // sometimes structured like strong > whitespace > anchor.
-        if (!location) {
-          if (foundVendor.previousSibling?.previousSibling?.textContent) {
-            const locationSiblingGuess = tryToGuessVendor(
-              vendor,
-              foundVendor.previousSibling.previousSibling.textContent
-            );
-            if (locationSiblingGuess) {
-              location = locationSiblingGuess;
-            }
-          }
-        }
         console.log("3rd", location, "href", foundVendor.href);
-
-        if (!location) {
-          location = tryGetSiblingOrParent(true, location, vendor, foundVendor);
-        }
-        console.log("4th", location, "href", foundVendor.href);
-
-        if (!location) {
-          location = tryGetSiblingOrParent(
-            false,
-            location,
-            vendor,
-            foundVendor
-          );
-        }
-        console.log("5th", location, "href", foundVendor.href);
 
         const scrappedVendor: Vendor = {
           thread_id: urlTopicID,
