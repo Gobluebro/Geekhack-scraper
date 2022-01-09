@@ -28,6 +28,20 @@ export enum Region {
 
 export const Regions = [
   {
+    region: Region.WorldWide,
+    names: [
+      "everywhere",
+      "worldwide",
+      "world",
+      "ww",
+      "global",
+      "glo",
+      "rest of world",
+      "row",
+      "intl",
+    ],
+  },
+  {
     region: Region.NorthAmerica,
     names: ["north america", "america", "na"],
   },
@@ -118,19 +132,5 @@ export const Regions = [
   {
     region: Region.Australia,
     names: ["australia", "aus", "au"],
-  },
-  {
-    region: Region.WorldWide,
-    names: [
-      "everywhere",
-      "worldwide",
-      "world",
-      "ww",
-      "global",
-      "glo",
-      "rest of world",
-      "row",
-      "intl",
-    ],
   },
 ];
