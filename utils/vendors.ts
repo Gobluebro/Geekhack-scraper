@@ -99,9 +99,9 @@ export const VendorsList = [
     locations: [Region.Ukraine, Region.Russia, Region.Belarus],
   },
   {
-    names: ["hexkeyboards"],
+    names: ["hex keyboards", "hexkeyboards"],
     urls: ["hexkeyboards.com"],
-    locations: [Region.SouthEastAsia],
+    locations: [Region.SouthEastAsia, Region.Singapore],
   },
   {
     names: ["kono", "kono store"],
