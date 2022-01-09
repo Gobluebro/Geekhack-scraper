@@ -20,8 +20,9 @@ const VendorsModel = db.define<VendorsInstance>(
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
+    // technically an enum but we will save these as integers
     location: {
-      type: DataTypes.TEXT,
+      type: DataTypes.INTEGER,
     },
     url: {
       type: DataTypes.TEXT,
