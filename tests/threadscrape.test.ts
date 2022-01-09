@@ -10,6 +10,7 @@ import {
   tryToGuessVendor,
 } from "../geekhack-scraper/threadscrape";
 import { VendorsList } from "../utils/vendors";
+import { Region } from "../utils/regions";
 
 // some issues with tests taking a while to run when getting doms for beforeAll.
 jest.setTimeout(30000);
@@ -80,9 +81,9 @@ describe("threadscape", () => {
 
   test("tryToGuessVendor returns worldwide from complicated vendor string", () => {
     const leftColonWithTwoNames = "CN/Worldwide: KBDFans";
-    const expectedWorldWide = "worldwide";
+    const expectedWorldWide = Region.WorldWide;
 
-    let vendorGuess = "";
+    let vendorGuess: Region = Region.NoRegion;
 
     const kbdfansVendor = VendorsList.find((vendor) => {
       if (vendor.names.includes("kbdfans")) {
@@ -95,7 +96,7 @@ describe("threadscape", () => {
         kbdfansVendor,
         leftColonWithTwoNames
       );
-      if (tempVendorGuess) {
+      if (tempVendorGuess !== Region.NoRegion) {
         vendorGuess = tempVendorGuess;
       }
     }
@@ -107,47 +108,47 @@ describe("threadscape", () => {
     const expectedVendors = [
       {
         thread_id: 115099,
-        location: "uk",
+        location: Region.UnitedKingdom,
         url: "https://prototypist.net/collections/live-group-buys/products/group-buy-gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "sea",
+        location: Region.SouthEastAsia,
         url: "https://ilumkb.com/products/gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "kr",
+        location: Region.SouthKorea,
         url: "https://swagkeys.com/products/gb-gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "ca",
+        location: Region.Canada,
         url: "https://www.ashkeebs.com/product/gmk-panda-keycaps/",
       },
       {
         thread_id: 115099,
-        location: "eu",
+        location: Region.Europe,
         url: "https://candykeys.com/group-buys/gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "oce",
+        location: Region.Oceania,
         url: "https://www.switchkeys.com.au/products/gmk-panda-group-buy",
       },
       {
         thread_id: 115099,
-        location: "cn",
+        location: Region.China,
         url: "https://www.zfrontier.com/app/mch/BpVxweVJ896l",
       },
       {
         thread_id: 115099,
-        location: "in",
+        location: Region.India,
         url: "https://rectangles.store/products/group-buy-gmk-panda",
       },
       {
         thread_id: 115099,
-        location: "na",
+        location: Region.NorthAmerica,
         url: "https://vala.supply/products/gmk-panda",
       },
     ];
