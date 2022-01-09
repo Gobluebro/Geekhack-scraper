@@ -106,14 +106,13 @@ export function getImageLinks(dom: JSDOM): string[] {
 
 function tryGetSiblingOrParent(
   isPrevious: boolean,
-  location: string,
   currentVendor: {
     names: string[];
     urls: string[];
     locations: Region[];
   },
   foundVendor: HTMLAnchorElement
-): string {
+): Region {
   // attempt to find it if it was labeled with bolded lettering, stop search at max cut off or if we hit a br tag.
   const maxCutOff = 5;
   let element: any = foundVendor;
@@ -127,9 +126,8 @@ function tryGetSiblingOrParent(
     if (siblingText) {
       console.log({ isPrevious }, element.previousSibling.textContent);
       const vendorGuess = tryToGuessVendor(currentVendor, siblingText);
-      if (vendorGuess) {
-        location = vendorGuess;
-        break;
+      if (vendorGuess !== Region.NoRegion) {
+        return vendorGuess;
       } else {
         element = isPrevious ? element.previousSibling : element.nextSibling;
         continue;
@@ -142,16 +140,15 @@ function tryGetSiblingOrParent(
         currentVendor,
         element.parentElement.textContent
       );
-      if (vendorGuess) {
-        location = vendorGuess;
-        break;
+      if (vendorGuess !== Region.NoRegion) {
+        return vendorGuess;
       } else {
         element = element.parentElement;
         continue;
       }
     }
   }
-  return location;
+  return Region.NoRegion;
 }
 
 function tryToGuessVendor(
@@ -161,7 +158,7 @@ function tryToGuessVendor(
     locations: Region[];
   },
   foundVendor: string
-): string {
+): Region {
   // removes everything but letters and periods. you will generally find a user will add some symbol between the location and the link.
   const tempVendorGuess = foundVendor
     .replace(/[^\w\s.]/g, " ")
@@ -170,78 +167,73 @@ function tryToGuessVendor(
 
   // we match the region from the vendor to the list of name of locations in that region.
   // then put them in an array of locations all together.
-  const vendorLocations = currentVendor.locations
-    .map((location) => {
-      const region = Regions.find(({ region }) => region === location);
-      if (region) {
-        return region.names;
-      }
-    })
-    .flat()
-    .filter((item): item is string => item !== undefined);
+  const vendorRegions = Regions.filter(({ region }) => {
+    const location = currentVendor.locations.find(
+      (location) => region === location
+    );
+    if (location) {
+      return location;
+    }
+  });
 
-  // check if the string and vendor match before we start removing other text.
-  const locationFound = vendorLocations.find(
-    (vendorLocation: string) =>
-      tempVendorGuess.includes(` ${vendorLocation}`) ||
-      tempVendorGuess.includes(`${vendorLocation} `) ||
-      vendorLocation === tempVendorGuess
-  );
-  if (locationFound) {
-    return locationFound;
-  }
-
-  let vendorLocationGuess = "";
-  for (const vendorLocation of vendorLocations) {
-    let skipRest = false;
-    // remove any url from the text.
-    for (const url of currentVendor.urls) {
-      const urlGuessAttempt = tempVendorGuess.replace(url, "").trim();
-      // if there is nothing left, then this won't have what we are looking for and we will only get false positives as we go forward.
-      if (urlGuessAttempt === "") {
-        skipRest = true;
-        break;
+  for (const region of vendorRegions) {
+    for (const vendorLocation of region.names) {
+      // check if the string and vendor match before we start removing other text.
+      if (
+        tempVendorGuess.includes(` ${vendorLocation}`) ||
+        tempVendorGuess.includes(`${vendorLocation} `) ||
+        vendorLocation === tempVendorGuess
+      ) {
+        return region.region;
       }
-      if (urlGuessAttempt !== tempVendorGuess) {
-        if (
-          tempVendorGuess.includes(` ${vendorLocation}`) ||
-          tempVendorGuess.includes(`${vendorLocation} `) ||
-          tempVendorGuess === vendorLocation
-        ) {
-          vendorLocationGuess = vendorLocation;
+      let skipRest = false;
+      // remove any url from the text.
+      for (const url of currentVendor.urls) {
+        const urlGuessAttempt = tempVendorGuess.replace(url, "").trim();
+        // if there is nothing left, then this won't have what we are looking for and we will only get false positives as we go forward.
+        if (urlGuessAttempt === "") {
+          skipRest = true;
           break;
         }
+        if (urlGuessAttempt !== tempVendorGuess) {
+          if (
+            tempVendorGuess.includes(` ${vendorLocation}`) ||
+            tempVendorGuess.includes(`${vendorLocation} `) ||
+            tempVendorGuess === vendorLocation
+          ) {
+            return region.region;
+          }
+        }
       }
-    }
 
-    if (vendorLocationGuess || skipRest) {
-      break;
-    }
-
-    // remove any names found in the text.
-    for (const name of currentVendor.names) {
-      const tempName = name
-        .replace(/[^\w\s!?]/g, " ")
-        .toLowerCase()
-        .trim();
-      const nameGuessAttempt = tempVendorGuess.replace(tempName, "").trim();
-      // if there is nothing left, then this won't have what we are looking for and we will only get false positives as we go forward.
-      if (nameGuessAttempt === "") {
+      if (skipRest) {
         break;
       }
-      if (nameGuessAttempt !== tempVendorGuess) {
-        if (
-          tempVendorGuess.includes(` ${vendorLocation}`) ||
-          tempVendorGuess.includes(`${vendorLocation} `) ||
-          tempVendorGuess === vendorLocation
-        ) {
-          vendorLocationGuess = vendorLocation;
+
+      // remove any names found in the text.
+      for (const name of currentVendor.names) {
+        const tempName = name
+          .replace(/[^\w\s!?]/g, " ")
+          .toLowerCase()
+          .trim();
+        const nameGuessAttempt = tempVendorGuess.replace(tempName, "").trim();
+        // if there is nothing left, then this won't have what we are looking for and we will only get false positives as we go forward.
+        if (nameGuessAttempt === "") {
           break;
+        }
+        if (nameGuessAttempt !== tempVendorGuess) {
+          if (
+            tempVendorGuess.includes(` ${vendorLocation}`) ||
+            tempVendorGuess.includes(`${vendorLocation} `) ||
+            tempVendorGuess === vendorLocation
+          ) {
+            return region.region;
+          }
         }
       }
     }
   }
-  return vendorLocationGuess || "";
+  return Region.NoRegion;
 }
 
 export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
@@ -260,37 +252,26 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
         `a.bbc_link[href*='${url}'`
       );
       if (foundVendor) {
-        let location = "";
+        let location = Region.NoRegion;
 
-        if (foundVendor.href === "http://en.zfrontier.com/") {
-          console.log("here");
+        location = tryGetSiblingOrParent(true, vendor, foundVendor);
+
+        console.log("1st", Region[location], "href", foundVendor.href);
+
+        if (location === Region.NoRegion) {
+          location = tryGetSiblingOrParent(false, vendor, foundVendor);
         }
 
-        location = tryGetSiblingOrParent(true, location, vendor, foundVendor);
-
-        console.log("1st", location, "href", foundVendor.href);
-
-        if (!location) {
-          location = tryGetSiblingOrParent(
-            false,
-            location,
-            vendor,
-            foundVendor
-          );
-        }
-
-        console.log("2nd", location, "href", foundVendor.href);
+        console.log("2nd", Region[location], "href", foundVendor.href);
         // try to find it in the text of the anchor.
-        if (!location) {
+        if (location === Region.NoRegion) {
           const locationAnchorTextGuess = tryToGuessVendor(
             vendor,
             foundVendor.text
           );
-          if (locationAnchorTextGuess) {
-            location = locationAnchorTextGuess;
-          }
+          location = locationAnchorTextGuess;
         }
-        console.log("3rd", location, "href", foundVendor.href);
+        console.log("3rd", Region[location], "href", foundVendor.href);
 
         const scrappedVendor: Vendor = {
           thread_id: urlTopicID,

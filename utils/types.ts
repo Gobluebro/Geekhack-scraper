@@ -1,4 +1,5 @@
 import { WebsiteEnum, TopicEnum } from "../utils/constants";
+import { Region } from "./regions";
 
 export type PageInfo = {
   thread: Thread;
@@ -26,6 +27,6 @@ export type Image = {
 
 export type Vendor = {
   thread_id: number;
-  location: string;
+  location: Region;
   url: string;
 };
