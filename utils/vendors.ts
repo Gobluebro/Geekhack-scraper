@@ -121,7 +121,7 @@ export const VendorsList = [
   {
     names: ["fancy customs", "fancycustoms"],
     urls: ["fancycustoms.com"],
-    locations: [Region.SouthAmerica],
+    locations: [Region.SouthAmerica, Region.Chile],
   },
   {
     names: ["rheset"],
@@ -332,11 +332,6 @@ export const VendorsList = [
     names: ["tastatur"],
     urls: ["tastatur.no"],
     locations: [Region.Norway],
-  },
-  {
-    names: ["fancy customs"],
-    urls: ["fancycustoms.com"],
-    locations: [Region.Chile],
   },
   // template
   // {
