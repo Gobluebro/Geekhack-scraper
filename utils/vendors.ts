@@ -333,6 +333,11 @@ export const VendorsList = [
     urls: ["tastatur.no"],
     locations: [Region.Norway],
   },
+  {
+    names: ["fancy customs"],
+    urls: ["fancycustoms.com"],
+    locations: [Region.Chile],
+  },
   // template
   // {
   //   names: [""],

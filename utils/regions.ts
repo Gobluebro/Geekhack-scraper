@@ -6,6 +6,7 @@ export enum Region {
   Canada,
   Mexico,
   SouthAmerica,
+  Chile,
   Europe,
   Germany,
   Norway,
@@ -60,6 +61,10 @@ export const Regions = [
   {
     region: Region.SouthAmerica,
     names: ["south america", "sa", "latin america"],
+  },
+  {
+    region: Region.Chile,
+    names: ["chile"],
   },
   {
     region: Region.Europe,
