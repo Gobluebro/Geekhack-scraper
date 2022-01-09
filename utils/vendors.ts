@@ -3,7 +3,7 @@ import { Region } from "./regions";
 export const VendorsList = [
   {
     names: ["mekibo", "txkeyboards", "tx keyboards"],
-    urls: ["mekibo.com", "us.txkeyboards.com"],
+    urls: ["mekibo.com", "us.txkeyboards.com", "txkeyboards.com/en"],
     locations: [Region.NorthAmerica, Region.UnitedStates],
   },
   {
