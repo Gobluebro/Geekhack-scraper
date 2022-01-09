@@ -64,7 +64,7 @@ export const VendorsList = [
   {
     names: ["ashkeebs"],
     urls: ["ashkeebs.com"],
-    locations: [Region.Canada],
+    locations: [Region.Canada, Region.NorthAmerica],
   },
   {
     names: ["candykeys"],
@@ -201,7 +201,7 @@ export const VendorsList = [
   {
     names: ["thic thock", "thicthock"],
     urls: ["thicthock.com"],
-    locations: [Region.Asia, Region.SouthEastAsia],
+    locations: [Region.Asia, Region.SouthEastAsia, Region.WorldWide],
   },
   {
     names: ["the key company", "the key dot co"],
