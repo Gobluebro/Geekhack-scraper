@@ -1,5 +1,6 @@
 export enum Region {
   NoRegion,
+  WorldWide,
   NorthAmerica,
   UnitedStates,
   Canada,
@@ -23,7 +24,6 @@ export enum Region {
   SouthKorea,
   Oceania,
   Australia,
-  WorldWide,
 }
 
 export const Regions = [
