@@ -16,6 +16,10 @@ export function getAuthor(dom: JSDOM): string {
   return "";
 }
 
+export function getBrand(title: string): string {
+  return title || "";
+}
+
 export function getFormattedStartDate(dom: JSDOM): Date | null {
   // query selctor means this gets the first post
   const firstPostStartDate = dom.window.document.querySelector<HTMLDivElement>(
@@ -299,10 +303,11 @@ export default (page: GroupBuyPage): PageInfo => {
     updated: getFormattedModDate(page.bodyDom),
     topic: page.pageTopic,
     author: getAuthor(page.bodyDom),
+    brand: getBrand(page.pageTitle),
   };
 
   const images = imageLinks.map(
-    (image: string | undefined, index: number): Image => ({
+    (image: string, index: number): Image => ({
       thread_id: urlThreadId,
       url: image,
       sort_order: index,

@@ -41,6 +41,9 @@ const ThreadsModel = db.define<ThreadsInstance>(
     author: {
       type: DataTypes.STRING,
     },
+    brand: {
+      type: DataTypes.INTEGER,
+    },
   },
   {
     timestamps: false,
