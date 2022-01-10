@@ -6,7 +6,7 @@ describe("getCleanedGroupBuyLinks", () => {
   let cleanedLinks: { link: string; title: string }[];
 
   beforeAll(async () => {
-    //dom = await JSDOM.fromFile("./tests/group-buy-links-test-page.html");
+    // const dom = await JSDOM.fromFile("./tests/group-buy-links-test-page.html");
     const dom = await JSDOM.fromURL(
       "https://geekhack.org/index.php?board=70.0"
     );
