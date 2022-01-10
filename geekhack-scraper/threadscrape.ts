@@ -259,13 +259,10 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
 
         location = tryGetSiblingOrParent(true, vendor, foundVendor);
 
-        console.log("1st", Region[location], "href", foundVendor.href);
-
         if (location === Region.NoRegion) {
           location = tryGetSiblingOrParent(false, vendor, foundVendor);
         }
 
-        console.log("2nd", Region[location], "href", foundVendor.href);
         // try to find it in the text of the anchor.
         if (location === Region.NoRegion) {
           const locationAnchorTextGuess = tryToGuessVendor(
@@ -274,7 +271,6 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
           );
           location = locationAnchorTextGuess;
         }
-        console.log("3rd", Region[location], "href", foundVendor.href);
 
         const scrappedVendor: Vendor = {
           thread_id: urlTopicID,
