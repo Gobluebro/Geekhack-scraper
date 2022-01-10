@@ -50,9 +50,11 @@ describe("threadscape", () => {
   });
 
   test("getFormattedTitle returns the title of the thread", () => {
-    const title = getFormattedTitle(dom);
+    const threadTitle = "[GB] Noxary 268 (100% Shipped)";
+    const expectedTitle = "Noxary 268 (100% Shipped)";
+    const title = getFormattedTitle(threadTitle);
 
-    expect(title).toBe("Noxary 268 (100% Shipped)");
+    expect(title).toBe(expectedTitle);
   });
 
   test("getImageLinks returns an array of image links on the thread", () => {

@@ -50,12 +50,8 @@ export function getFormattedModDate(dom: JSDOM): Date | null {
   return formattedDate;
 }
 
-export function getFormattedTitle(dom: JSDOM): string {
-  // even though HTML Heading Element extends HTMLElement which contains .innerText I am unable to get anything back from it.
-  // so I need to use textContent and rip out all tabs and new lines added.
-  const title =
-    dom.window.document.querySelector<HTMLHeadingElement>("[id^='subject_']");
-  const cleanedTitle = title?.textContent
+export function getFormattedTitle(title: string): string {
+  const cleanedTitle = title
     ?.replace("\n", "")
     .replace("\t", "")
     .replace("[GB]", "")
@@ -63,7 +59,7 @@ export function getFormattedTitle(dom: JSDOM): string {
     .replace(/\s+/g, " ")
     .trim();
 
-  return cleanedTitle || "";
+  return cleanedTitle;
 }
 
 export function getImageLinks(dom: JSDOM): string[] {
@@ -295,18 +291,18 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
 }
 
 export default (page: GroupBuyPage): PageInfo => {
-  const imageLinks = getImageLinks(page.BodyDom);
-  const urlThreadId = parseInt(page.PageLink.split("=")[1], 10);
+  const imageLinks = getImageLinks(page.bodyDom);
+  const urlThreadId = parseInt(page.pageLink.split("=")[1], 10);
 
   const thread: Thread = {
     id: urlThreadId,
     website: WebsiteEnum.geekhack,
-    title: getFormattedTitle(page.BodyDom),
-    start: getFormattedStartDate(page.BodyDom),
+    title: getFormattedTitle(page.pageTitle),
+    start: getFormattedStartDate(page.bodyDom),
     scraped: new Date(),
-    updated: getFormattedModDate(page.BodyDom),
+    updated: getFormattedModDate(page.bodyDom),
     topic: TopicEnum.GB,
-    author: getAuthor(page.BodyDom),
+    author: getAuthor(page.bodyDom),
   };
 
   const images = imageLinks.map(
@@ -317,7 +313,7 @@ export default (page: GroupBuyPage): PageInfo => {
     })
   );
 
-  const vendors = getVendors(page.BodyDom, urlThreadId);
+  const vendors = getVendors(page.bodyDom, urlThreadId);
 
   const pageInfo: PageInfo = {
     thread: thread,
