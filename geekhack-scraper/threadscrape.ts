@@ -297,7 +297,7 @@ export default (page: GroupBuyPage): PageInfo => {
     start: getFormattedStartDate(page.bodyDom),
     scraped: new Date(),
     updated: getFormattedModDate(page.bodyDom),
-    topic: TopicEnum.GB,
+    topic: page.pageTopic,
     author: getAuthor(page.bodyDom),
   };
 
