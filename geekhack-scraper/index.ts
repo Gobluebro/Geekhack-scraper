@@ -2,7 +2,7 @@ import db from "../database/initdb";
 import { GrabGHGroupBuyLinks, GroupBuyPage } from "./grabGHGroupBuyLinks";
 import threadscrape from "./threadscrape";
 import { SaveToDatabase } from "./saveToDatabase";
-import { GroupBuyURL } from "../utils/constants";
+import { TopicEnum } from "../utils/constants";
 import { PageInfo } from "../utils/types";
 import createFolders from "./createFolders";
 
@@ -14,8 +14,8 @@ import createFolders from "./createFolders";
   } catch (error) {
     console.error("Database error:", error);
   }
-  const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(GroupBuyURL);
-  // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(InterestCheckURL);
+  const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(TopicEnum.GB);
+  // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(TopicEnum.IC);
 
   const ghGbPagesInfo: PageInfo[] = ghGBPages.map((page) => threadscrape(page));
   createFolders(ghGbPagesInfo);

@@ -1,8 +1,10 @@
 import { JSDOM } from "jsdom";
+import { GroupBuyURL, InterestCheckURL, TopicEnum } from "../utils/constants";
 
 export interface GroupBuyPage {
   pageLink: string;
   pageTitle: string;
+  pageTopic: TopicEnum;
   bodyDom: JSDOM;
 }
 
@@ -24,12 +26,13 @@ export function getCleanedPageLinksAndTitle(dom: JSDOM) {
 }
 
 export const GrabGHGroupBuyLinks = async (
-  gbUrl: string
+  topic: TopicEnum
 ): Promise<GroupBuyPage[]> => {
   let pages: GroupBuyPage[] = [];
 
   try {
-    const dom = await JSDOM.fromURL(gbUrl);
+    const url = topic === TopicEnum.GB ? GroupBuyURL : InterestCheckURL;
+    const dom = await JSDOM.fromURL(url);
 
     // There are 50 posts on one page.
     // We are looking for the link to the group buy.
@@ -52,6 +55,7 @@ export const GrabGHGroupBuyLinks = async (
       return {
         pageLink: thread.link,
         pageTitle: thread.title,
+        pageTopic: topic,
         bodyDom: threadDoms[index],
       };
     });
