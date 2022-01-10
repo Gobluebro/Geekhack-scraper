@@ -1,16 +1,16 @@
-import { getCleanedGroupBuyLinks } from "../geekhack-scraper/grabGHGroupBuyLinks";
+import { getCleanedPageLinksAndTitle } from "../geekhack-scraper/grabGHGroupBuyLinks";
 import { JSDOM } from "jsdom";
 import { beforeAll, describe, expect, test } from "@jest/globals";
 
 describe("getCleanedGroupBuyLinks", () => {
-  let cleanedLinks: string[];
+  let cleanedLinks: { link: string; title: string }[];
 
   beforeAll(async () => {
     //dom = await JSDOM.fromFile("./tests/group-buy-links-test-page.html");
     const dom = await JSDOM.fromURL(
       "https://geekhack.org/index.php?board=70.0"
     );
-    cleanedLinks = getCleanedGroupBuyLinks(dom);
+    cleanedLinks = getCleanedPageLinksAndTitle(dom);
   });
 
   test("check if multiple group buy links exist", () => {
@@ -20,8 +20,8 @@ describe("getCleanedGroupBuyLinks", () => {
   });
 
   test("make sure there is no PHPSESSID links", () => {
-    const checkIfPHPSessionExists = cleanedLinks.some((link) =>
-      link.toUpperCase().includes("PHPSESSID")
+    const checkIfPHPSessionExists = cleanedLinks.some((page) =>
+      page.link.toUpperCase().includes("PHPSESSID")
     );
     expect(checkIfPHPSessionExists).toBe(false);
   });
