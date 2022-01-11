@@ -4,6 +4,7 @@ import { Image, PageInfo, Thread, Vendor } from "../utils/types";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 import { VendorsList } from "../utils/vendors";
 import { Region, Regions } from "../utils/regions";
+import { KeycapInfo, KeycapInfoType } from "../utils/keycaps";
 
 export function getAuthor(dom: JSDOM): string {
   const authorLink =
@@ -16,8 +17,16 @@ export function getAuthor(dom: JSDOM): string {
   return "";
 }
 
-export function getBrand(title: string): string {
-  return title || "";
+export function getBrand(title: string): KeycapInfoType | undefined {
+  const formattedTitle = title
+    .replace("[GB]", "")
+    .replace("[IC]", "")
+    .replace(/[^\w\s]/gi, "");
+  const guessBrand = KeycapInfo.find((keycap) =>
+    formattedTitle.includes(keycap.searchTerm)
+  );
+
+  return guessBrand;
 }
 
 export function getFormattedStartDate(dom: JSDOM): Date | null {
@@ -56,7 +65,7 @@ export function getFormattedModDate(dom: JSDOM): Date | null {
 
 export function getFormattedTitle(title: string): string {
   const cleanedTitle = title
-    ?.replace("\n", "")
+    .replace("\n", "")
     .replace("\t", "")
     .replace("[GB]", "")
     .replace("[IC]", "")
@@ -293,6 +302,7 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
 export default (page: GroupBuyPage): PageInfo => {
   const imageLinks = getImageLinks(page.bodyDom);
   const urlThreadId = parseInt(page.pageLink.split("=")[1], 10);
+  const keycapInfo = getBrand(page.pageTitle);
 
   const thread: Thread = {
     id: urlThreadId,
@@ -303,7 +313,8 @@ export default (page: GroupBuyPage): PageInfo => {
     updated: getFormattedModDate(page.bodyDom),
     topic: page.pageTopic,
     author: getAuthor(page.bodyDom),
-    brand: getBrand(page.pageTitle),
+    profile: keycapInfo?.profile || "",
+    company: keycapInfo?.company || "",
   };
 
   const images = imageLinks.map(

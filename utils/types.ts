@@ -16,7 +16,8 @@ export type Thread = {
   updated: Date | null;
   topic: TopicEnum;
   author: string | undefined;
-  brand: string;
+  profile: string;
+  company: string;
 };
 
 export type Image = {

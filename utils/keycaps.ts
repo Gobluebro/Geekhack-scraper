@@ -1,4 +1,10 @@
-export const KeycapInfo = [
+export type KeycapInfoType = {
+  searchTerm: string;
+  profile: string;
+  company: string;
+};
+
+export const KeycapInfo: KeycapInfoType[] = [
   {
     searchTerm: "gmk",
     profile: "cherry",
