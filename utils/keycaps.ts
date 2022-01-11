@@ -8,7 +8,7 @@ export const KeycapInfo: KeycapInfoType[] = [
   {
     searchTerm: "gmk",
     profile: "cherry",
-    company: "unikey",
+    company: "gmk",
   },
   {
     searchTerm: "epbt",
