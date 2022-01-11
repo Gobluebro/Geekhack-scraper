@@ -21,7 +21,10 @@ export function getBrand(title: string): KeycapInfoType | undefined {
   const formattedTitle = title
     .replace("[GB]", "")
     .replace("[IC]", "")
-    .replace(/[^\w\s]/gi, "");
+    .replace(/[^\w\s]/gi, "")
+    .toLowerCase()
+    .trim();
+
   const guessBrand = KeycapInfo.find((keycap) =>
     formattedTitle.includes(keycap.searchTerm)
   );
@@ -140,7 +143,6 @@ function tryGetSiblingOrParent(
 
     if (siblingElement) {
       if (siblingText) {
-        console.log({ isPrevious }, siblingText);
         const vendorGuess = tryToGuessVendor(currentVendor, siblingText);
         if (vendorGuess !== Region.NoRegion) {
           return vendorGuess;
