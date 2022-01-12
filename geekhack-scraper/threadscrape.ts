@@ -25,8 +25,10 @@ export function getBrand(title: string): KeycapInfoType | undefined {
     .toLowerCase()
     .trim();
 
-  const guessBrand = KeycapInfo.find((keycap) =>
-    formattedTitle.includes(keycap.searchTerm)
+  const guessBrand = KeycapInfo.find(
+    (keycap) =>
+      formattedTitle.includes(` ${keycap.searchTerm}`) ||
+      formattedTitle.includes(`${keycap.searchTerm} `)
   );
 
   return guessBrand;
