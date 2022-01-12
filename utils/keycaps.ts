@@ -6,7 +6,7 @@ export type KeycapInfoType = {
 };
 
 export enum KeycapIdentifier {
-  NoBrand,
+  Unknown,
   GMK,
   ePBT,
   KAT,

@@ -1,10 +1,10 @@
 import { JSDOM } from "jsdom";
-import { TopicEnum, WebsiteEnum } from "../utils/constants";
+import { WebsiteEnum } from "../utils/constants";
 import { Image, PageInfo, Thread, Vendor } from "../utils/types";
 import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 import { VendorsList } from "../utils/vendors";
 import { Region, Regions } from "../utils/regions";
-import { KeycapInfo, KeycapInfoType } from "../utils/keycaps";
+import { KeycapIdentifier, KeycapInfo, KeycapInfoType } from "../utils/keycaps";
 
 export function getAuthor(dom: JSDOM): string {
   const authorLink =
@@ -315,8 +315,7 @@ export default (page: GroupBuyPage): PageInfo => {
     updated: getFormattedModDate(page.bodyDom),
     topic: page.pageTopic,
     author: getAuthor(page.bodyDom),
-    profile: keycapInfo?.profile || "",
-    company: keycapInfo?.company || "",
+    keycap_identifier: keycapInfo?.type || KeycapIdentifier.Unknown,
   };
 
   const images = imageLinks.map(

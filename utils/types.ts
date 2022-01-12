@@ -1,4 +1,5 @@
 import { WebsiteEnum, TopicEnum } from "../utils/constants";
+import { KeycapIdentifier } from "./keycaps";
 import { Region } from "./regions";
 
 export type PageInfo = {
@@ -16,8 +17,7 @@ export type Thread = {
   updated: Date | null;
   topic: TopicEnum;
   author: string | undefined;
-  profile: string;
-  company: string;
+  keycap_identifier: KeycapIdentifier;
 };
 
 export type Image = {

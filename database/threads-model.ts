@@ -41,7 +41,8 @@ const ThreadsModel = db.define<ThreadsInstance>(
     author: {
       type: DataTypes.STRING,
     },
-    brand: {
+    // technically an enum but we will save these as integers
+    keycap_identifier: {
       type: DataTypes.INTEGER,
     },
   },
