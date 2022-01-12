@@ -82,6 +82,7 @@ export function getImageLinks(dom: JSDOM): string[] {
   const allPosts: Array<HTMLDivElement> = Array.from(
     dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper")
   );
+  // some people had their first post which was the main part of the images, then they had reserved the posts after for other things such as update images.
   const limitedPostLength = allPosts.length >= 3 ? 3 : allPosts.length;
   const firstThreePosts = allPosts.slice(0, limitedPostLength);
   //slice this into 3 instead and then map
@@ -96,6 +97,10 @@ export function getImageLinks(dom: JSDOM): string[] {
         );
 
       for (const imageElement of allImgElements) {
+        // we cannot download a whole album at the moment. TODO see imgurAPISaveImage.ts
+        if (imageElement.src.includes("imgur.com/a/")) {
+          continue;
+        }
         if (imageElement.src.includes("PHPSESSID")) {
           // looks something like ?PHPSESSID= with a GUID and then &action
           const firstIndex = imageElement.src.indexOf("PHPSESSID");
