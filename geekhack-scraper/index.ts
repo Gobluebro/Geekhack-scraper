@@ -10,6 +10,7 @@ import createFolders from "./createFolders";
   try {
     await db.authenticate();
     console.log("Connection has been established successfully.");
+    // add { force: true } inbetween sync() when messing with new db stuff.
     await db.sync();
   } catch (error) {
     console.error("Database error:", error);
