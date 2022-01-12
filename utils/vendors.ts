@@ -1,6 +1,12 @@
 import { Region } from "./regions";
 
-export const VendorsList = [
+export type Vendors = {
+  names: string[];
+  urls: string[];
+  locations: Region[];
+};
+
+export const VendorsList: Vendors[] = [
   {
     names: ["mekibo", "txkeyboards", "tx keyboards"],
     urls: ["mekibo.com", "us.txkeyboards.com", "txkeyboards.com/en"],
