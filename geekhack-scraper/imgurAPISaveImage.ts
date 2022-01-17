@@ -1,5 +1,3 @@
-import axios from "axios";
-
 //TODO: do this some day.
 export default () => {
   // query imgur api
