@@ -7,7 +7,7 @@ interface ImagesInstance extends Model {
   name: string;
   url: string;
   is_hidden: boolean;
-  order_number: number;
+  sort_order: number;
 }
 
 const ImagesModel = db.define<ImagesInstance>(
