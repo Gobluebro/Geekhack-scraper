@@ -1,7 +1,7 @@
 {
   "name": "geekhack-scraper",
   "version": "1.1.3",
-  "description": "scrapes geekhack for informations and images",
+  "description": "scrapes geekhack for information and images",
   "scripts": {
     "scrape": "ts-node ./geekhack-scraper/index.ts",
     "server": "ts-node ./server/server.ts",
