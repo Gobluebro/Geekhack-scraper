@@ -3,7 +3,7 @@ import {
   DownloaderHelper,
   DownloaderHelperOptions,
   DownloadInfoStats,
-  RetryOptions,
+  // RetryOptions,
   // Stats,
 } from "node-downloader-helper";
 
@@ -19,22 +19,29 @@ const downloadImageAndReturnFilename = (
 ): Promise<string | null> => {
   const options: DownloaderHelperOptions = {
     method: "GET", // Request Method Verb
-    /* override:
-    object: { skip: skip if already exists, skipSmaller: skip if smaller }
-    boolean: true to override file, false to append '(number)' to new file name
-    */
-    fileName: (filename) => {
+    fileName: (filename: string) => {
       // make sure the file name is decoded for other languages.
       const decodedFileName = decode(filename);
+      const noIllegalCharactersDecodedFilename = decodedFileName.replace(
+        /[/\\?%*:|"<>]/g,
+        ""
+      );
+
       if (uniqueImageNumber) {
-        if (uniqueImageNumber !== decodedFileName.split(".")[0]) {
-          return `${uniqueImageNumber}_${decodedFileName}`;
+        if (
+          uniqueImageNumber !== noIllegalCharactersDecodedFilename.split(".")[0]
+        ) {
+          return `${uniqueImageNumber}_${noIllegalCharactersDecodedFilename}`;
         }
       }
 
       return decodedFileName;
     },
-    retry: { maxRetries: 1, delay: 3000 }, // { maxRetries: number, delay: number in ms } or false to disable (default)
+    retry: false, //{ maxRetries: 1, delay: 3000 }, // { maxRetries: number, delay: number in ms } or false to disable (default)
+    /* override:
+    object: { skip: skip if already exists, skipSmaller: skip if smaller }
+    boolean: true to override file, false to append '(number)' to new file name
+    */
     override: { skip: true, skipSmaller: true },
     forceResume: false, // If the server does not return the "accept-ranges" header but it does support it
     removeOnStop: true, // remove the file when is stopped (default:true)
@@ -77,13 +84,13 @@ const downloadImageAndReturnFilename = (
       // .on("progress.throttled", (stats: Stats) => {
       //   console.log("Stats: ", stats);
       // })
-      .on("retry", (attempt: number, opts: RetryOptions, err: Error) => {
-        console.log({
-          RetryAttempt: `${attempt}/${opts.maxRetries}`,
-          StartsOn: `${opts.delay / 1000} secs`,
-          Reason: err ? err.message : "unknown",
-        });
-      })
+      // .on("retry", (attempt: number, opts: RetryOptions, err: Error) => {
+      //   console.log({
+      //     RetryAttempt: `${attempt}/${opts.maxRetries}`,
+      //     StartsOn: `${opts.delay / 1000} secs`,
+      //     Reason: err ? err.message : "unknown",
+      //   });
+      // })
       .on("end", (downloadInfo: DownloadEndedStats) => {
         console.log("Download complete: ", downloadInfo);
         resolve(downloadInfo.fileName);
