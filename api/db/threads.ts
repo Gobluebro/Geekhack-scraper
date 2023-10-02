@@ -29,3 +29,14 @@ export const getThreadById = async (threadId: number) => {
   await initDb();
   return await threads.findByPk(threadId);
 };
+
+export const searchThreadTitlesWithImage = async (query: string) => {
+  await initDb();
+  return await db.query(
+    'SELECT * FROM threads t LEFT JOIN images i ON t.id = i.thread_id WHERE LOWER(t.title) LIKE CONCAT("%", LOWER(:query), "%") AND sort_order = 0 ORDER BY t.updated DESC',
+    {
+      type: QueryTypes.SELECT,
+      replacements: { query },
+    }
+  );
+};

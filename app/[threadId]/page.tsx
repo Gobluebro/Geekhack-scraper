@@ -1,9 +1,9 @@
 import { getThreadById } from "@/api/db/threads";
 import { Image, Thread } from "@/utils/types";
-import ThreadDetailComponent from "./ThreadDetailComponent";
 import { getImagesByThreadId } from "@/api/db/images";
+import ThreadDetail from "./ThreadDetail";
 
-export default async function ThreadDetail ({
+export default async function Page ({
   params,
 }: {
   params: { threadId: number };
@@ -15,7 +15,5 @@ export default async function ThreadDetail ({
     JSON.stringify(await getImagesByThreadId(params.threadId))
   );
 
-  return (
-    <ThreadDetailComponent threadData={threadData} imageData={imageData} />
-  );
+  return <ThreadDetail threadData={threadData} imageData={imageData} />;
 }
