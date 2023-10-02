@@ -157,7 +157,7 @@ export const getFilename = (url: string): string | null => {
       return null;
     }
   }
- 
+  return null;
 };
 
 export const downloadImage = async (

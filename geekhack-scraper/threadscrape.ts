@@ -336,7 +336,7 @@ export default (page: GroupBuyPage): PageInfo => {
   const images = imageLinks.map(
     (image: string, index: number): Image => ({
       thread_id: urlThreadId,
-      name: getFilename(image),
+      name: getFilename(image) || "",
       url: image,
       sort_order: index,
     })
