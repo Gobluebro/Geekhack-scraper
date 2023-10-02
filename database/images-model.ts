@@ -13,12 +13,6 @@ interface ImagesInstance extends Model {
 const ImagesModel = db.define<ImagesInstance>(
   "images",
   {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
-    },
     thread_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -29,7 +23,7 @@ const ImagesModel = db.define<ImagesInstance>(
     url: {
       type: DataTypes.STRING,
       primaryKey: true,
-      unique: true,
+      allowNull: false,
     },
     is_hidden: {
       type: DataTypes.BOOLEAN,

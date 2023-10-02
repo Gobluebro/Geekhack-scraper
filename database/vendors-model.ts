@@ -11,15 +11,10 @@ interface VendorsInstance extends Model {
 const VendorsModel = db.define<VendorsInstance>(
   "vendors",
   {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
-    },
     thread_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      allowNull: false,
     },
     // technically an enum but we will save these as integers
     location: {
@@ -28,6 +23,7 @@ const VendorsModel = db.define<VendorsInstance>(
     url: {
       type: DataTypes.STRING,
       primaryKey: true,
+      allowNull: false,
     },
   },
   {

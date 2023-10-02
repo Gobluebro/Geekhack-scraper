@@ -11,3 +11,12 @@ export const formatDate = (date: Date | string | null) => {
     }) || ""
   );
 };
+
+// Function to deal with weird bug with react and nextjs
+export const jsonify = (value: any) => {
+  return JSON.parse(JSON.stringify(value));
+};
+
+export const formatEnum = (value: string) => {
+    return value.replace(/([A-Z])/g, ' $1').trim();
+}

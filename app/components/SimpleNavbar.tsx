@@ -9,7 +9,7 @@ import {
   Input,
   Image,
 } from "@nextui-org/react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 
@@ -23,17 +23,27 @@ export default function SimpleNavbar () {
   };
 
   return (
-    <Navbar height='full' isBordered maxWidth='2xl'>
+    <Navbar
+      className='bg-gradient-to-tr from-indigo-500/20 to-teal-500/20 text-white'
+      isBlurred
+      height='full'
+      maxWidth='full'
+    >
       <NavbarContent justify='start'>
         <NavbarBrand className='mr-4'>
-          <Image className='m-3 pr-3' width='100' src='/logo.png' />
+          <Image className='m-3 pr-2' width='75' src='/logo.png' />
           <p className='hidden sm:block font-bold text-inherit'>GeekHacked</p>
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent as='div' className='items-center' justify='center'>
+      <NavbarContent className='items-center' justify='center' as='div'>
         <NavbarItem>
-          <Link color='foreground' href='/'>
+          <Link
+            color='foreground'
+            href='/'
+            showAnchorIcon
+            anchorIcon={<FontAwesomeIcon className='m-3' icon={faHome} />}
+          >
             Home
           </Link>
         </NavbarItem>
