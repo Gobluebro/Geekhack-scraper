@@ -12,12 +12,13 @@ export type Thread = {
   id: number;
   website: WebsiteEnum;
   title: string | undefined;
-  start: Date | null;
-  scraped: Date;
-  updated: Date | null;
+  start: Date | string | null;
+  scraped: Date | string;
+  updated: Date | string | null;
   topic: TopicEnum;
   author: string | undefined;
   keycap_identifier: KeycapIdentifier;
+  post: string | undefined;
 };
 
 export type Image = {

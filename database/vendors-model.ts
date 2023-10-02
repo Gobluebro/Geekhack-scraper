@@ -15,6 +15,7 @@ const VendorsModel = db.define<VendorsInstance>(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       allowNull: false,
+      primaryKey: true,
     },
     thread_id: {
       type: DataTypes.INTEGER,
@@ -25,7 +26,7 @@ const VendorsModel = db.define<VendorsInstance>(
       type: DataTypes.INTEGER,
     },
     url: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       primaryKey: true,
     },
   },

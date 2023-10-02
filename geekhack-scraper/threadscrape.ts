@@ -5,8 +5,9 @@ import { GroupBuyPage } from "./grabGHGroupBuyLinks";
 import { VendorsList } from "../utils/vendors";
 import { Region, Regions } from "../utils/regions";
 import { KeycapIdentifier, KeycapInfo, KeycapInfoType } from "../utils/keycaps";
+import { getFilename } from "./workers/downloadImageWorker";
 
-export function getAuthor(dom: JSDOM): string {
+export function getAuthor (dom: JSDOM): string {
   const authorLink =
     dom.window.document.querySelector<HTMLAnchorElement>(".poster > h4 > a");
 
@@ -17,7 +18,7 @@ export function getAuthor(dom: JSDOM): string {
   return "";
 }
 
-export function getBrand(title: string): KeycapInfoType | undefined {
+export function getBrand (title: string): KeycapInfoType | undefined {
   const formattedTitle = title
     .replace("[GB]", "")
     .replace("[IC]", "")
@@ -26,7 +27,7 @@ export function getBrand(title: string): KeycapInfoType | undefined {
     .trim();
 
   const guessBrand = KeycapInfo.find(
-    (keycap) =>
+    keycap =>
       formattedTitle.includes(` ${keycap.searchTerm}`) ||
       formattedTitle.includes(`${keycap.searchTerm} `)
   );
@@ -34,7 +35,7 @@ export function getBrand(title: string): KeycapInfoType | undefined {
   return guessBrand;
 }
 
-export function getFormattedStartDate(dom: JSDOM): Date | null {
+export function getFormattedStartDate (dom: JSDOM): Date | null {
   // query selctor means this gets the first post
   const firstPostStartDate = dom.window.document.querySelector<HTMLDivElement>(
     ".keyinfo > .smalltext"
@@ -51,7 +52,7 @@ export function getFormattedStartDate(dom: JSDOM): Date | null {
   return formattedDate;
 }
 
-export function getFormattedModDate(dom: JSDOM): Date | null {
+export function getFormattedModDate (dom: JSDOM): Date | null {
   // There is always a div for the last edit, even if there is no edit.
   // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
   const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
@@ -68,7 +69,7 @@ export function getFormattedModDate(dom: JSDOM): Date | null {
   return formattedDate;
 }
 
-export function getFormattedTitle(title: string): string {
+export function getFormattedTitle (title: string): string {
   const cleanedTitle = title
     .replace("\n", "")
     .replace("\t", "")
@@ -80,7 +81,7 @@ export function getFormattedTitle(title: string): string {
   return cleanedTitle;
 }
 
-export function getImageLinks(dom: JSDOM): string[] {
+export function getImageLinks (dom: JSDOM): string[] {
   const allPosts: Array<HTMLDivElement> = Array.from(
     dom.window.document.querySelectorAll<HTMLDivElement>(".post_wrapper")
   );
@@ -123,7 +124,7 @@ export function getImageLinks(dom: JSDOM): string[] {
   return [...new Set(imageLinks)];
 }
 
-function tryGetSiblingOrParent(
+function tryGetSiblingOrParent (
   isPrevious: boolean,
   currentVendor: {
     names: string[];
@@ -176,7 +177,7 @@ function tryGetSiblingOrParent(
   return Region.NoRegion;
 }
 
-export function tryToGuessVendor(
+export function tryToGuessVendor (
   currentVendor: {
     names: string[];
     urls: string[];
@@ -194,7 +195,7 @@ export function tryToGuessVendor(
   // then put them in an array of locations all together.
   const vendorRegions = Regions.filter(({ region }) => {
     const location = currentVendor.locations.find(
-      (location) => region === location
+      location => region === location
     );
     if (location) {
       return location;
@@ -261,7 +262,7 @@ export function tryToGuessVendor(
   return Region.NoRegion;
 }
 
-export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
+export function getVendors (dom: JSDOM, urlTopicID: number): Vendor[] {
   const scrappedVendors: Vendor[] = [];
 
   // it is unlikely that vendors will appear in anything but the first post so use that as our dom.
@@ -308,6 +309,12 @@ export function getVendors(dom: JSDOM, urlTopicID: number): Vendor[] {
   return scrappedVendors;
 }
 
+const getPostHtmlAsString = (dom: JSDOM): string => {
+  const postDiv = dom.window.document.querySelector<HTMLDivElement>(".post");
+
+  return postDiv?.outerHTML || "";
+};
+
 export default (page: GroupBuyPage): PageInfo => {
   const imageLinks = getImageLinks(page.bodyDom);
   const urlThreadId = parseInt(page.pageLink.split("=")[1], 10);
@@ -323,11 +330,13 @@ export default (page: GroupBuyPage): PageInfo => {
     topic: page.pageTopic,
     author: getAuthor(page.bodyDom),
     keycap_identifier: keycapInfo?.type || KeycapIdentifier.Unknown,
+    post: getPostHtmlAsString(page.bodyDom),
   };
 
   const images = imageLinks.map(
     (image: string, index: number): Image => ({
       thread_id: urlThreadId,
+      name: getFilename(image),
       url: image,
       sort_order: index,
     })

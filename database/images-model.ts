@@ -16,6 +16,7 @@ const ImagesModel = db.define<ImagesInstance>(
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
+      primaryKey: true,
       allowNull: false,
     },
     thread_id: {
@@ -24,10 +25,11 @@ const ImagesModel = db.define<ImagesInstance>(
     },
     name: {
       type: DataTypes.TEXT,
-      primaryKey: true,
     },
     url: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
+      primaryKey: true,
+      unique: true,
     },
     is_hidden: {
       type: DataTypes.BOOLEAN,
@@ -35,6 +37,9 @@ const ImagesModel = db.define<ImagesInstance>(
     },
     sort_order: {
       type: DataTypes.INTEGER,
+    },
+    blob: {
+      type: DataTypes.BLOB,
     },
   },
   {

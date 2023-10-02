@@ -26,7 +26,7 @@ const ThreadsModel = db.define<ThreadsInstance>(
     title: {
       type: DataTypes.STRING,
     },
-    start: {
+    created: {
       type: DataTypes.DATE,
     },
     scraped: {
@@ -44,6 +44,9 @@ const ThreadsModel = db.define<ThreadsInstance>(
     // technically an enum but we will save these as integers
     keycap_identifier: {
       type: DataTypes.INTEGER,
+    },
+    post: {
+      type: DataTypes.TEXT('long')
     },
   },
   {

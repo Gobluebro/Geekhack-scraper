@@ -7,7 +7,7 @@ export default async (imagesToTryToDownload: Image[]): Promise<Image[]> => {
     filename: path.resolve(__dirname, "workers/tsImport.js"),
   });
 
-  const tasks = imagesToTryToDownload.map(async (image) => {
+  const tasks = imagesToTryToDownload.map(async image => {
     return await piscina.run(image);
   });
 

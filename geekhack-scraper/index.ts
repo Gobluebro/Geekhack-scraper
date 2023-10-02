@@ -1,5 +1,9 @@
 import db from "../database/initdb";
-import { GrabGHGroupBuyLinks, GroupBuyPage } from "./grabGHGroupBuyLinks";
+import {
+  GrabGHGroupBuyLinks,
+  GroupBuyPage,
+  getTotalPages,
+} from "./grabGHGroupBuyLinks";
 import threadscrape from "./threadscrape";
 import { SaveToDatabase } from "./saveToDatabase";
 import { TopicEnum } from "../utils/constants";
@@ -15,11 +19,19 @@ import createFolders from "./createFolders";
   } catch (error) {
     console.error("Database error:", error);
   }
-  const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(TopicEnum.GB);
-  // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(TopicEnum.IC);
+  const totalPages = await getTotalPages(TopicEnum.GB);
+  for (let i = 0; i < totalPages; i++) {
+    console.log(`Getting page ${i + 1} of GBs`);
+    const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(
+      TopicEnum.GB,
+      i
+    );
+    // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(TopicEnum.IC);
 
-  const ghGbPagesInfo: PageInfo[] = ghGBPages.map((page) => threadscrape(page));
-  createFolders(ghGbPagesInfo);
+    const ghGbPagesInfo: PageInfo[] = ghGBPages.map(page => threadscrape(page));
+    createFolders(ghGbPagesInfo);
 
-  await SaveToDatabase(ghGbPagesInfo);
+    console.log(`Saving page ${i + 1} GB info to db`);
+    await SaveToDatabase(ghGbPagesInfo);
+  }
 })();
