@@ -144,12 +144,20 @@ const getUniqueImageNumber = (url: string) => {
   return uniqueImageNumber;
 };
 
-export const getFilename = (url: string): string => {
-  let fileName = url?.substring(url.lastIndexOf("/") + 1);
-  const uniqueImageNumber = getUniqueImageNumber(url || "");
-  fileName = decodeFileName(fileName || "", uniqueImageNumber);
-
-  return fileName;
+export const getFilename = (url: string): string | null => {
+  if(url){
+    try{
+      let fileName = url?.substring(url.lastIndexOf("/") + 1);
+      const uniqueImageNumber = getUniqueImageNumber(url || "");
+      fileName = decodeFileName(fileName || "", uniqueImageNumber);
+    
+      return fileName;
+    } catch(err) {
+      console.log(err);
+      return null;
+    }
+  }
+ 
 };
 
 export const downloadImage = async (
