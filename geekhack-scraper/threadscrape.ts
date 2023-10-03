@@ -53,9 +53,22 @@ export function getFormattedStartDate (dom: JSDOM): Date | null {
 }
 
 export function getFormattedModDate (dom: JSDOM): Date | null {
-  // There is always a div for the last edit, even if there is no edit.
+  // There is a div for the last edit.
   // looks something like Last Edit: Tue, 05 March 2019, 08:47:56 by author
-  const modDate = dom.window.document.querySelector("[id^='modified_'] > em");
+  let modDate = dom.window.document.querySelector("[id^='modified_'] > em");
+
+  // Some posts don't have this last edit div, this handles this case.
+  if (!modDate) {
+    modDate = dom.window.document.querySelector(
+      ".postarea .keyinfo .smalltext"
+    );
+    if (modDate) {
+      const temp = modDate.textContent?.split("on:")[1].split("»")[0];
+      if (temp) {
+        return new Date(temp);
+      }
+    }
+  }
 
   let formattedDate = null;
 
