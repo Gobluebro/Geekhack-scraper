@@ -8,7 +8,7 @@ import { Link } from "@nextui-org/link";
 import { Button, User } from "@nextui-org/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { formatDate } from "../util/common";
+import { formatDate, sortDate } from "../util/common";
 
 export default function GeekHackTable ({ data }: { data: (Thread & Image)[] }) {
   const columns: Column<Thread & Image>[] = [
@@ -31,22 +31,28 @@ export default function GeekHackTable ({ data }: { data: (Thread & Image)[] }) {
           }}
         />
       ),
+      allowsSorting: true,
     },
     {
       accessor: row => TopicEnum[row.topic],
       name: "Topic",
+      allowsSorting: true,
     },
     {
       accessor: "author",
       name: "Author",
+      allowsSorting: true,
     },
     {
       accessor: row => KeycapIdentifier[row.keycap_identifier],
       name: "Keycap Type",
+      allowsSorting: true,
     },
     {
       accessor: row => formatDate(row.updated),
       name: "Last Modified",
+      allowsSorting: true,
+      sortMethod: (rowA, rowB) => sortDate(rowA.updated, rowB.updated),
     },
     {
       accessor: "thread_id",

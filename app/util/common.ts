@@ -18,5 +18,19 @@ export const jsonify = (value: any) => {
 };
 
 export const formatEnum = (value: string) => {
-    return value.replace(/([A-Z])/g, ' $1').trim();
-}
+  return value.replace(/([A-Z])/g, " $1").trim();
+};
+
+export const sortDate = (
+  dateA: Date | string | null,
+  dateB: Date | string | null
+) => {
+  if (dateA === dateB) return 0;
+  if (dateA === null) return -1;
+  if (dateB === null) return 1;
+
+  if (typeof dateA === "string") dateA = new Date(dateA);
+  if (typeof dateB === "string") dateB = new Date(dateB);
+
+  return dateA.getTime() - dateB.getTime();
+};

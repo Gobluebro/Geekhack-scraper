@@ -24,7 +24,8 @@ export default function SimpleNavbar () {
 
   return (
     <Navbar
-      className='bg-gradient-to-tr from-indigo-500/20 to-teal-500/20 text-white'
+      className='bg-zinc-700/40 text-white'
+      isBordered
       isBlurred
       height='full'
       maxWidth='full'
@@ -32,7 +33,9 @@ export default function SimpleNavbar () {
       <NavbarContent justify='start'>
         <NavbarBrand className='mr-4'>
           <Image className='m-3 pr-2' width='75' src='/logo.png' />
-          <p className='hidden sm:block font-bold text-inherit'>GeekHacked</p>
+          <p className='text-4xl font-extralight hidden sm:block text-inherit text-white'>
+            GeekHacked
+          </p>
         </NavbarBrand>
       </NavbarContent>
 
@@ -51,12 +54,17 @@ export default function SimpleNavbar () {
 
       <NavbarContent as='div' className='items-center' justify='end'>
         <Input
+          variant='bordered'
           classNames={{
-            base: "max-w-full sm:max-w-[10rem] h-10",
-            mainWrapper: "h-full",
-            input: "text-small",
-            inputWrapper:
-              "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+            base: "max-w-full sm:max-w-[15rem]",
+            label: "text-black/50 dark:text-white/90",
+            input: [
+              "bg-transparent",
+              "text-black/90 dark:text-white/90",
+              "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+            ],
+            innerWrapper: "bg-transparent",
+            inputWrapper: ["border-white/10"],
           }}
           placeholder='Type to search...'
           size='sm'

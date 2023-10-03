@@ -8,12 +8,15 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Pagination
+  Pagination,
 } from "@nextui-org/react";
+import { useAsyncList } from "@react-stately/data";
 
 export type Column<T> = {
   accessor: string | ((arg0: T) => string);
   name: string;
+  allowsSorting?: boolean;
+  sortMethod?: (arg0: T, arg1: T) => number;
   Cell?: ({ row, value }: { row: T; value: any }) => {};
 };
 
@@ -29,12 +32,15 @@ export default function SimpleTable<T extends Record<string, any>> ({
 
   const pages = Math.ceil(data.length / rowsPerPage);
 
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return data.slice(start, end);
-  }, [page, data]);
+  const getAccessorValue = (row: T, column: Column<T>) => {
+    let value = "";
+    if (typeof column.accessor === "function") {
+      value = column.accessor(row);
+    } else {
+      value = row[column.accessor];
+    }
+    return value;
+  };
 
   const columnDict = Object.assign(
     {},
@@ -43,13 +49,7 @@ export default function SimpleTable<T extends Record<string, any>> ({
 
   const renderCell = useCallback((data: T, columnKey: React.Key) => {
     const column = columnDict[columnKey as string];
-    let value = "";
-
-    if (typeof column.accessor === "function") {
-      value = column.accessor(data);
-    } else {
-      value = data[column.accessor];
-    }
+    const value = getAccessorValue(data, column);
 
     if (column.Cell) {
       return column.Cell({ row: data, value: value });
@@ -58,8 +58,48 @@ export default function SimpleTable<T extends Record<string, any>> ({
     return value;
   }, []);
 
+  const list = useAsyncList({
+    async load () {
+      return {
+        items: data,
+      };
+    },
+    async sort ({ items, sortDescriptor }) {
+      return {
+        items: items.sort((a, b) => {
+          const columnKey = (sortDescriptor.column as string) || "";
+          const column = columnDict[columnKey];
+          const first = getAccessorValue(a, column);
+          const second = getAccessorValue(b, column);
+          let cmp = 0;
+
+          if (typeof column?.sortMethod === "function") {
+            cmp = column.sortMethod(a, b);
+          } else {
+            cmp = first.localeCompare(second);
+          }
+
+          if (sortDescriptor.direction === "descending") {
+            cmp *= -1;
+          }
+
+          return cmp;
+        }),
+      };
+    },
+  });
+
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return list.items.slice(start, end);
+  }, [page, list.items]);
+
   return (
     <Table
+      sortDescriptor={list.sortDescriptor}
+      onSortChange={list.sort}
       bottomContent={
         <div className='flex w-full justify-center'>
           <Pagination
@@ -75,7 +115,14 @@ export default function SimpleTable<T extends Record<string, any>> ({
       }
     >
       <TableHeader columns={columns}>
-        {column => <TableColumn key={column.name}>{column.name}</TableColumn>}
+        {column => (
+          <TableColumn
+            key={column.name}
+            allowsSorting={column?.allowsSorting || false}
+          >
+            {column.name}
+          </TableColumn>
+        )}
       </TableHeader>
       <TableBody items={items}>
         {item => (
