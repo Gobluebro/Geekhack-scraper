@@ -9,6 +9,7 @@ import {
   TableRow,
   TableCell,
   Pagination,
+  Skeleton,
 } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 
@@ -69,13 +70,13 @@ export default function SimpleTable<T extends Record<string, any>> ({
         items: items.sort((a, b) => {
           const columnKey = (sortDescriptor.column as string) || "";
           const column = columnDict[columnKey];
-          const first = getAccessorValue(a, column);
-          const second = getAccessorValue(b, column);
           let cmp = 0;
 
           if (typeof column?.sortMethod === "function") {
             cmp = column.sortMethod(a, b);
           } else {
+            const first = getAccessorValue(a, column);
+            const second = getAccessorValue(b, column);
             cmp = first.localeCompare(second);
           }
 
@@ -90,10 +91,12 @@ export default function SimpleTable<T extends Record<string, any>> ({
   });
 
   const items = useMemo(() => {
+    let content = data;
+    if (list.items.length) content = list.items;
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return list.items.slice(start, end);
+    return content.slice(start, end);
   }, [page, list.items]);
 
   return (
@@ -124,7 +127,12 @@ export default function SimpleTable<T extends Record<string, any>> ({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={items}>
+      <TableBody
+        isLoading={list.isLoading}
+        emptyContent={"No rows to display."}
+        loadingContent={<Skeleton />}
+        items={items}
+      >
         {item => (
           <TableRow key={item.id}>
             {columnKey => <TableCell>{renderCell(item, columnKey)}</TableCell>}

@@ -5,7 +5,7 @@ import { jsonify } from "./util/common";
 
 
 export default async function Home () {
-  const allThreadsData: (Thread & Image)[] = jsonify(await getAllThreadsWithImage()); // needed to handle a weird bug with React and Nextjs
+  const allThreadsData: (Thread & Image)[] = jsonify(await getAllThreadsWithImage());
   return (
     <main>
       <div>
