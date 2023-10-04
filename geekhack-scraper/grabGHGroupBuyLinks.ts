@@ -24,17 +24,24 @@ export const getTotalPages = async (topic: TopicEnum): Promise<number> => {
   return Math.max(...pageLinks);
 };
 
-export function getCleanedPageLinksAndTitle (dom: JSDOM) {
+export function getCleanedPageLinksAndTitleAndDate (dom: JSDOM) {
   const anchorListWithNoStickiedPosts: NodeListOf<HTMLAnchorElement> =
     dom.window.document.querySelectorAll(".subject.windowbg2 > div > span > a");
+  const dateListWithNoStickiedPosts = dom.window.document.querySelectorAll(
+    ".lastpost.windowbg2"
+  );
 
   // use this to remove PHPSESSID from the link.
   const baseLink = "https://geekhack.org/index.php?topic=";
 
-  const urlArray = Array.from(anchorListWithNoStickiedPosts, a => {
+  const urlArray = Array.from(anchorListWithNoStickiedPosts, (a, i) => {
+    const date =
+      dateListWithNoStickiedPosts[i].querySelector("br")?.previousSibling
+        ?.textContent;
     return {
       link: baseLink + a.href.split("=")[2],
       title: a.textContent || "",
+      date: date ? new Date(date) : null,
     };
   });
 
@@ -43,9 +50,11 @@ export function getCleanedPageLinksAndTitle (dom: JSDOM) {
 
 export const GrabGHGroupBuyLinks = async (
   topic: TopicEnum,
-  page: number
-): Promise<GroupBuyPage[]> => {
+  page: number,
+  since?: Date
+) => {
   let pages: GroupBuyPage[] = [];
+  let hitLastScanned = false;
 
   try {
     const url =
@@ -62,7 +71,15 @@ export const GrabGHGroupBuyLinks = async (
     const threads: {
       link: string;
       title: string;
-    }[] = getCleanedPageLinksAndTitle(dom);
+      date: Date | null;
+    }[] = getCleanedPageLinksAndTitleAndDate(dom).filter(thread => {
+      if (since === undefined || thread.date === null || thread.date >= since) {
+        return true;
+      } else if (thread.date < since) {
+        hitLastScanned = true;
+      }
+      return false;
+    });
 
     const threadDoms: JSDOM[] = await Promise.all(
       threads.map(async thread => {
@@ -83,5 +100,5 @@ export const GrabGHGroupBuyLinks = async (
     console.error(err);
   }
 
-  return pages;
+  return { pages: pages, hitLastScanned: hitLastScanned };
 };

@@ -1,4 +1,5 @@
 import db from "../database/initdb";
+import scan from "../database/scan-model";
 import {
   GrabGHGroupBuyLinks,
   GroupBuyPage,
@@ -19,13 +20,24 @@ import createFolders from "./createFolders";
   } catch (error) {
     console.error("Database error:", error);
   }
+
+  let currentScan;
+  let lastScan = await scan.findOne({ order: [["updated", "DESC"]] });
+  if (lastScan?.is_running) {
+    currentScan = lastScan;
+    lastScan = await scan.findByPk(lastScan.id - 1); // get the scan before this one
+  } else {
+    currentScan = await scan.create({ is_running: true });
+  }
+
   const totalPages = await getTotalPages(TopicEnum.GB);
   for (let i = 0; i < totalPages; i++) {
     console.log(`Getting page ${i + 1} of GBs`);
-    const ghGBPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(
-      TopicEnum.GB,
-      i
-    );
+    const {
+      pages: ghGBPages,
+      hitLastScanned,
+    }: { pages: GroupBuyPage[]; hitLastScanned: boolean } =
+      await GrabGHGroupBuyLinks(TopicEnum.GB, i, lastScan?.updated);
     // const ghICPages: GroupBuyPage[] = await GrabGHGroupBuyLinks(TopicEnum.IC);
 
     const ghGbPagesInfo: PageInfo[] = ghGBPages.map(page => threadscrape(page));
@@ -33,5 +45,9 @@ import createFolders from "./createFolders";
 
     console.log(`Saving page ${i + 1} GB info to db`);
     await SaveToDatabase(ghGbPagesInfo);
+    if (ghGbPagesInfo.length === 0 || hitLastScanned) break;
   }
+
+  currentScan.is_running = false;
+  await currentScan.save();
 })();

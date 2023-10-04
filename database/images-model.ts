@@ -2,7 +2,6 @@ import { DataTypes, Model } from "sequelize";
 import db from "./initdb";
 
 interface ImagesInstance extends Model {
-  id: number;
   thread_id: number;
   name: string;
   url: string;

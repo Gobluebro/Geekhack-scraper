@@ -33,3 +33,10 @@ export type Vendor = {
   location: Region;
   url: string;
 };
+
+export type Scan = {
+  id: number;
+  is_running: boolean;
+  created: Date;
+  updated: Date;
+}

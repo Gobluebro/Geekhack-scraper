@@ -2,7 +2,6 @@ import { DataTypes, Model } from "sequelize";
 import db from "./initdb";
 
 interface VendorsInstance extends Model {
-  id: number;
   thread_id: number;
   location: string;
   url: string;
